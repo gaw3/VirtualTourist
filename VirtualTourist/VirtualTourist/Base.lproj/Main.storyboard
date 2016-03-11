@@ -105,33 +105,51 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BAM" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fAu-Tj-F9W">
-                                <rect key="frame" x="-42" y="-21" width="42" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                                <variation key="heightClass=regular-widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="184" y="389" width="37" height="21"/>
-                                </variation>
-                            </label>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="VOP-iC-LM0">
+                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                <connections>
+                                    <outlet property="delegate" destination="hGN-wb-6zk" id="cgl-6b-2zn"/>
+                                </connections>
+                            </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="VOP-iC-LM0" firstAttribute="leading" secondItem="cmR-Un-Cet" secondAttribute="leading" id="Nj9-F0-BAC"/>
+                            <constraint firstItem="VOP-iC-LM0" firstAttribute="top" secondItem="ui4-zl-pUw" secondAttribute="bottom" id="cJO-YZ-IEa"/>
+                            <constraint firstItem="AY5-Oe-7XN" firstAttribute="top" secondItem="VOP-iC-LM0" secondAttribute="bottom" constant="490" id="psD-Pa-w55"/>
+                            <constraint firstAttribute="trailing" secondItem="VOP-iC-LM0" secondAttribute="trailing" id="x0d-Xa-o7f"/>
+                        </constraints>
                         <variation key="default">
                             <mask key="subviews">
-                                <exclude reference="fAu-Tj-F9W"/>
+                                <exclude reference="VOP-iC-LM0"/>
+                            </mask>
+                            <mask key="constraints">
+                                <exclude reference="psD-Pa-w55"/>
+                                <exclude reference="Nj9-F0-BAC"/>
+                                <exclude reference="cJO-YZ-IEa"/>
+                                <exclude reference="x0d-Xa-o7f"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
                             <mask key="subviews">
-                                <include reference="fAu-Tj-F9W"/>
+                                <include reference="VOP-iC-LM0"/>
+                            </mask>
+                            <mask key="constraints">
+                                <include reference="psD-Pa-w55"/>
+                                <include reference="Nj9-F0-BAC"/>
+                                <include reference="cJO-YZ-IEa"/>
+                                <include reference="x0d-Xa-o7f"/>
                             </mask>
                         </variation>
                     </view>
                     <navigationItem key="navigationItem" title="Travelogue" id="HJk-RT-9iV"/>
+                    <connections>
+                        <outlet property="mapView" destination="VOP-iC-LM0" id="odP-BB-seK"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6ZZ-XQ-GEY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="828" y="453"/>
+            <point key="canvasLocation" x="870" y="453"/>
         </scene>
     </scenes>
 </document>

@@ -14,6 +14,10 @@
 		7A1AED2D1C7E8950001E7083 /* TravelLocationsMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A1AED2C1C7E8950001E7083 /* TravelLocationsMapViewController.swift */; };
 		7A878C021C8138E800516AB6 /* TravelogueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A878C011C8138E800516AB6 /* TravelogueViewController.swift */; };
 		7A878C041C815C9100516AB6 /* TravelLocationPinAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A878C031C815C9100516AB6 /* TravelLocationPinAnnotationView.swift */; };
+		7A878C061C817BDC00516AB6 /* TravelLocationAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A878C051C817BDC00516AB6 /* TravelLocationAnnotation.swift */; };
+		7A878C081C818A2E00516AB6 /* PleaseWaitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A878C071C818A2E00516AB6 /* PleaseWaitView.swift */; };
+		7A878C0A1C818AFD00516AB6 /* NetworkActivityIndicatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A878C091C818AFD00516AB6 /* NetworkActivityIndicatorManager.swift */; };
+		7A878C0C1C818BB000516AB6 /* UIViewControllerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A878C0B1C818BB000516AB6 /* UIViewControllerExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +30,10 @@
 		7A1AED2C1C7E8950001E7083 /* TravelLocationsMapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TravelLocationsMapViewController.swift; sourceTree = "<group>"; };
 		7A878C011C8138E800516AB6 /* TravelogueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TravelogueViewController.swift; sourceTree = "<group>"; };
 		7A878C031C815C9100516AB6 /* TravelLocationPinAnnotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TravelLocationPinAnnotationView.swift; sourceTree = "<group>"; };
+		7A878C051C817BDC00516AB6 /* TravelLocationAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TravelLocationAnnotation.swift; sourceTree = "<group>"; };
+		7A878C071C818A2E00516AB6 /* PleaseWaitView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PleaseWaitView.swift; sourceTree = "<group>"; };
+		7A878C091C818AFD00516AB6 /* NetworkActivityIndicatorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkActivityIndicatorManager.swift; sourceTree = "<group>"; };
+		7A878C0B1C818BB000516AB6 /* UIViewControllerExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +68,7 @@
 			children = (
 				7A878C001C81388A00516AB6 /* Controllers */,
 				7A1AED281C7E8687001E7083 /* Delegates */,
+				7A878C0D1C818BBA00516AB6 /* Extensions */,
 				7A1AED291C7E8696001E7083 /* Model */,
 				7A1AED2A1C7E86B3001E7083 /* Resources */,
 				7A1AED2B1C7E86C1001E7083 /* Views */,
@@ -97,6 +106,9 @@
 			children = (
 				7A1AED171C7E7E9C001E7083 /* Main.storyboard */,
 				7A878C031C815C9100516AB6 /* TravelLocationPinAnnotationView.swift */,
+				7A878C051C817BDC00516AB6 /* TravelLocationAnnotation.swift */,
+				7A878C071C818A2E00516AB6 /* PleaseWaitView.swift */,
+				7A878C091C818AFD00516AB6 /* NetworkActivityIndicatorManager.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -108,6 +120,14 @@
 				7A878C011C8138E800516AB6 /* TravelogueViewController.swift */,
 			);
 			name = Controllers;
+			sourceTree = "<group>";
+		};
+		7A878C0D1C818BBA00516AB6 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				7A878C0B1C818BB000516AB6 /* UIViewControllerExtensions.swift */,
+			);
+			name = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -184,8 +204,12 @@
 				7A878C041C815C9100516AB6 /* TravelLocationPinAnnotationView.swift in Sources */,
 				7A1AED141C7E7E9C001E7083 /* AppDelegate.swift in Sources */,
 				7A1AED1C1C7E7E9D001E7083 /* VirtualTourist.xcdatamodeld in Sources */,
+				7A878C061C817BDC00516AB6 /* TravelLocationAnnotation.swift in Sources */,
+				7A878C0C1C818BB000516AB6 /* UIViewControllerExtensions.swift in Sources */,
 				7A878C021C8138E800516AB6 /* TravelogueViewController.swift in Sources */,
+				7A878C081C818A2E00516AB6 /* PleaseWaitView.swift in Sources */,
 				7A1AED2D1C7E8950001E7083 /* TravelLocationsMapViewController.swift in Sources */,
+				7A878C0A1C818AFD00516AB6 /* NetworkActivityIndicatorManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -6,15 +6,24 @@
 //  Copyright © 2016 Gregory White. All rights reserved.
 //
 
+import MapKit
 import UIKit
 
-internal class TravelogueViewController: UIViewController {
+final internal class TravelogueViewController: UIViewController {
 
 	// MARK: - Internal Constants
 
 	internal struct UI {
 		static let StoryboardID = "TravelogueVC"
 	}
+
+	// MARK: - Internal Stored Variables
+
+	internal var tlPinAnnoView: TravelLocationPinAnnotationView? = nil
+
+	// MARK: - IB Outlets
+
+	@IBOutlet weak var mapView: MKMapView!
 
 	// MARK: - View Events
 
@@ -27,3 +36,5 @@ internal class TravelogueViewController: UIViewController {
 	}
 
 }
+
+

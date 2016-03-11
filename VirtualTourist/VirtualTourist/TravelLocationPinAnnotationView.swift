@@ -10,7 +10,7 @@ import CoreGraphics
 import Foundation
 import MapKit
 
-internal class TravelLocationPinAnnotationView: MKPinAnnotationView {
+final internal class TravelLocationPinAnnotationView: MKPinAnnotationView {
 
 	// MARK: - Internal Constants
 
@@ -20,12 +20,13 @@ internal class TravelLocationPinAnnotationView: MKPinAnnotationView {
 
 	// MARK: - API
 
-	init(annotation: MKAnnotation?) {
+	init(annotation: TravelLocationAnnotation?) {
 		super.init(annotation: annotation, reuseIdentifier: UI.ReuseID)
-		
+
 		animatesDrop   = true
-		canShowCallout = false
+		canShowCallout = true
       pinTintColor   = MKPinAnnotationView.redPinColor()
+		rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
 	}
 
 	required init?(coder aDecoder: NSCoder) {
