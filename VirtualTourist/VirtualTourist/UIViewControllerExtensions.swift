@@ -6,7 +6,6 @@
 //  Copyright © 2016 Gregory White. All rights reserved.
 //
 
-
 import UIKit
 
 extension UIViewController {

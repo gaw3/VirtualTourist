@@ -29,7 +29,7 @@ final internal class TravelLocationsMapViewController: UIViewController {
 	// MARK: - Private Stored Variables
 
 	private var pleaseWaitView:    PleaseWaitView? = nil
-	private var currentAnnotation: TravelLocationAnnotation? = nil
+	private var currentAnnotation: MKPointAnnotation? = nil
 	
 	// MARK: - IB Outlets
 	
@@ -50,8 +50,11 @@ final internal class TravelLocationsMapViewController: UIViewController {
 	@IBAction internal func handleLongPress(gesture: UIGestureRecognizer) {
 
 		if gesture.state == .Began {
-			currentAnnotation = TravelLocationAnnotation()
-			currentAnnotation!.coordinate = mapView.convertPoint(gesture.locationInView(mapView), toCoordinateFromView: mapView)
+			let coord = mapView.convertPoint(gesture.locationInView(mapView), toCoordinateFromView: mapView)
+
+			currentAnnotation = MKPointAnnotation()
+			currentAnnotation!.coordinate = coord
+			currentAnnotation!.subtitle   = "\(coord.latitude)°, \(coord.longitude)°"
 
 			pleaseWaitView!.startActivityIndicator()
 
@@ -83,9 +86,9 @@ final internal class TravelLocationsMapViewController: UIViewController {
 								  as? TravelLocationPinAnnotationView
 
 		if let _ = tlPinAnnoView {
-			tlPinAnnoView!.annotation = annotation as! TravelLocationAnnotation
+			tlPinAnnoView!.annotation = annotation as! MKPointAnnotation
 		} else {
-			tlPinAnnoView = TravelLocationPinAnnotationView(annotation: annotation as? TravelLocationAnnotation)
+			tlPinAnnoView = TravelLocationPinAnnotationView(annotation: annotation as! MKPointAnnotation)
 		}
 
 		return tlPinAnnoView
@@ -114,7 +117,7 @@ final internal class TravelLocationsMapViewController: UIViewController {
 				return
 			}
 
-			self.currentAnnotation!.placemark = placemarks![0] as CLPlacemark
+			self.currentAnnotation!.title = placemarks![0].formattedAddress
 
 			dispatch_async(dispatch_get_main_queue(), {
 				self.mapView.addAnnotation(self.currentAnnotation!)

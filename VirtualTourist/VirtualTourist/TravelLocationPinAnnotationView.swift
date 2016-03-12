@@ -20,7 +20,7 @@ final internal class TravelLocationPinAnnotationView: MKPinAnnotationView {
 
 	// MARK: - API
 
-	init(annotation: TravelLocationAnnotation?) {
+	init(annotation: MKPointAnnotation) {
 		super.init(annotation: annotation, reuseIdentifier: UI.ReuseID)
 
 		animatesDrop   = true
