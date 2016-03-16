@@ -6,11 +6,12 @@
 //  Copyright © 2016 Gregory White. All rights reserved.
 //
 
+import CoreData
 import CoreLocation
 import MapKit
 import UIKit
 
-final internal class TravelLocationsMapViewController: UIViewController {
+final internal class TravelLocationsMapViewController: UIViewController, NSFetchedResultsControllerDelegate {
 
 	// MARK: - Private Constants
 
@@ -30,19 +31,45 @@ final internal class TravelLocationsMapViewController: UIViewController {
 
 	private var pleaseWaitView:    PleaseWaitView? = nil
 	private var currentAnnotation: MKPointAnnotation? = nil
-	
+//	private var currentTravelLocation: VirtualTouristTravelLocation? = nil
+
+	lazy private var frc: NSFetchedResultsController = {
+		let fetchRequest = NSFetchRequest(entityName: VirtualTouristTravelLocation.Consts.EntityName)
+		fetchRequest.sortDescriptors = []
+
+		let frc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: CoreDataManager.sharedManager.moc, sectionNameKeyPath: nil, cacheName: nil)
+		frc.delegate = self
+		
+		return frc
+	}()
+
 	// MARK: - IB Outlets
-	
+
 	@IBOutlet      internal var longPress: UILongPressGestureRecognizer!
-	@IBOutlet weak internal var mapView: MKMapView!
+	@IBOutlet weak internal var mapView:   MKMapView!
 
 	// MARK: - View Events
 
 	override internal func viewDidLoad() {
 		super.viewDidLoad()
 
-		initPleaseWaitView()
+//		initPleaseWaitView()
 		mapView.addGestureRecognizer(longPress)
+
+		do {
+			try frc.performFetch()
+
+			for travelLocation in frc.fetchedObjects as! [VirtualTouristTravelLocation] {
+				let annotation = MKPointAnnotation()
+				annotation.coordinate.latitude  = travelLocation.latitude  as CLLocationDegrees
+				annotation.coordinate.longitude = travelLocation.longitude as CLLocationDegrees
+				mapView.addAnnotation(annotation)
+			}
+
+		} catch let error as NSError {
+			print("\(error)")
+		}
+
 	}
 
 	// MARK: - IB Actions
@@ -50,21 +77,40 @@ final internal class TravelLocationsMapViewController: UIViewController {
 	@IBAction internal func handleLongPress(gesture: UIGestureRecognizer) {
 
 		if gesture.state == .Began {
+			print("gesture began")
 			let coord = mapView.convertPoint(gesture.locationInView(mapView), toCoordinateFromView: mapView)
-
-			currentAnnotation = MKPointAnnotation()
-			currentAnnotation!.coordinate = coord
-			currentAnnotation!.subtitle   = "\(coord.latitude)°, \(coord.longitude)°"
-
-			pleaseWaitView!.startActivityIndicator()
-
-			let location = CLLocation(latitude: currentAnnotation!.coordinate.latitude, longitude: currentAnnotation!.coordinate.longitude)
-			let geocoder = CLGeocoder()
-
-			nai.startActivity()
-			geocoder.reverseGeocodeLocation(location, completionHandler: geocodeCompletionHandler)
+			_ = VirtualTouristTravelLocation(coordinate: coord, context: CoreDataManager.sharedManager.moc)
+			CoreDataManager.sharedManager.saveContext()
 		}
 
+	}
+
+	// MARK: - NSFetchedResultsControllerDelegate
+
+	func controllerDidChangeContent(controller: NSFetchedResultsController) {
+		print("controller DidChangeContent called")
+	}
+
+	func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+
+		print("controller didChangeObject called")
+
+		if type == .Insert {
+			let travelLocation = anObject as! VirtualTouristTravelLocation
+			mapView.addAnnotation(travelLocation.pointAnnotation)
+		} else if type == .Delete {
+			// delete pin from view
+		}
+							
+	}
+
+	func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo,
+						 atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
+		print("controller didChangeSection called")
+	}
+
+	func controllerWillChangeContent(controller: NSFetchedResultsController) {
+		print("controller WillChangeContent called")
 	}
 
 	// MARK: - MKMapViewDelegate
@@ -92,47 +138,6 @@ final internal class TravelLocationsMapViewController: UIViewController {
 		}
 
 		return tlPinAnnoView
-	}
-
-	// MARK: - Private:  Completion Handlers as Computed Variables
-
-	private var geocodeCompletionHandler: CLGeocodeCompletionHandler {
-
-		return { (placemarks, error) -> Void in
-
-         self.nai.endActivity()
-
-			guard error == nil else {
-				self.presentAlert(Alert.Title.BadGeocode, message: error!.localizedDescription)
-				return
-			}
-
-			guard placemarks != nil else {
-				self.presentAlert(Alert.Title.BadGeocode, message: Alert.Message.NoPlacemarks)
-				return
-			}
-
-			guard placemarks!.count > 0 else {
-				self.presentAlert(Alert.Title.BadGeocode, message: Alert.Message.NoPlacemarks)
-				return
-			}
-
-			self.currentAnnotation!.title = placemarks![0].formattedAddress
-
-			dispatch_async(dispatch_get_main_queue(), {
-				self.mapView.addAnnotation(self.currentAnnotation!)
-			})
-
-		}
-
-	}
-
-	// MARK: - Private UI Helpers
-
-	private func initPleaseWaitView() {
-		pleaseWaitView = PleaseWaitView(requestingView: view)
-		view.addSubview(pleaseWaitView!.dimmedView)
-		view.bringSubviewToFront(pleaseWaitView!.dimmedView)
 	}
 
 }
