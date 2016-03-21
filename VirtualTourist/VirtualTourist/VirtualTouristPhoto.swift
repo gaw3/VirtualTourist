@@ -13,8 +13,9 @@ final internal class VirtualTouristPhoto: NSManagedObject {
 	
 	// MARK: - @NSManaged
 
-	@NSManaged var title:          String
 	@NSManaged var imageURLString: String
+	@NSManaged var title:          String
+	@NSManaged var location:       VirtualTouristTravelLocation?
 
 	// MARK: - Internal Constants
 

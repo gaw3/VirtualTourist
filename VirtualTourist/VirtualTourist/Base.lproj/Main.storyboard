@@ -80,7 +80,7 @@
                     <connections>
                         <outlet property="longPress" destination="4e1-5Q-GtF" id="hXj-jQ-KpE"/>
                         <outlet property="mapView" destination="kfA-Xw-rON" id="diY-zT-S6K"/>
-                        <segue destination="hGN-wb-6zk" kind="show" identifier="SegueToTravelogueView" id="aqd-iD-x9b"/>
+                        <segue destination="mIu-U1-fvD" kind="show" id="u74-pw-QKa"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iEd-nD-ekJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -93,63 +93,43 @@
             </objects>
             <point key="canvasLocation" x="63" y="453"/>
         </scene>
-        <!--Travelogue View Controller-->
-        <scene sceneID="ay6-Jh-zoZ">
+        <!--Travelogue-->
+        <scene sceneID="ffK-dH-HFY">
             <objects>
-                <viewController storyboardIdentifier="TravelogueVC" title="Travelogue View Controller" id="hGN-wb-6zk" customClass="TravelogueViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="ui4-zl-pUw"/>
-                        <viewControllerLayoutGuide type="bottom" id="AY5-Oe-7XN"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="cmR-Un-Cet">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                <collectionViewController storyboardIdentifier="TravelogueVC" id="mIu-U1-fvD" customClass="TravelogueViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="yuf-SE-Val">
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="VOP-iC-LM0">
-                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
-                                <connections>
-                                    <outlet property="delegate" destination="hGN-wb-6zk" id="cgl-6b-2zn"/>
-                                </connections>
-                            </mapView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="VOP-iC-LM0" firstAttribute="leading" secondItem="cmR-Un-Cet" secondAttribute="leading" id="Nj9-F0-BAC"/>
-                            <constraint firstItem="VOP-iC-LM0" firstAttribute="top" secondItem="ui4-zl-pUw" secondAttribute="bottom" id="cJO-YZ-IEa"/>
-                            <constraint firstItem="AY5-Oe-7XN" firstAttribute="top" secondItem="VOP-iC-LM0" secondAttribute="bottom" constant="490" id="psD-Pa-w55"/>
-                            <constraint firstAttribute="trailing" secondItem="VOP-iC-LM0" secondAttribute="trailing" id="x0d-Xa-o7f"/>
-                        </constraints>
-                        <variation key="default">
-                            <mask key="subviews">
-                                <exclude reference="VOP-iC-LM0"/>
-                            </mask>
-                            <mask key="constraints">
-                                <exclude reference="psD-Pa-w55"/>
-                                <exclude reference="Nj9-F0-BAC"/>
-                                <exclude reference="cJO-YZ-IEa"/>
-                                <exclude reference="x0d-Xa-o7f"/>
-                            </mask>
-                        </variation>
-                        <variation key="heightClass=regular-widthClass=compact">
-                            <mask key="subviews">
-                                <include reference="VOP-iC-LM0"/>
-                            </mask>
-                            <mask key="constraints">
-                                <include reference="psD-Pa-w55"/>
-                                <include reference="Nj9-F0-BAC"/>
-                                <include reference="cJO-YZ-IEa"/>
-                                <include reference="x0d-Xa-o7f"/>
-                            </mask>
-                        </variation>
-                    </view>
-                    <navigationItem key="navigationItem" title="Travelogue" id="HJk-RT-9iV"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="NuB-cy-Cis">
+                            <size key="itemSize" width="50" height="50"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="VTPhotoCollectionViewCell" id="57O-8j-Obm">
+                                <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="mIu-U1-fvD" id="LGS-ns-6Vl"/>
+                            <outlet property="delegate" destination="mIu-U1-fvD" id="H1X-es-Vpd"/>
+                        </connections>
+                    </collectionView>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <navigationItem key="navigationItem" title="Travelogue" id="qZK-gI-VZx"/>
                     <connections>
-                        <outlet property="mapView" destination="VOP-iC-LM0" id="odP-BB-seK"/>
+                        <outlet property="flowLayout" destination="NuB-cy-Cis" id="W9s-Re-BgX"/>
                     </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="6ZZ-XQ-GEY" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nzE-yE-t12" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="870" y="453"/>
+            <point key="canvasLocation" x="799.5" y="453"/>
         </scene>
     </scenes>
 </document>

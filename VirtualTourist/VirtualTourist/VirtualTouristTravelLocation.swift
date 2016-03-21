@@ -21,6 +21,7 @@ final internal class VirtualTouristTravelLocation: NSManagedObject {
 	@NSManaged var longitude:          NSNumber
 	@NSManaged var page:               NSNumber
 	@NSManaged var perPage:            NSNumber
+	@NSManaged var photos:             [VirtualTouristPhoto]
 
 	// MARK: - Internal Constants
 
@@ -46,15 +47,16 @@ final internal class VirtualTouristTravelLocation: NSManagedObject {
 	}
 
 	internal init(coordinate: CLLocationCoordinate2D, context: NSManagedObjectContext) {
-		let entity =  NSEntityDescription.entityForName(Consts.EntityName, inManagedObjectContext: context)!
+		let entity = NSEntityDescription.entityForName(Consts.EntityName, inManagedObjectContext: context)!
 		super.init(entity: entity, insertIntoManagedObjectContext: context)
 
 		latitude  = coordinate.latitude
 		longitude = coordinate.longitude
+//		photos    = [VirtualTouristPhoto]()
 	}
 
 	internal init(responseData: FlickrPhotosResponseData, annotation: MKPointAnnotation, context: NSManagedObjectContext) {
-		let entity =  NSEntityDescription.entityForName(Consts.EntityName, inManagedObjectContext: context)!
+		let entity = NSEntityDescription.entityForName(Consts.EntityName, inManagedObjectContext: context)!
 		super.init(entity: entity, insertIntoManagedObjectContext: context)
 
 		page               = responseData.page

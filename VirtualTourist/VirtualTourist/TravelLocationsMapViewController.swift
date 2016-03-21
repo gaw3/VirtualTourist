@@ -29,10 +29,6 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 
 	// MARK: - Private Stored Variables
 
-	private var pleaseWaitView:    PleaseWaitView? = nil
-	private var currentAnnotation: MKPointAnnotation? = nil
-//	private var currentTravelLocation: VirtualTouristTravelLocation? = nil
-
 	lazy private var frc: NSFetchedResultsController = {
 		let fetchRequest = NSFetchRequest(entityName: VirtualTouristTravelLocation.Consts.EntityName)
 		fetchRequest.sortDescriptors = []
@@ -53,17 +49,13 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 	override internal func viewDidLoad() {
 		super.viewDidLoad()
 
-//		initPleaseWaitView()
 		mapView.addGestureRecognizer(longPress)
 
 		do {
 			try frc.performFetch()
 
 			for travelLocation in frc.fetchedObjects as! [VirtualTouristTravelLocation] {
-				let annotation = MKPointAnnotation()
-				annotation.coordinate.latitude  = travelLocation.latitude  as CLLocationDegrees
-				annotation.coordinate.longitude = travelLocation.longitude as CLLocationDegrees
-				mapView.addAnnotation(annotation)
+				mapView.addAnnotation(travelLocation.pointAnnotation)
 			}
 
 		} catch let error as NSError {
@@ -115,21 +107,28 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 
 	// MARK: - MKMapViewDelegate
 
-	internal func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+//	internal func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+//
+//		if control == view.rightCalloutAccessoryView {
+//			let travelogueVC = self.storyboard?.instantiateViewControllerWithIdentifier(TravelogueViewController.UI.StoryboardID)
+//									 as! TravelogueViewController
+//
+//			travelogueVC.tlPinAnnoView = view as? TravelLocationPinAnnotationView
+//			navigationController?.pushViewController(travelogueVC, animated: true)
+//		}
+//
+//	}
 
-		if control == view.rightCalloutAccessoryView {
-			let travelogueVC = self.storyboard?.instantiateViewControllerWithIdentifier(TravelogueViewController.UI.StoryboardID)
-									 as! TravelogueViewController
+	internal func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+		let travelogueVC = self.storyboard?.instantiateViewControllerWithIdentifier(TravelogueViewController.UI.StoryboardID) as! TravelogueViewController
 
-			travelogueVC.tlPinAnnoView = view as? TravelLocationPinAnnotationView
-			navigationController?.pushViewController(travelogueVC, animated: true)
-		}
-
+		travelogueVC.coordinate    = (view as? TravelLocationPinAnnotationView)!.annotation!.coordinate
+		travelogueVC.tlPinAnnoView = view as? TravelLocationPinAnnotationView
+		navigationController?.pushViewController(travelogueVC, animated: true)
 	}
 
 	internal func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
-		var tlPinAnnoView = mapView.dequeueReusableAnnotationViewWithIdentifier(TravelLocationPinAnnotationView.UI.ReuseID)
-								  as? TravelLocationPinAnnotationView
+		var tlPinAnnoView = mapView.dequeueReusableAnnotationViewWithIdentifier(TravelLocationPinAnnotationView.UI.ReuseID) as? TravelLocationPinAnnotationView
 
 		if let _ = tlPinAnnoView {
 			tlPinAnnoView!.annotation = annotation as! MKPointAnnotation

@@ -24,7 +24,7 @@ final internal class TravelLocationPinAnnotationView: MKPinAnnotationView {
 		super.init(annotation: annotation, reuseIdentifier: UI.ReuseID)
 
 		animatesDrop   = true
-		canShowCallout = true
+		canShowCallout = false
       pinTintColor   = MKPinAnnotationView.redPinColor()
 		rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
 	}
