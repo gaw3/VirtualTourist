@@ -16,7 +16,7 @@ Program.  The following list contains pertinent course documents:
 | :----------   | :-------------             |
 | Grade:        |                            |
 | App Version:  | In Work                    |
-| Environment:  | Xcode 7.2.1 / iOS 9.2      |
+| Environment:  | Xcode 7.3 / iOS 9.3        |
 | Devices:      | iPhone Only                |
 | Orientations: | Portrait Only              |
 
