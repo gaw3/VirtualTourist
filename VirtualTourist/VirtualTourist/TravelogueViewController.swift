@@ -103,8 +103,7 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 	override internal func viewWillLayoutSubviews() {
 		super.viewWillLayoutSubviews()
 
-		let numOfCellsAcross: CGFloat = UIDeviceOrientationIsPortrait(UIDevice.currentDevice().orientation)
-			? Layout.NumberOfCellsAcrossInPortrait : Layout.NumberOfCellsAcrossInLandscape
+		let numOfCellsAcross: CGFloat = UIDeviceOrientationIsPortrait(UIDevice.currentDevice().orientation) ? Layout.NumberOfCellsAcrossInPortrait : Layout.NumberOfCellsAcrossInLandscape
 		let itemWidth: CGFloat = (view.frame.size.width - (flowLayout.minimumInteritemSpacing * (numOfCellsAcross - 1))) / numOfCellsAcross
 
 		flowLayout.itemSize = CGSizeMake(itemWidth, itemWidth) // yes, a square on purpose
@@ -114,7 +113,7 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 
 	func controllerDidChangeContent(controller: NSFetchedResultsController) {
 		print("controller DidChangeContent called")
-		collectionView?.reloadData()
+//		collectionView?.reloadData()
 	}
 
 	func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
@@ -202,6 +201,7 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 				}
 
 				CoreDataManager.sharedManager.saveContext()
+				self.collectionView?.reloadData()
 			})
 
 		}
