@@ -14,15 +14,17 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 
 	// MARK: - Internal Constants
 
+	internal struct UI {
+		static let StoryboardID = "TravelogueVC"
+		static let CollectionCellReuseID = "VTPhotoCollectionViewCell"
+	}
+
+	// MARK: - Private Constants
+
 	private struct Layout {
 		static let NumberOfCellsAcrossInPortrait:  CGFloat = 3.0
 		static let NumberOfCellsAcrossInLandscape: CGFloat = 5.0
 		static let MinimumInteritemSpacing:        CGFloat = 3.0
-	}
-
-	internal struct UI {
-		static let StoryboardID = "TravelogueVC"
-		static let CollectionCellReuseID = "VTPhotoCollectionViewCell"
 	}
 
 	private struct Predicate {
@@ -34,12 +36,13 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 	internal var tlPinAnnoView: TravelLocationPinAnnotationView? = nil
 	internal var coordinate:    CLLocationCoordinate2D? = nil
 
-	private var  travelLocation: VirtualTouristTravelLocation? = nil
+	// MARK: - Private Stored Variables
+
+	private var travelLocation: VirtualTouristTravelLocation? = nil
 
 	// MARK: - Private Computed Variables
 
 	lazy private var frc: NSFetchedResultsController = {
-		print("building the fetched results controller")
 		let photosFetchRequest = NSFetchRequest(entityName: VirtualTouristPhoto.Consts.EntityName)
 		photosFetchRequest.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
 		photosFetchRequest.predicate = NSPredicate(format: "location == %@", self.travelLocation!)
@@ -59,43 +62,21 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 	override internal func viewDidLoad() {
 		super.viewDidLoad()
 
-		collectionView?.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: UI.CollectionCellReuseID)
-		collectionView?.backgroundColor = UIColor.whiteColor()
+		initCollectionView()
 
-		flowLayout.minimumInteritemSpacing = Layout.MinimumInteritemSpacing
-		flowLayout.minimumLineSpacing      = Layout.MinimumInteritemSpacing
+		if let tl = getTravelLocation() {
+			travelLocation = tl
 
-		let fetchRequest = NSFetchRequest(entityName: VirtualTouristTravelLocation.Consts.EntityName)
-		fetchRequest.sortDescriptors = []
-		fetchRequest.predicate       = NSPredicate(format: Predicate.ByLatLong, coordinate!.latitude, coordinate!.longitude)
-
-		do {
-			let travelLocations = try CoreDataManager.sharedManager.moc.executeFetchRequest(fetchRequest) as! [VirtualTouristTravelLocation]
-
-			if travelLocations.isEmpty {
-				// then we have a software error - this shouldn't happen
-			} else {
-				travelLocation = travelLocations[0]
-				do {
-					try frc.performFetch()
-					if frc.fetchedObjects!.isEmpty {
-						print("no photos associated with location in core data")
-						flickrClient.searchPhotosByLocation(coordinate!, completionHandler: searchPhotosByLocationCompletionHandler)
-					} else {
-						print("photos already in core data")
-						for photo in frc.fetchedObjects as! [VirtualTouristPhoto] {
-							print("photo title = \(photo.title);  path = \(photo.imageURLString)")
-						}
-
-					}
-				} catch {
-					print("Error performing fetch")
+			do {
+				try frc.performFetch()
+				
+				if frc.fetchedObjects!.isEmpty {
+					flickrClient.searchPhotosByLocation(coordinate!, completionHandler: searchPhotosByLocationCompletionHandler)
 				}
-
+			} catch {
+				print("Error performing fetch")
 			}
 
-		} catch let error as NSError {
-			print("\(error)")
 		}
 
 	}
@@ -147,8 +128,6 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 		print("collView numberOfItemsInSection")
 
 		let sectionInfo = frc.sections![section]
-
-		print("number Of Cells: \(sectionInfo.numberOfObjects)")
 		return sectionInfo.numberOfObjects
 	}
 
@@ -193,11 +172,9 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 				self.travelLocation?.page    = responseData.page
 				self.travelLocation?.perPage = responseData.perpage
 
-				print("adding photos to core data")
 				for photoResponseData in responseData.photoArray {
 					let photo = VirtualTouristPhoto(responseData: photoResponseData, context: CoreDataManager.sharedManager.moc)
 					photo.location = self.travelLocation!
-					print("photo title = \(photo.title);  path = \(photo.imageURLString)")
 				}
 
 				CoreDataManager.sharedManager.saveContext()
@@ -206,6 +183,35 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 
 		}
 
+	}
+
+	// MARK: - Private
+
+	private func getTravelLocation() -> VirtualTouristTravelLocation? {
+		let fetchRequest = NSFetchRequest(entityName: VirtualTouristTravelLocation.Consts.EntityName)
+
+		fetchRequest.sortDescriptors = []
+		fetchRequest.predicate       = NSPredicate(format: Predicate.ByLatLong, coordinate!.latitude, coordinate!.longitude)
+
+		do {
+			let travelLocations = try CoreDataManager.sharedManager.moc.executeFetchRequest(fetchRequest) as! [VirtualTouristTravelLocation]
+
+			if !travelLocations.isEmpty { return travelLocations[0] }
+			else                        { return nil }
+
+		} catch let error as NSError {
+			print("\(error)")
+		}
+
+		return nil
+	}
+
+	private func initCollectionView() {
+		collectionView?.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: UI.CollectionCellReuseID)
+		collectionView?.backgroundColor = UIColor.whiteColor()
+
+		flowLayout.minimumInteritemSpacing = Layout.MinimumInteritemSpacing
+		flowLayout.minimumLineSpacing      = Layout.MinimumInteritemSpacing
 	}
 
 }

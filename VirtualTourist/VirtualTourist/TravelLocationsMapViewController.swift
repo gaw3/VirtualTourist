@@ -69,7 +69,6 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 	@IBAction internal func handleLongPress(gesture: UIGestureRecognizer) {
 
 		if gesture.state == .Began {
-			print("gesture began")
 			let coord = mapView.convertPoint(gesture.locationInView(mapView), toCoordinateFromView: mapView)
 			_ = VirtualTouristTravelLocation(coordinate: coord, context: CoreDataManager.sharedManager.moc)
 			CoreDataManager.sharedManager.saveContext()

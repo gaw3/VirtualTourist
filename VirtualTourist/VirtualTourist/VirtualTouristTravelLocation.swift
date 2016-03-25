@@ -52,7 +52,6 @@ final internal class VirtualTouristTravelLocation: NSManagedObject {
 
 		latitude  = coordinate.latitude
 		longitude = coordinate.longitude
-//		photos    = [VirtualTouristPhoto]()
 	}
 
 	internal init(responseData: FlickrPhotosResponseData, annotation: MKPointAnnotation, context: NSManagedObjectContext) {
