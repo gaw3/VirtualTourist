@@ -49,6 +49,55 @@ final internal class APIDataTaskWithRequest: NSObject {
 		super.init()
 	}
 
+	internal func getImageDownloadTask() -> NSURLSessionTask {
+
+		let task = NSURLSession.sharedSession().dataTaskWithRequest(URLRequest) { (rawImageData, HTTPResponse, URLSessionError) in
+
+			dispatch_async(dispatch_get_main_queue(), {
+				NetworkActivityIndicatorManager.sharedManager.endActivity()
+			})
+
+			guard URLSessionError == nil else {
+				let userInfo = [NSLocalizedDescriptionKey: LocalizedErrorDescription.Network, NSUnderlyingErrorKey: URLSessionError!]
+				let error    = NSError(domain: LocalizedError.Domain, code: LocalizedErrorCode.Network, userInfo: userInfo)
+
+				self.completeWithHandler(self.completionHandler, result: nil, error: error)
+				return
+			}
+
+			let HTTPURLResponse = HTTPResponse as? NSHTTPURLResponse
+
+			guard HTTPURLResponse?.statusCodeClass == .Successful else {
+				let HTTPStatusText = NSHTTPURLResponse.localizedStringForStatusCode((HTTPURLResponse?.statusCode)!)
+				let failureReason  = "HTTP status code = \(HTTPURLResponse?.statusCode), HTTP status text = \(HTTPStatusText)"
+				let userInfo       = [NSLocalizedDescriptionKey: LocalizedErrorDescription.HTTP, NSLocalizedFailureReasonErrorKey: failureReason]
+				let error          = NSError(domain: LocalizedError.Domain, code: LocalizedErrorCode.HTTP, userInfo: userInfo)
+
+				self.completeWithHandler(self.completionHandler, result: nil, error: error)
+				return
+			}
+
+			guard let rawImageData = rawImageData else {
+				let userInfo = [NSLocalizedDescriptionKey: LocalizedErrorDescription.JSON]
+				let error    = NSError(domain: LocalizedError.Domain, code: LocalizedErrorCode.JSON, userInfo: userInfo)
+
+				self.completeWithHandler(self.completionHandler, result: nil, error: error)
+				return
+			}
+
+			if let image = UIImage(data: rawImageData) {
+				self.completeWithHandler(self.completionHandler, result: image, error: nil)
+			} else {
+				return
+			}
+			
+		}
+
+		NetworkActivityIndicatorManager.sharedManager.startActivity()
+		task.resume()
+		return task
+	}
+
 	internal func resume() {
 
 		let task = NSURLSession.sharedSession().dataTaskWithRequest(URLRequest) { (rawJSONResponse, HTTPResponse, URLSessionError) in

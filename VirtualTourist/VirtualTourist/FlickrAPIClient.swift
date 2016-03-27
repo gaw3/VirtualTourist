@@ -30,4 +30,14 @@ final internal class FlickrAPIClient: NSObject {
 		dataTaskWithRequest.resume()
 	}
 
+	internal func getRemotePhotoWithURLStringTask(URLString: String, completionHandler: APIDataTaskWithRequestCompletionHandler) -> NSURLSessionTask {
+		let components = NSURLComponents(string: URLString)
+		let URLRequest = NSMutableURLRequest(URL: components!.URL!)
+		URLRequest.HTTPMethod = "GET"
+
+		let dataTaskWithRequest = APIDataTaskWithRequest(URLRequest: URLRequest, completionHandler: completionHandler)
+//		dataTaskWithRequest.resume()
+		return dataTaskWithRequest.getImageDownloadTask()
+	}
+
 }

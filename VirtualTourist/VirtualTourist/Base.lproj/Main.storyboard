@@ -101,20 +101,41 @@
                         <rect key="frame" x="0.0" y="64" width="600" height="492"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="NuB-cy-Cis">
-                            <size key="itemSize" width="126" height="118"/>
+                            <size key="itemSize" width="130" height="130"/>
                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         </collectionViewFlowLayout>
                         <cells>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="VTPhotoCollectionViewCell" id="57O-8j-Obm">
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="TravelogueCollectionViewCell" id="57O-8j-Obm" customClass="TravelogueCollectionViewCell" customModule="VirtualTourist" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="126" height="118"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="126" height="118"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="130" height="130"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="oh0-ma-dS8">
+                                            <rect key="frame" x="-10" y="-10" width="20" height="20"/>
+                                            <variation key="heightClass=regular-widthClass=compact" fixedFrame="YES">
+                                                <rect key="frame" x="47" y="46" width="37" height="37"/>
+                                            </variation>
+                                        </activityIndicatorView>
+                                    </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
+                                <variation key="default">
+                                    <mask key="subviews">
+                                        <exclude reference="oh0-ma-dS8"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact">
+                                    <mask key="subviews">
+                                        <include reference="oh0-ma-dS8"/>
+                                    </mask>
+                                </variation>
+                                <connections>
+                                    <outlet property="activityIndicator" destination="oh0-ma-dS8" id="dhH-jQ-gNe"/>
+                                </connections>
                             </collectionViewCell>
                         </cells>
                         <connections>

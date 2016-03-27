@@ -16,7 +16,6 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 
 	internal struct UI {
 		static let StoryboardID = "TravelogueVC"
-		static let CollectionCellReuseID = "VTPhotoCollectionViewCell"
 	}
 
 	// MARK: - Private Constants
@@ -116,25 +115,42 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 		assert(collectionView == self.collectionView, "Unexpected collection view reqesting cell of item at index path")
 		print("collView cellForItemAtIndexPath")
 
-		let cell = collectionView.dequeueReusableCellWithReuseIdentifier(UI.CollectionCellReuseID, forIndexPath: indexPath)
-
-		cell.backgroundColor = UIColor.blueColor()
+		let cell = collectionView.dequeueReusableCellWithReuseIdentifier("TravelogueCollectionViewCell", forIndexPath: indexPath) as! TravelogueCollectionViewCell
+		configureCell(cell, atIndexPath: indexPath)
 
 		return cell
 	}
 
+	func configureCell(cell: TravelogueCollectionViewCell, atIndexPath: NSIndexPath) {
+		let vtPhoto = frc.objectAtIndexPath(atIndexPath) as! VirtualTouristPhoto
+
+		cell.backgroundView  = nil
+		cell.backgroundColor = UIColor.blueColor()
+		cell.activityIndicator?.startAnimating()
+
+		if let cachedImage = PhotoCache.sharedCache.imageWithIdentifier(vtPhoto.imageURLString) {
+			print("retrieving from cache:  \(vtPhoto.imageURLString)")
+			cell.backgroundView = UIImageView(image: cachedImage)
+			cell.activityIndicator?.stopAnimating()
+			return
+		}
+
+		print("downloading from Flickr:  \(vtPhoto.imageURLString)")
+		let downloadTask = FlickrAPIClient.sharedClient.getRemotePhotoWithURLStringTask(vtPhoto.imageURLString, completionHandler: getRemoteImageWithURLStringCompletionHandler(vtPhoto.imageURLString, cellForPhoto: cell))
+		cell.taskToCancelIfCellIsReused = downloadTask
+	}
+
 	override internal func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 		assert(collectionView == self.collectionView, "Unexpected collection view reqesting number of items in section")
-		print("collView numberOfItemsInSection")
 
 		let sectionInfo = frc.sections![section]
+		print("number of items in section = \(sectionInfo.numberOfObjects)")
 		return sectionInfo.numberOfObjects
 	}
 
 	override internal func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
 		assert(collectionView == self.collectionView, "Unexpected collection view reqesting number of sections in view")
-		print("numberOfSectionsInCollectionView")
-
+		print("number of sections in collection = \(frc.sections!.count)")
 		return frc.sections?.count ?? 0
 	}
 
@@ -146,6 +162,33 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 	}
 	
 	// MARK: - Private:  Completion Handlers as Computed Variables
+
+	private func getRemoteImageWithURLStringCompletionHandler(URLString: String, cellForPhoto: TravelogueCollectionViewCell) -> APIDataTaskWithRequestCompletionHandler {
+
+		return { (result, error) -> Void in
+
+			guard error == nil else {
+				self.presentAlert("Unable to obtain photos", message: error!.localizedDescription)
+				return
+			}
+
+			guard result != nil else {
+				self.presentAlert("Unable to obtain photos", message: "JSON data unavailable")
+				return
+			}
+
+			let downloadedImage = result as! UIImage
+			PhotoCache.sharedCache.storeImage(downloadedImage, withIdentifier: URLString)
+			print("storing image in cache:  \(URLString)")
+
+			dispatch_async(dispatch_get_main_queue(), {
+				cellForPhoto.activityIndicator?.stopAnimating()
+				cellForPhoto.backgroundView = UIImageView(image: downloadedImage)
+			})
+			
+		}
+
+	}
 
 	private var searchPhotosByLocationCompletionHandler: APIDataTaskWithRequestCompletionHandler {
 
@@ -207,7 +250,7 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 	}
 
 	private func initCollectionView() {
-		collectionView?.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: UI.CollectionCellReuseID)
+		collectionView?.registerClass(TravelogueCollectionViewCell.self, forCellWithReuseIdentifier: TravelogueCollectionViewCell.UI.ReuseID)
 		collectionView?.backgroundColor = UIColor.whiteColor()
 
 		flowLayout.minimumInteritemSpacing = Layout.MinimumInteritemSpacing

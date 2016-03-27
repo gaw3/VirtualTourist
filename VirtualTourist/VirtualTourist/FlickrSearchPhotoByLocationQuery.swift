@@ -18,7 +18,7 @@ struct FlickrSearchPhotosByLocationQuery {
 	// MARK: - Internal Computed Variables
 
 	internal var query: String {
-		return "api_key=850364777cd6c0359001c9aa67b5b1b4&content_type=1&extras=url_m&format=json&lat=\(loc.latitude)&lon=\(loc.longitude)&method=flickr.photos.search&nojsoncallback=1&page=4&per_page=15&safe_search=1"
+		return "api_key=850364777cd6c0359001c9aa67b5b1b4&content_type=1&extras=url_m&format=json&lat=\(loc.latitude)&lon=\(loc.longitude)&method=flickr.photos.search&nojsoncallback=1&page=1&per_page=21&safe_search=1"
 	}
 
 	// MARK: - API
