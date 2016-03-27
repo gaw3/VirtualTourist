@@ -55,6 +55,7 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 	// MARK: - IB Outlets
 
 	@IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
+	@IBOutlet weak var toolbarButton: UIBarButtonItem!
 
 	// MARK: - View Events
 
@@ -70,7 +71,7 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 				try frc.performFetch()
 				
 				if frc.fetchedObjects!.isEmpty {
-					flickrClient.searchPhotosByLocation(coordinate!, completionHandler: searchPhotosByLocationCompletionHandler)
+					flickrClient.searchPhotosByLocation(travelLocation!, completionHandler: searchPhotosByLocationCompletionHandler)
 				}
 			} catch {
 				print("Error performing fetch")
@@ -89,15 +90,30 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 		flowLayout.itemSize = CGSizeMake(itemWidth, itemWidth) // yes, a square on purpose
 	}
 
+	// MARK: - IB Outlets
+
+	@IBAction func toolbarButtonWasTapped(sender: UIBarButtonItem) {
+
+		for vtPhoto in frc.fetchedObjects as! [VirtualTouristPhoto] {
+			print("deleting from cache & core data:  \(vtPhoto.imageURLString)")
+			PhotoCache.sharedCache.storeImage(nil, withIdentifier: vtPhoto.imageURLString)
+			CoreDataManager.sharedManager.moc.deleteObject(vtPhoto)
+		}
+
+		CoreDataManager.sharedManager.saveContext()
+		collectionView!.reloadData()
+		flickrClient.searchPhotosByLocation(travelLocation!, completionHandler: searchPhotosByLocationCompletionHandler)
+	}
+
+
 	// MARK: - NSFetchedResultsControllerDelegate
 
 	func controllerDidChangeContent(controller: NSFetchedResultsController) {
 		print("controller DidChangeContent called")
-//		collectionView?.reloadData()
 	}
 
 	func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
-		print("controller didChangeObject called")
+		print("controller didChangeObject called for change type = \(type.rawValue) indexPath = \(indexPath), newIndexPath = \(newIndexPath)")
 	}
 
 	func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo,
@@ -216,6 +232,7 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 				self.travelLocation?.perPage = responseData.perpage
 
 				for photoResponseData in responseData.photoArray {
+					print("saving vtPhoto in core data = \(photoResponseData.url_m)")
 					let photo = VirtualTouristPhoto(responseData: photoResponseData, context: CoreDataManager.sharedManager.moc)
 					photo.location = self.travelLocation!
 				}

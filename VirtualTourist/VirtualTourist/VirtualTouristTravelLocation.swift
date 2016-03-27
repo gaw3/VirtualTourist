@@ -40,6 +40,14 @@ final internal class VirtualTouristTravelLocation: NSManagedObject {
 		return anno
 	}
 
+	internal var searchQuery: String {
+		let lat     = latitude as Double
+		let long    = longitude as Double
+		let newPage = (page as Int) + 1
+
+		return "api_key=850364777cd6c0359001c9aa67b5b1b4&content_type=1&extras=url_m&format=json&lat=\(lat)&lon=\(long)&method=flickr.photos.search&nojsoncallback=1&page=\(newPage)&per_page=21&safe_search=1"
+	}
+
 	// MARK: - API
 
 	override internal init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {

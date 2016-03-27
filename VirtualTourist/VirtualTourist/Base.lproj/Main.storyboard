@@ -108,7 +108,7 @@
                         </collectionViewFlowLayout>
                         <cells>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="TravelogueCollectionViewCell" id="57O-8j-Obm" customClass="TravelogueCollectionViewCell" customModule="VirtualTourist" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="126" height="118"/>
+                                <rect key="frame" x="0.0" y="0.0" width="130" height="130"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="130" height="130"/>
@@ -144,9 +144,19 @@
                         </connections>
                     </collectionView>
                     <extendedEdge key="edgesForExtendedLayout"/>
+                    <toolbarItems>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="W75-jb-qbP"/>
+                        <barButtonItem title="New Collection" id="eOa-9E-31y">
+                            <connections>
+                                <action selector="toolbarButtonWasTapped:" destination="mIu-U1-fvD" id="mQc-oR-X4z"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="WCs-Q9-A0V"/>
+                    </toolbarItems>
                     <navigationItem key="navigationItem" title="Travelogue" id="qZK-gI-VZx"/>
                     <connections>
                         <outlet property="flowLayout" destination="NuB-cy-Cis" id="W9s-Re-BgX"/>
+                        <outlet property="toolbarButton" destination="eOa-9E-31y" id="I3k-zm-I2T"/>
                     </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nzE-yE-t12" userLabel="First Responder" sceneMemberID="firstResponder"/>

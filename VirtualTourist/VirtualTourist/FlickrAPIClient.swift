@@ -19,9 +19,10 @@ final internal class FlickrAPIClient: NSObject {
 
 	// MARK: - API
 
-	internal func searchPhotosByLocation(location: CLLocationCoordinate2D, completionHandler: APIDataTaskWithRequestCompletionHandler) {
+	internal func searchPhotosByLocation(travelLocation: VirtualTouristTravelLocation, completionHandler: APIDataTaskWithRequestCompletionHandler) {
 		let components = NSURLComponents(string: "https://api.flickr.com/services/rest/")
-		components!.query = FlickrSearchPhotosByLocationQuery(location: location).query
+		components!.query = travelLocation.searchQuery
+		print("\(travelLocation.searchQuery)")
 
 		let URLRequest = NSMutableURLRequest(URL: components!.URL!)
 		URLRequest.HTTPMethod = "GET"

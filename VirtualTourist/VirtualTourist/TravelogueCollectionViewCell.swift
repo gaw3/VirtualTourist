@@ -16,6 +16,9 @@ class TravelogueCollectionViewCell: UICollectionViewCell {
 		static let ReuseID = "TravelogueCollectionViewCell"
 	}
 
+	internal var title:     String?
+	internal var URLString: String?
+
 	// MARK: - Internal Computed Variables
 
 	var taskToCancelIfCellIsReused: NSURLSessionTask? {
