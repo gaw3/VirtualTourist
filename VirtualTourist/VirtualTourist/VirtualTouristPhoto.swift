@@ -25,7 +25,7 @@ final internal class VirtualTouristPhoto: NSManagedObject {
 
 	// MARK: - API
 
-	override internal init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
+	internal override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
 		super.init(entity: entity, insertIntoManagedObjectContext: context)
 	}
 
@@ -35,6 +35,10 @@ final internal class VirtualTouristPhoto: NSManagedObject {
 
 		title          = responseData.title
 		imageURLString = responseData.url_m
+	}
+
+	internal override func prepareForDeletion() {
+		PhotoCache.sharedCache.storeImage(nil, withIdentifier: imageURLString)
 	}
 
 }

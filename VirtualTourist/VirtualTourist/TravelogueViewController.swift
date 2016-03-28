@@ -38,6 +38,7 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 	// MARK: - Private Stored Variables
 
 	private var travelLocation: VirtualTouristTravelLocation? = nil
+	private var selectedPhotos = [NSIndexPath]()
 
 	// MARK: - Private Computed Variables
 
@@ -94,17 +95,34 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 
 	@IBAction func toolbarButtonWasTapped(sender: UIBarButtonItem) {
 
-		for vtPhoto in frc.fetchedObjects as! [VirtualTouristPhoto] {
-			print("deleting from cache & core data:  \(vtPhoto.imageURLString)")
-			PhotoCache.sharedCache.storeImage(nil, withIdentifier: vtPhoto.imageURLString)
-			CoreDataManager.sharedManager.moc.deleteObject(vtPhoto)
+		if toolbarButton.title == "New Collection" {
+
+			for vtPhoto in frc.fetchedObjects as! [VirtualTouristPhoto] {
+				print("deleting from cache & core data:  \(vtPhoto.imageURLString)")
+				CoreDataManager.sharedManager.moc.deleteObject(vtPhoto)
+			}
+
+			CoreDataManager.sharedManager.saveContext()
+			collectionView!.reloadData()
+			flickrClient.searchPhotosByLocation(travelLocation!, completionHandler: searchPhotosByLocationCompletionHandler)
+		} else {
+			let vtPhotos = frc.fetchedObjects as! [VirtualTouristPhoto]
+
+			for photoIndex in selectedPhotos {
+				CoreDataManager.sharedManager.moc.deleteObject(vtPhotos[photoIndex.row])
+			}
+
+			CoreDataManager.sharedManager.saveContext()
+
+			collectionView!.performBatchUpdates({() -> Void in
+					self.collectionView!.deleteItemsAtIndexPaths(self.selectedPhotos)
+				}, completion: nil)
+
+			toolbarButton.title = "New Collection"
+			selectedPhotos.removeAll()
 		}
 
-		CoreDataManager.sharedManager.saveContext()
-		collectionView!.reloadData()
-		flickrClient.searchPhotosByLocation(travelLocation!, completionHandler: searchPhotosByLocationCompletionHandler)
 	}
-
 
 	// MARK: - NSFetchedResultsControllerDelegate
 
@@ -137,25 +155,6 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 		return cell
 	}
 
-	func configureCell(cell: TravelogueCollectionViewCell, atIndexPath: NSIndexPath) {
-		let vtPhoto = frc.objectAtIndexPath(atIndexPath) as! VirtualTouristPhoto
-
-		cell.backgroundView  = nil
-		cell.backgroundColor = UIColor.blueColor()
-		cell.activityIndicator?.startAnimating()
-
-		if let cachedImage = PhotoCache.sharedCache.imageWithIdentifier(vtPhoto.imageURLString) {
-			print("retrieving from cache:  \(vtPhoto.imageURLString)")
-			cell.backgroundView = UIImageView(image: cachedImage)
-			cell.activityIndicator?.stopAnimating()
-			return
-		}
-
-		print("downloading from Flickr:  \(vtPhoto.imageURLString)")
-		let downloadTask = FlickrAPIClient.sharedClient.getRemotePhotoWithURLStringTask(vtPhoto.imageURLString, completionHandler: getRemoteImageWithURLStringCompletionHandler(vtPhoto.imageURLString, cellForPhoto: cell))
-		cell.taskToCancelIfCellIsReused = downloadTask
-	}
-
 	override internal func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 		assert(collectionView == self.collectionView, "Unexpected collection view reqesting number of items in section")
 
@@ -174,10 +173,23 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 
 	override internal func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
 		assert(collectionView == self.collectionView, "Unexpected collection view selected an item")
-      print("collView didSelectItemAtIndexPath")
+      print("collView didSelectItemAtIndexPath = \(indexPath)")
+
+		let cell = collectionView.cellForItemAtIndexPath(indexPath) as! TravelogueCollectionViewCell
+
+		if let index = selectedPhotos.indexOf(indexPath) {
+			selectedPhotos.removeAtIndex(index)
+			cell.backgroundView!.alpha = 1.0
+			if selectedPhotos.isEmpty { toolbarButton.title = "New Collection" }
+		} else {
+			selectedPhotos.append(indexPath)
+			cell.backgroundView?.alpha = 0.5
+			toolbarButton.title = "Remove Selected Photos"
+		}
+
 	}
 	
-	// MARK: - Private:  Completion Handlers as Computed Variables
+	// MARK: - Private:  Completion Handlers
 
 	private func getRemoteImageWithURLStringCompletionHandler(URLString: String, cellForPhoto: TravelogueCollectionViewCell) -> APIDataTaskWithRequestCompletionHandler {
 
@@ -247,6 +259,25 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 
 	// MARK: - Private
 
+	private func configureCell(cell: TravelogueCollectionViewCell, atIndexPath: NSIndexPath) {
+		let vtPhoto = frc.objectAtIndexPath(atIndexPath) as! VirtualTouristPhoto
+
+		cell.backgroundView  = nil
+		cell.backgroundColor = UIColor.blueColor()
+		cell.activityIndicator?.startAnimating()
+
+		if let cachedImage = PhotoCache.sharedCache.imageWithIdentifier(vtPhoto.imageURLString) {
+			print("retrieving from cache:  \(vtPhoto.imageURLString)")
+			cell.backgroundView = UIImageView(image: cachedImage)
+			cell.activityIndicator?.stopAnimating()
+			return
+		}
+
+		print("downloading from Flickr:  \(vtPhoto.imageURLString)")
+		let downloadTask = FlickrAPIClient.sharedClient.getRemotePhotoWithURLStringTask(vtPhoto.imageURLString, completionHandler: getRemoteImageWithURLStringCompletionHandler(vtPhoto.imageURLString, cellForPhoto: cell))
+		cell.taskToCancelIfCellIsReused = downloadTask
+	}
+	
 	private func getTravelLocation() -> VirtualTouristTravelLocation? {
 		let fetchRequest = NSFetchRequest(entityName: VirtualTouristTravelLocation.Consts.EntityName)
 
