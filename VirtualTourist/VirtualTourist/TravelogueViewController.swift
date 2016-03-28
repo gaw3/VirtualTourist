@@ -10,7 +10,7 @@ import CoreData
 import MapKit
 import UIKit
 
-final internal class TravelogueViewController: UICollectionViewController, NSFetchedResultsControllerDelegate {
+final internal class TravelogueViewController: UIViewController, NSFetchedResultsControllerDelegate {
 
 	// MARK: - Internal Constants
 
@@ -57,6 +57,8 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 
 	@IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
 	@IBOutlet weak var toolbarButton: UIBarButtonItem!
+	@IBOutlet weak var collectionView: UICollectionView!
+	@IBOutlet weak var mapView: MKMapView!
 
 	// MARK: - View Events
 
@@ -67,6 +69,7 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 
 		if let tl = getTravelLocation() {
 			travelLocation = tl
+			mapView.addAnnotation(travelLocation!.pointAnnotation)
 
 			do {
 				try frc.performFetch()
@@ -124,6 +127,21 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 
 	}
 
+	// MARK: - MKMapViewDelegate
+
+	internal func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+		print("mapView view for Annotation")
+		var tlPinAnnoView = mapView.dequeueReusableAnnotationViewWithIdentifier(TravelLocationPinAnnotationView.UI.ReuseID) as? TravelLocationPinAnnotationView
+
+		if let _ = tlPinAnnoView {
+			tlPinAnnoView!.annotation = annotation as! MKPointAnnotation
+		} else {
+			tlPinAnnoView = TravelLocationPinAnnotationView(annotation: annotation as! MKPointAnnotation)
+		}
+
+		return tlPinAnnoView
+	}
+	
 	// MARK: - NSFetchedResultsControllerDelegate
 
 	func controllerDidChangeContent(controller: NSFetchedResultsController) {
@@ -145,7 +163,7 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 
 	// MARK: - UICollectionViewDataSource
 
-	override internal func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+	internal func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
 		assert(collectionView == self.collectionView, "Unexpected collection view reqesting cell of item at index path")
 		print("collView cellForItemAtIndexPath")
 
@@ -155,7 +173,7 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 		return cell
 	}
 
-	override internal func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+	internal func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 		assert(collectionView == self.collectionView, "Unexpected collection view reqesting number of items in section")
 
 		let sectionInfo = frc.sections![section]
@@ -163,7 +181,7 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 		return sectionInfo.numberOfObjects
 	}
 
-	override internal func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+	internal func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
 		assert(collectionView == self.collectionView, "Unexpected collection view reqesting number of sections in view")
 		print("number of sections in collection = \(frc.sections!.count)")
 		return frc.sections?.count ?? 0
@@ -171,7 +189,7 @@ final internal class TravelogueViewController: UICollectionViewController, NSFet
 
 	// MARK: - UICollectionViewDelegate
 
-	override internal func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+	internal func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
 		assert(collectionView == self.collectionView, "Unexpected collection view selected an item")
       print("collView didSelectItemAtIndexPath = \(indexPath)")
 
