@@ -197,11 +197,11 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 		if let index = selectedPhotos.indexOf(indexPath) {
 			selectedPhotos.removeAtIndex(index)
-			cell.backgroundView!.alpha = 1.0
+			cell.imageView?.alpha = 1.0
 			if selectedPhotos.isEmpty { toolbarButton.title = "New Collection" }
 		} else {
 			selectedPhotos.append(indexPath)
-			cell.backgroundView?.alpha = 0.5
+			cell.imageView?.alpha = 0.3
 			toolbarButton.title = "Remove Selected Photos"
 		}
 
