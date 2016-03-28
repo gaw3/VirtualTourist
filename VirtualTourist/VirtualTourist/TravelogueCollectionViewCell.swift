@@ -35,4 +35,5 @@ class TravelogueCollectionViewCell: UICollectionViewCell {
 	// MARK: - IB Outlets
 
 	@IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+	@IBOutlet weak var imageView:			  UIImageView!
 }

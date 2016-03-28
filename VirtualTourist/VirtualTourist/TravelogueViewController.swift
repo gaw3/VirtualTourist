@@ -229,7 +229,8 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 			dispatch_async(dispatch_get_main_queue(), {
 				cellForPhoto.activityIndicator?.stopAnimating()
-				cellForPhoto.backgroundView = UIImageView(image: downloadedImage)
+				cellForPhoto.imageView?.backgroundColor = UIColor.whiteColor()
+				cellForPhoto.imageView?.image = downloadedImage
 			})
 			
 		}
@@ -280,14 +281,16 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 	private func configureCell(cell: TravelogueCollectionViewCell, atIndexPath: NSIndexPath) {
 		let vtPhoto = frc.objectAtIndexPath(atIndexPath) as! VirtualTouristPhoto
 
-		cell.backgroundView  = nil
-		cell.backgroundColor = UIColor.blueColor()
+		cell.imageView?.image = nil
+		cell.imageView?.backgroundColor = UIColor.blueColor()
 		cell.activityIndicator?.startAnimating()
 
 		if let cachedImage = PhotoCache.sharedCache.imageWithIdentifier(vtPhoto.imageURLString) {
 			print("retrieving from cache:  \(vtPhoto.imageURLString)")
-			cell.backgroundView = UIImageView(image: cachedImage)
+
 			cell.activityIndicator?.stopAnimating()
+			cell.imageView?.backgroundColor = UIColor.whiteColor()
+			cell.imageView?.image = cachedImage
 			return
 		}
 
@@ -316,7 +319,6 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 	}
 
 	private func initCollectionView() {
-		collectionView?.registerClass(TravelogueCollectionViewCell.self, forCellWithReuseIdentifier: TravelogueCollectionViewCell.UI.ReuseID)
 		collectionView?.backgroundColor = UIColor.whiteColor()
 
 		flowLayout.minimumInteritemSpacing = Layout.MinimumInteritemSpacing
