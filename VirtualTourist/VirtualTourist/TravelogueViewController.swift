@@ -179,7 +179,7 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 		let sectionInfo = frc.sections![section]
 		print("number of items in section = \(sectionInfo.numberOfObjects)")
 
-		collectionView.hidden = (sectionInfo.numberOfObjects == 0)
+//		collectionView.hidden = (sectionInfo.numberOfObjects == 0)
 		return sectionInfo.numberOfObjects
 	}
 
@@ -329,7 +329,17 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 	}
 
 	private func initCollectionView() {
-		collectionView?.backgroundColor = UIColor.whiteColor()
+//		collectionView?.backgroundColor = UIColor.whiteColor()
+		collectionView?.backgroundView = UIView()
+		collectionView?.backgroundView?.backgroundColor = UIColor.whiteColor()
+		collectionView?.backgroundView?.autoresizesSubviews = true
+      let label = UILabel()
+		label.text = "This pin has no images."
+		label.center = (collectionView?.backgroundView?.center)!
+
+		collectionView?.backgroundView?.addSubview(label)
+
+
 
 		flowLayout.minimumInteritemSpacing = Layout.MinimumInteritemSpacing
 		flowLayout.minimumLineSpacing      = Layout.MinimumInteritemSpacing
