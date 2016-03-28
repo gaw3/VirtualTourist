@@ -112,7 +112,16 @@
                                     <outlet property="delegate" destination="GQD-ek-xac" id="Hpd-T7-TTC"/>
                                 </connections>
                             </mapView>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="1Rg-Cr-rgV">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This pin has no images." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TIu-Ax-xA5">
+                                <rect key="frame" x="-42" y="-21" width="42" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                                <variation key="heightClass=regular-widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="110" y="390" width="180" height="21"/>
+                                </variation>
+                            </label>
+                            <collectionView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="1Rg-Cr-rgV">
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="HQk-Go-c0X">
                                     <size key="itemSize" width="130" height="134"/>
@@ -198,6 +207,7 @@
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="szf-nI-CCa"/>
+                                <exclude reference="TIu-Ax-xA5"/>
                                 <exclude reference="1Rg-Cr-rgV"/>
                             </mask>
                             <mask key="constraints">
@@ -219,6 +229,7 @@
                         <variation key="heightClass=regular-widthClass=compact">
                             <mask key="subviews">
                                 <include reference="szf-nI-CCa"/>
+                                <include reference="TIu-Ax-xA5"/>
                                 <include reference="1Rg-Cr-rgV"/>
                             </mask>
                             <mask key="constraints">

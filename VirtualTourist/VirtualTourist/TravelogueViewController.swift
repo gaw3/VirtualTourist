@@ -178,6 +178,8 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 		let sectionInfo = frc.sections![section]
 		print("number of items in section = \(sectionInfo.numberOfObjects)")
+
+		collectionView.hidden = (sectionInfo.numberOfObjects == 0)
 		return sectionInfo.numberOfObjects
 	}
 
@@ -259,13 +261,21 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 			}
 
 			dispatch_async(dispatch_get_main_queue(), {
-				self.travelLocation?.page    = responseData.page
 				self.travelLocation?.perPage = responseData.perpage
 
-				for photoResponseData in responseData.photoArray {
-					print("saving vtPhoto in core data = \(photoResponseData.url_m)")
-					let photo = VirtualTouristPhoto(responseData: photoResponseData, context: CoreDataManager.sharedManager.moc)
-					photo.location = self.travelLocation!
+				if responseData.photoArray.isEmpty {
+					self.travelLocation?.page  = 0
+//					self.collectionView.hidden = true
+				} else {
+					self.travelLocation?.page  = responseData.page
+//					self.collectionView.hidden = false
+
+					for photoResponseData in responseData.photoArray {
+						print("saving vtPhoto in core data = \(photoResponseData.url_m)")
+						let photo = VirtualTouristPhoto(responseData: photoResponseData, context: CoreDataManager.sharedManager.moc)
+						photo.location = self.travelLocation!
+					}
+
 				}
 
 				CoreDataManager.sharedManager.saveContext()
