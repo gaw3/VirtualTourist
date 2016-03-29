@@ -17,13 +17,17 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 
 	private struct Alert {
 
-//		struct Message {
-//			static let NoPlacemarks = "Did not receive any placemarks"
-//		}
+		struct Message {
+//			static let NoPlacemarks      = "Did not receive any placemarks"
+			static let TapDoneButton     = "Tap the Done button when finished"
+			static let WhileInDeleteMode = "While in Pin Deletion Mode"
+		}
 
 		struct Title {
-//			static let BadGeocode = "Unable to geocode location"
-			static let BadFetch   = "Unable to access app database"
+//			static let BadGeocode    = "Unable to geocode location"
+			static let BadFetch      = "Unable to access app database"
+			static let TapPins       = "Tap Pins to Delete"
+			static let CannotDropPin = "Cannot Drop Pin"
 		}
 
 	}
@@ -37,12 +41,6 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 
 	private var inPinDeletionMode = false
 
-	// MARK: - Private Computed Variables
-
-//	private var cdMgr: CoreDataManager {
-//		return CoreDataManager.sharedManager
-//	}
-//
 	lazy private var frc: NSFetchedResultsController = {
 		let fetchRequest = NSFetchRequest(entityName: VirtualTouristTravelLocation.Consts.EntityName)
 		fetchRequest.sortDescriptors = []
@@ -83,7 +81,10 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 
 	@IBAction internal func handleLongPress(gesture: UIGestureRecognizer) {
 
-		if inPinDeletionMode { return }
+		if inPinDeletionMode {
+//			presentAlert(Alert.Title.CannotDropPin, message: Alert.Message.WhileInDeleteMode)
+			return
+		}
 
 		if gesture.state == .Began {
 			let coord = mapView.convertPoint(gesture.locationInView(mapView), toCoordinateFromView: mapView)
@@ -101,6 +102,7 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 	internal func trashButtonWasTapped() {
 		navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: SEL.DoneButtonTapped)
 		inPinDeletionMode = true
+		presentAlert(Alert.Title.TapPins, message: Alert.Message.TapDoneButton)
 	}
 
 	// MARK: - NSFetchedResultsControllerDelegate
