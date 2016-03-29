@@ -9,7 +9,8 @@
         <!--Travel Locations Navigation Controller-->
         <scene sceneID="rmy-cn-jvZ">
             <objects>
-                <navigationController title="Travel Locations Navigation Controller" toolbarHidden="NO" id="tjl-oY-Z1E" sceneMemberID="viewController">
+                <navigationController title="Travel Locations Navigation Controller" id="tjl-oY-Z1E" sceneMemberID="viewController">
+                    <nil key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="rqV-GS-ZW6">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -48,6 +49,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="kfA-Xw-rON" secondAttribute="trailing" id="P32-Pw-yoX"/>
+                            <constraint firstItem="GPm-2j-qAO" firstAttribute="top" secondItem="kfA-Xw-rON" secondAttribute="bottom" id="PeP-LA-Ce3"/>
                             <constraint firstItem="kfA-Xw-rON" firstAttribute="top" secondItem="bUu-Om-MgM" secondAttribute="bottom" id="ZcO-xm-Gng"/>
                             <constraint firstItem="GPm-2j-qAO" firstAttribute="top" secondItem="kfA-Xw-rON" secondAttribute="bottom" id="szB-Nz-hP3"/>
                             <constraint firstItem="kfA-Xw-rON" firstAttribute="leading" secondItem="GMr-sm-m19" secondAttribute="leading" id="tx2-Ou-etO"/>
@@ -57,10 +59,11 @@
                                 <exclude reference="kfA-Xw-rON"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="szB-Nz-hP3"/>
                                 <exclude reference="P32-Pw-yoX"/>
                                 <exclude reference="ZcO-xm-Gng"/>
                                 <exclude reference="tx2-Ou-etO"/>
+                                <exclude reference="PeP-LA-Ce3"/>
+                                <exclude reference="szB-Nz-hP3"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
@@ -68,16 +71,18 @@
                                 <include reference="kfA-Xw-rON"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="szB-Nz-hP3"/>
                                 <include reference="P32-Pw-yoX"/>
                                 <include reference="ZcO-xm-Gng"/>
                                 <include reference="tx2-Ou-etO"/>
+                                <include reference="PeP-LA-Ce3"/>
+                                <include reference="szB-Nz-hP3"/>
                             </mask>
                         </variation>
                     </view>
                     <navigationItem key="navigationItem" title="Travel Locations" id="BLp-i2-wds">
                         <barButtonItem key="backBarButtonItem" title="OK" id="zSO-Sr-bph"/>
                     </navigationItem>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="longPress" destination="4e1-5Q-GtF" id="hXj-jQ-KpE"/>
                         <outlet property="mapView" destination="kfA-Xw-rON" id="diY-zT-S6K"/>
@@ -248,6 +253,7 @@
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="6Cv-Rg-RG1"/>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="Travelogue" id="Z3M-h5-nUK"/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics" translucent="NO"/>
                     <connections>
                         <outlet property="collectionView" destination="1Rg-Cr-rgV" id="gtP-gX-bWd"/>
                         <outlet property="flowLayout" destination="HQk-Go-c0X" id="c02-uX-NK7"/>
