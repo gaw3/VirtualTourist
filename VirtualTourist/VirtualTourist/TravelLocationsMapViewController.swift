@@ -81,15 +81,16 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 
 	@IBAction internal func handleLongPress(gesture: UIGestureRecognizer) {
 
-		if inPinDeletionMode {
-//			presentAlert(Alert.Title.CannotDropPin, message: Alert.Message.WhileInDeleteMode)
-			return
-		}
-
 		if gesture.state == .Began {
-			let coord = mapView.convertPoint(gesture.locationInView(mapView), toCoordinateFromView: mapView)
-			_ = VirtualTouristTravelLocation(coordinate: coord, context: CoreDataManager.sharedManager.moc)
-			CoreDataManager.sharedManager.saveContext()
+
+			if inPinDeletionMode {
+				presentAlert(Alert.Title.CannotDropPin, message: Alert.Message.WhileInDeleteMode)
+			} else {
+				let coord = mapView.convertPoint(gesture.locationInView(mapView), toCoordinateFromView: mapView)
+				_ = VirtualTouristTravelLocation(coordinate: coord, context: CoreDataManager.sharedManager.moc)
+				CoreDataManager.sharedManager.saveContext()
+			}
+			
 		}
 
 	}
