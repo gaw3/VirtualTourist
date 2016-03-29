@@ -4,6 +4,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
     </dependencies>
     <scenes>
         <!--Travel Locations Navigation Controller-->
@@ -59,11 +60,11 @@
                                 <exclude reference="kfA-Xw-rON"/>
                             </mask>
                             <mask key="constraints">
+                                <exclude reference="PeP-LA-Ce3"/>
+                                <exclude reference="szB-Nz-hP3"/>
                                 <exclude reference="P32-Pw-yoX"/>
                                 <exclude reference="ZcO-xm-Gng"/>
                                 <exclude reference="tx2-Ou-etO"/>
-                                <exclude reference="PeP-LA-Ce3"/>
-                                <exclude reference="szB-Nz-hP3"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
@@ -71,11 +72,11 @@
                                 <include reference="kfA-Xw-rON"/>
                             </mask>
                             <mask key="constraints">
+                                <include reference="PeP-LA-Ce3"/>
+                                <include reference="szB-Nz-hP3"/>
                                 <include reference="P32-Pw-yoX"/>
                                 <include reference="ZcO-xm-Gng"/>
                                 <include reference="tx2-Ou-etO"/>
-                                <include reference="PeP-LA-Ce3"/>
-                                <include reference="szB-Nz-hP3"/>
                             </mask>
                         </variation>
                     </view>
@@ -108,7 +109,7 @@
                         <viewControllerLayoutGuide type="bottom" id="yn0-z0-BDk"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8VR-d1-b1v">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="szf-nI-CCa">
@@ -243,22 +244,27 @@
                             </mask>
                         </variation>
                     </view>
-                    <toolbarItems>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="gm4-2w-Qh9"/>
-                        <barButtonItem title="New Collection" id="6V9-Wz-DVw">
-                            <connections>
-                                <action selector="toolbarButtonWasTapped:" destination="GQD-ek-xac" id="sxM-X0-oHi"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="6Cv-Rg-RG1"/>
-                    </toolbarItems>
-                    <navigationItem key="navigationItem" title="Travelogue" id="Z3M-h5-nUK"/>
-                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics" translucent="NO"/>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" title="Travelogue" id="Z3M-h5-nUK">
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="refresh" id="T41-IK-Mun">
+                                <connections>
+                                    <action selector="refreshButtonWasTapped:" destination="GQD-ek-xac" id="ImH-yH-Ymd"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem systemItem="trash" id="6Jb-eK-WOm">
+                                <connections>
+                                    <action selector="trashButtonWasTapped:" destination="GQD-ek-xac" id="lxc-yW-vWI"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
+                    </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="1Rg-Cr-rgV" id="gtP-gX-bWd"/>
                         <outlet property="flowLayout" destination="HQk-Go-c0X" id="c02-uX-NK7"/>
                         <outlet property="mapView" destination="szf-nI-CCa" id="JHU-k9-CXe"/>
-                        <outlet property="toolbarButton" destination="6V9-Wz-DVw" id="o4B-KP-aIl"/>
+                        <outlet property="refreshButton" destination="T41-IK-Mun" id="Vh9-lF-sgZ"/>
+                        <outlet property="trashButton" destination="6Jb-eK-WOm" id="9es-dG-36o"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mls-x3-NaX" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct FlickrPhotosResponseData {
+internal struct FlickrPhotosResponseData {
 
 	// MARK: - Private Stored Variables
 
@@ -18,19 +18,19 @@ struct FlickrPhotosResponseData {
 	// MARK: - Internal Computed Variables
 
 	internal var isStatusOK: Bool {
-		return _stat == "ok"
+		return _stat == FlickrAPIClient.API.StatusValueOK
 	}
 
 	internal var page: Int {
-		return _photos["page"] as! Int
+		return _photos[FlickrAPIClient.API.PageKey] as! Int
 	}
 
 	internal var perpage: Int {
-		return _photos["perpage"] as! Int
+		return _photos[FlickrAPIClient.API.PerPageKey] as! Int
 	}
 
 	internal var photoArray: [FlickrPhotoResponseData] {
-		let photoJSONDict = _photos["photo"] as! [JSONDictionary]
+		let photoJSONDict = _photos[FlickrAPIClient.API.PhotoKey] as! [JSONDictionary]
 		var flickrPhotos  = [FlickrPhotoResponseData]()
 
 		for json in photoJSONDict {
@@ -43,10 +43,10 @@ struct FlickrPhotosResponseData {
 	// MARK: - API
 
 	internal init(responseData: JSONDictionary) {
-		 _stat = responseData["stat"] as!  String
+		 _stat = responseData[FlickrAPIClient.API.StatusKey] as! String
 
-		if _stat == "ok" {
-			_photos = responseData["photos"] as! JSONDictionary
+		if _stat == FlickrAPIClient.API.StatusValueOK {
+			_photos = responseData[FlickrAPIClient.API.PhotosKey] as! JSONDictionary
 		} else {
 			_photos = [:]
 		}

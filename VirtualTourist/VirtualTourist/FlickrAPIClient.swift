@@ -17,15 +17,34 @@ final internal class FlickrAPIClient: NSObject {
 		return _sharedClient
 	}
 
+	// MARK: - Internal Constants
+
+	internal struct API {
+		static let PageKey       = "page"
+		static let PerPageKey    = "perpage"
+		static let PhotoKey      = "photo"
+		static let PhotosKey     = "photos"
+		static let StatusKey     = "stat"
+		static let StatusValueOK = "ok"
+		static let TitleKey      = "title"
+		static let URLKey        = "url_m"
+	}
+
+	// MARK: - Private Constants
+
+	private struct HTTP {
+		static let GETMethod       = "GET"
+		static let RESTServicesURL = "https://api.flickr.com/services/rest/"
+	}
+
 	// MARK: - API
 
 	internal func searchPhotosByLocation(travelLocation: VirtualTouristTravelLocation, completionHandler: APIDataTaskWithRequestCompletionHandler) {
-		let components = NSURLComponents(string: "https://api.flickr.com/services/rest/")
+		let components = NSURLComponents(string: HTTP.RESTServicesURL)
 		components!.query = travelLocation.searchQuery
-		print("\(travelLocation.searchQuery)")
 
 		let URLRequest = NSMutableURLRequest(URL: components!.URL!)
-		URLRequest.HTTPMethod = "GET"
+		URLRequest.HTTPMethod = HTTP.GETMethod
 
 		let dataTaskWithRequest = APIDataTaskWithRequest(URLRequest: URLRequest, completionHandler: completionHandler)
 		dataTaskWithRequest.resume()
@@ -34,10 +53,9 @@ final internal class FlickrAPIClient: NSObject {
 	internal func getRemotePhotoWithURLStringTask(URLString: String, completionHandler: APIDataTaskWithRequestCompletionHandler) -> NSURLSessionTask {
 		let components = NSURLComponents(string: URLString)
 		let URLRequest = NSMutableURLRequest(URL: components!.URL!)
-		URLRequest.HTTPMethod = "GET"
+		URLRequest.HTTPMethod = HTTP.GETMethod
 
 		let dataTaskWithRequest = APIDataTaskWithRequest(URLRequest: URLRequest, completionHandler: completionHandler)
-//		dataTaskWithRequest.resume()
 		return dataTaskWithRequest.getImageDownloadTask()
 	}
 

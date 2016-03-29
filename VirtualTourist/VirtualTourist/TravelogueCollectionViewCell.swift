@@ -8,13 +8,15 @@
 
 import UIKit
 
-class TravelogueCollectionViewCell: UICollectionViewCell {
+final internal class TravelogueCollectionViewCell: UICollectionViewCell {
 
 	// MARK: - Internal Constants
 
 	internal struct UI {
 		static let ReuseID = "TravelogueCollectionViewCell"
 	}
+
+	// MARK: - Internal Stored Variables
 
 	internal var title:     String?
 	internal var URLString: String?

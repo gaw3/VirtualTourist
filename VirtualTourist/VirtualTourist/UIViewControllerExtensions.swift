@@ -19,17 +19,9 @@ extension UIViewController {
 
 	// MARK: - Internal Computed Variables
 
-	internal var cdMgr: CoreDataManager {
-		return CoreDataManager.sharedManager
-	}
-
 	internal var flickrClient: FlickrAPIClient {
 		return FlickrAPIClient.sharedClient
 	}
-
-//	internal var moc: NSManagedObjectContext {
-//      return CoreDataManager.sharedManager.moc
-//	}
 
 	internal var nai: NetworkActivityIndicatorManager {
 		return NetworkActivityIndicatorManager.sharedManager

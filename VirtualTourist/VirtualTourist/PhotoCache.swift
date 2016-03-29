@@ -11,17 +11,25 @@ import UIKit
 
 private let _sharedCache = PhotoCache()
 
-class PhotoCache : NSObject {
+final internal class PhotoCache : NSObject {
 
 	class internal var sharedCache: PhotoCache {
 		return _sharedCache
 	}
 
+	// MARK: - Private Stored Variables
+
 	private var inMemoryCache = NSCache()
 
-	// MARK: - Retreiving images
+	// MARK: - Private Computed Variables
 
-	func imageWithIdentifier(identifier: String?) -> UIImage? {
+	private var fileMgr: NSFileManager {
+		return NSFileManager.defaultManager()
+	}
+
+	// MARK: - API
+
+	internal func imageWithIdentifier(identifier: String?) -> UIImage? {
 
 		// If the identifier is nil, or empty, return nil
 		if identifier == nil || identifier! == "" {
@@ -43,9 +51,7 @@ class PhotoCache : NSObject {
 		return nil
 	}
 
-	// MARK: - Saving images
-
-	func storeImage(image: UIImage?, withIdentifier identifier: String) {
+	internal func storeImage(image: UIImage?, withIdentifier identifier: String) {
 		let path = pathForIdentifier(identifier)
 
 		// If the image is nil, remove images from the cache
@@ -53,7 +59,7 @@ class PhotoCache : NSObject {
 			inMemoryCache.removeObjectForKey(path)
 
 			do {
-				try NSFileManager.defaultManager().removeItemAtPath(path)
+				try fileMgr.removeItemAtPath(path)
 			} catch _ {}
 
 			return
@@ -67,10 +73,10 @@ class PhotoCache : NSObject {
 		data.writeToFile(path, atomically: true)
 	}
 
-	// MARK: - Helper
+	// MARK: - Private
 
-	func pathForIdentifier(identifier: String) -> String {
-		let documentsDirectoryURL: NSURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
+	private func pathForIdentifier(identifier: String) -> String {
+		let documentsDirectoryURL: NSURL = fileMgr.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
 		let fullURL = documentsDirectoryURL.URLByAppendingPathComponent(identifier)
 
 		return fullURL.path!

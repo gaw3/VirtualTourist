@@ -7,6 +7,8 @@
 //
 
 import CoreData
+import CoreGraphics
+import CoreLocation
 import MapKit
 import UIKit
 
@@ -20,14 +22,28 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 	// MARK: - Private Constants
 
+	private struct Alert {
+
+		struct Message {
+			static let NoJSONData = "JSON data unavailable"
+		}
+
+		struct Title {
+			static let BadFetch = "Unable to access app database"
+         static let NoPhotos = "Unable to obtain photos"
+		}
+
+	}
+
+	private struct Alpha {
+		static let Full:                   CGFloat = 1.0
+		static let ReducedForSelectedCell: CGFloat = 0.3
+	}
+
 	private struct Layout {
 		static let NumberOfCellsAcrossInPortrait:  CGFloat = 3.0
 		static let NumberOfCellsAcrossInLandscape: CGFloat = 5.0
 		static let MinimumInteritemSpacing:        CGFloat = 3.0
-	}
-
-	private struct Predicate {
-		static let ByLatLong = "latitude == %lf and longitude == %lf"
 	}
 
 	// MARK: - Internal Stored Variables
@@ -44,8 +60,8 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 	lazy private var frc: NSFetchedResultsController = {
 		let photosFetchRequest = NSFetchRequest(entityName: VirtualTouristPhoto.Consts.EntityName)
-		photosFetchRequest.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-		photosFetchRequest.predicate = NSPredicate(format: "location == %@", self.travelLocation!)
+		photosFetchRequest.sortDescriptors = [NSSortDescriptor(key: CoreDataManager.SortKey.Title, ascending: true)]
+		photosFetchRequest.predicate = NSPredicate(format: CoreDataManager.Predicate.PhotosByLocation, self.travelLocation!)
 
 		let frc = NSFetchedResultsController(fetchRequest: photosFetchRequest, managedObjectContext: CoreDataManager.sharedManager.moc, sectionNameKeyPath: nil, cacheName: nil)
 		frc.delegate = self
@@ -53,22 +69,31 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 		return frc
 	}()
 
+	private var photoCache: PhotoCache {
+		return PhotoCache.sharedCache
+	}
+
 	// MARK: - IB Outlets
 
-	@IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
-	@IBOutlet weak var toolbarButton: UIBarButtonItem!
 	@IBOutlet weak var collectionView: UICollectionView!
-	@IBOutlet weak var mapView: MKMapView!
+	@IBOutlet weak var flowLayout:     UICollectionViewFlowLayout!
+	@IBOutlet weak var mapView:        MKMapView!
+	@IBOutlet weak var refreshButton:  UIBarButtonItem!
+	@IBOutlet weak var trashButton:    UIBarButtonItem!
 
 	// MARK: - View Events
 
 	override internal func viewDidLoad() {
 		super.viewDidLoad()
 
+		refreshButton.enabled = true
+		trashButton.enabled   = false
+
 		initCollectionView()
 
-		if let tl = getTravelLocation() {
-			travelLocation = tl
+		travelLocation = getTravelLocation()
+
+		if travelLocation != nil {
 			mapView.addAnnotation(travelLocation!.pointAnnotation)
 
 			do {
@@ -77,8 +102,9 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 				if frc.fetchedObjects!.isEmpty {
 					flickrClient.searchPhotosByLocation(travelLocation!, completionHandler: searchPhotosByLocationCompletionHandler)
 				}
-			} catch {
-				print("Error performing fetch")
+
+			} catch let error as NSError {
+				self.presentAlert(Alert.Title.BadFetch, message: error.localizedDescription)
 			}
 
 		}
@@ -96,41 +122,17 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 	// MARK: - IB Outlets
 
-	@IBAction func toolbarButtonWasTapped(sender: UIBarButtonItem) {
+	@IBAction func refreshButtonWasTapped(sender: UIBarButtonItem) {
+		getNewCollection()
+	}
 
-		if toolbarButton.title == "New Collection" {
-
-			for vtPhoto in frc.fetchedObjects as! [VirtualTouristPhoto] {
-				print("deleting from cache & core data:  \(vtPhoto.imageURLString)")
-				CoreDataManager.sharedManager.moc.deleteObject(vtPhoto)
-			}
-
-			CoreDataManager.sharedManager.saveContext()
-			collectionView!.reloadData()
-			flickrClient.searchPhotosByLocation(travelLocation!, completionHandler: searchPhotosByLocationCompletionHandler)
-		} else {
-			let vtPhotos = frc.fetchedObjects as! [VirtualTouristPhoto]
-
-			for photoIndex in selectedPhotos {
-				CoreDataManager.sharedManager.moc.deleteObject(vtPhotos[photoIndex.row])
-			}
-
-			CoreDataManager.sharedManager.saveContext()
-
-			collectionView!.performBatchUpdates({() -> Void in
-					self.collectionView!.deleteItemsAtIndexPaths(self.selectedPhotos)
-				}, completion: nil)
-
-			toolbarButton.title = "New Collection"
-			selectedPhotos.removeAll()
-		}
-
+	@IBAction func trashButtonWasTapped(sender: UIBarButtonItem) {
+		deleteSelectedPhotos()
 	}
 
 	// MARK: - MKMapViewDelegate
 
 	internal func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
-		print("mapView view for Annotation")
 		var tlPinAnnoView = mapView.dequeueReusableAnnotationViewWithIdentifier(TravelLocationPinAnnotationView.UI.ReuseID) as? TravelLocationPinAnnotationView
 
 		if let _ = tlPinAnnoView {
@@ -144,30 +146,29 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 	
 	// MARK: - NSFetchedResultsControllerDelegate
 
-	func controllerDidChangeContent(controller: NSFetchedResultsController) {
-		print("controller DidChangeContent called")
-	}
-
 	func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
-		print("controller didChangeObject called for change type = \(type.rawValue) indexPath = \(indexPath), newIndexPath = \(newIndexPath)")
+		return
 	}
 
 	func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo,
 		atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
-			print("controller didChangeSection called")
+		return
+	}
+
+	func controllerDidChangeContent(controller: NSFetchedResultsController) {
+		return
 	}
 
 	func controllerWillChangeContent(controller: NSFetchedResultsController) {
-		print("controller WillChangeContent called")
+		return
 	}
 
 	// MARK: - UICollectionViewDataSource
 
 	internal func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
 		assert(collectionView == self.collectionView, "Unexpected collection view reqesting cell of item at index path")
-		print("collView cellForItemAtIndexPath")
 
-		let cell = collectionView.dequeueReusableCellWithReuseIdentifier("TravelogueCollectionViewCell", forIndexPath: indexPath) as! TravelogueCollectionViewCell
+		let cell = collectionView.dequeueReusableCellWithReuseIdentifier(TravelogueCollectionViewCell.UI.ReuseID, forIndexPath: indexPath) as! TravelogueCollectionViewCell
 		configureCell(cell, atIndexPath: indexPath)
 
 		return cell
@@ -177,15 +178,13 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 		assert(collectionView == self.collectionView, "Unexpected collection view reqesting number of items in section")
 
 		let sectionInfo = frc.sections![section]
-		print("number of items in section = \(sectionInfo.numberOfObjects)")
-
 //		collectionView.hidden = (sectionInfo.numberOfObjects == 0)
 		return sectionInfo.numberOfObjects
 	}
 
 	internal func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
 		assert(collectionView == self.collectionView, "Unexpected collection view reqesting number of sections in view")
-		print("number of sections in collection = \(frc.sections!.count)")
+
 		return frc.sections?.count ?? 0
 	}
 
@@ -193,18 +192,23 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 	internal func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
 		assert(collectionView == self.collectionView, "Unexpected collection view selected an item")
-      print("collView didSelectItemAtIndexPath = \(indexPath)")
 
 		let cell = collectionView.cellForItemAtIndexPath(indexPath) as! TravelogueCollectionViewCell
 
 		if let index = selectedPhotos.indexOf(indexPath) {
 			selectedPhotos.removeAtIndex(index)
-			cell.imageView?.alpha = 1.0
-			if selectedPhotos.isEmpty { toolbarButton.title = "New Collection" }
+			cell.imageView?.alpha = Alpha.Full
+
+			if selectedPhotos.isEmpty {
+				trashButton.enabled   = false
+				refreshButton.enabled = true
+			}
+
 		} else {
 			selectedPhotos.append(indexPath)
-			cell.imageView?.alpha = 0.3
-			toolbarButton.title = "Remove Selected Photos"
+			cell.imageView?.alpha = Alpha.ReducedForSelectedCell
+			trashButton.enabled   = true
+			refreshButton.enabled = false
 		}
 
 	}
@@ -216,18 +220,17 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 		return { (result, error) -> Void in
 
 			guard error == nil else {
-				self.presentAlert("Unable to obtain photos", message: error!.localizedDescription)
+				self.presentAlert(Alert.Title.NoPhotos, message: error!.localizedDescription)
 				return
 			}
 
 			guard result != nil else {
-				self.presentAlert("Unable to obtain photos", message: "JSON data unavailable")
+				self.presentAlert(Alert.Title.NoPhotos, message: Alert.Message.NoJSONData)
 				return
 			}
 
 			let downloadedImage = result as! UIImage
-			PhotoCache.sharedCache.storeImage(downloadedImage, withIdentifier: URLString)
-			print("storing image in cache:  \(URLString)")
+			self.photoCache.storeImage(downloadedImage, withIdentifier: URLString)
 
 			dispatch_async(dispatch_get_main_queue(), {
 				cellForPhoto.activityIndicator?.stopAnimating()
@@ -244,19 +247,19 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 		return { (result, error) -> Void in
 
 			guard error == nil else {
-				self.presentAlert("Unable to obtain photos", message: error!.localizedDescription)
+				self.presentAlert(Alert.Title.NoPhotos, message: error!.localizedDescription)
 				return
 			}
 
 			guard result != nil else {
-				self.presentAlert("Unable to obtain photos", message: "JSON data unavailable")
+				self.presentAlert(Alert.Title.NoPhotos, message: Alert.Message.NoJSONData)
 				return
 			}
 
 			let responseData = FlickrPhotosResponseData(responseData: result as! JSONDictionary)
 
 			guard responseData.isStatusOK else {
-				self.presentAlert("Unable to obtain photos", message: "JSON data unavailable")
+				self.presentAlert(Alert.Title.NoPhotos, message: Alert.Message.NoJSONData)
             return
 			}
 
@@ -271,7 +274,6 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 //					self.collectionView.hidden = false
 
 					for photoResponseData in responseData.photoArray {
-						print("saving vtPhoto in core data = \(photoResponseData.url_m)")
 						let photo = VirtualTouristPhoto(responseData: photoResponseData, context: CoreDataManager.sharedManager.moc)
 						photo.location = self.travelLocation!
 					}
@@ -291,29 +293,58 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 	private func configureCell(cell: TravelogueCollectionViewCell, atIndexPath: NSIndexPath) {
 		let vtPhoto = frc.objectAtIndexPath(atIndexPath) as! VirtualTouristPhoto
 
-		cell.imageView?.image = nil
+		cell.imageView?.image           = nil
 		cell.imageView?.backgroundColor = UIColor.blueColor()
 		cell.activityIndicator?.startAnimating()
 
-		if let cachedImage = PhotoCache.sharedCache.imageWithIdentifier(vtPhoto.imageURLString) {
-			print("retrieving from cache:  \(vtPhoto.imageURLString)")
-
+		if let cachedImage = photoCache.imageWithIdentifier(vtPhoto.imageURLString) {
 			cell.activityIndicator?.stopAnimating()
 			cell.imageView?.backgroundColor = UIColor.whiteColor()
-			cell.imageView?.image = cachedImage
+			cell.imageView?.image           = cachedImage
+
 			return
 		}
 
-		print("downloading from Flickr:  \(vtPhoto.imageURLString)")
-		let downloadTask = FlickrAPIClient.sharedClient.getRemotePhotoWithURLStringTask(vtPhoto.imageURLString, completionHandler: getRemoteImageWithURLStringCompletionHandler(vtPhoto.imageURLString, cellForPhoto: cell))
+		let downloadTask = flickrClient.getRemotePhotoWithURLStringTask(vtPhoto.imageURLString, completionHandler: getRemoteImageWithURLStringCompletionHandler(vtPhoto.imageURLString, cellForPhoto: cell))
 		cell.taskToCancelIfCellIsReused = downloadTask
 	}
-	
+
+	private func deleteSelectedPhotos() {
+		let vtPhotos = frc.fetchedObjects as! [VirtualTouristPhoto]
+
+		for photoIndex in selectedPhotos {
+			CoreDataManager.sharedManager.moc.deleteObject(vtPhotos[photoIndex.row])
+		}
+
+		CoreDataManager.sharedManager.saveContext()
+
+		collectionView!.performBatchUpdates({() -> Void in
+			self.collectionView!.deleteItemsAtIndexPaths(self.selectedPhotos)
+			}, completion: nil)
+
+		trashButton.enabled   = false
+		refreshButton.enabled = true
+
+
+		selectedPhotos.removeAll()
+	}
+
+	private func getNewCollection() {
+
+		for vtPhoto in frc.fetchedObjects as! [VirtualTouristPhoto] {
+			CoreDataManager.sharedManager.moc.deleteObject(vtPhoto)
+		}
+
+		CoreDataManager.sharedManager.saveContext()
+		collectionView!.reloadData()
+		flickrClient.searchPhotosByLocation(travelLocation!, completionHandler: searchPhotosByLocationCompletionHandler)
+	}
+
 	private func getTravelLocation() -> VirtualTouristTravelLocation? {
 		let fetchRequest = NSFetchRequest(entityName: VirtualTouristTravelLocation.Consts.EntityName)
 
 		fetchRequest.sortDescriptors = []
-		fetchRequest.predicate       = NSPredicate(format: Predicate.ByLatLong, coordinate!.latitude, coordinate!.longitude)
+		fetchRequest.predicate       = NSPredicate(format: CoreDataManager.Predicate.LocationByLatLong, coordinate!.latitude, coordinate!.longitude)
 
 		do {
 			let travelLocations = try CoreDataManager.sharedManager.moc.executeFetchRequest(fetchRequest) as! [VirtualTouristTravelLocation]
@@ -322,22 +353,23 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 			else                        { return nil }
 
 		} catch let error as NSError {
-			print("\(error)")
+			self.presentAlert(Alert.Title.BadFetch, message: error.localizedDescription)
 		}
 
 		return nil
 	}
 
 	private func initCollectionView() {
-//		collectionView?.backgroundColor = UIColor.whiteColor()
-		collectionView?.backgroundView = UIView()
-		collectionView?.backgroundView?.backgroundColor = UIColor.whiteColor()
-		collectionView?.backgroundView?.autoresizesSubviews = true
-      let label = UILabel()
-		label.text = "This pin has no images."
-		label.center = (collectionView?.backgroundView?.center)!
-
-		collectionView?.backgroundView?.addSubview(label)
+		collectionView?.backgroundColor = UIColor.whiteColor()
+		
+//		collectionView?.backgroundView = UIView()
+//		collectionView?.backgroundView?.backgroundColor = UIColor.whiteColor()
+//		collectionView?.backgroundView?.autoresizesSubviews = true
+//      let label = UILabel()
+//		label.text = "This pin has no images."
+//		label.center = (collectionView?.backgroundView?.center)!
+//
+//		collectionView?.backgroundView?.addSubview(label)
 
 
 

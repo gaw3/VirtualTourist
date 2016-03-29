@@ -7,6 +7,7 @@
 //
 
 import CoreData
+import CoreLocation
 import Foundation
 import MapKit
 
@@ -41,11 +42,14 @@ final internal class VirtualTouristTravelLocation: NSManagedObject {
 	}
 
 	internal var searchQuery: String {
-		let lat     = latitude as Double
+		let lat     = latitude  as Double
 		let long    = longitude as Double
 		let newPage = (page as Int) + 1
+      let query   = "api_key=850364777cd6c0359001c9aa67b5b1b4&content_type=1&extras=url_m&format=json&lat=\(lat)&lon=\(long)&method=flickr.photos.search&nojsoncallback=1&page=\(newPage)&per_page=21&safe_search=1"
 
-		return "api_key=850364777cd6c0359001c9aa67b5b1b4&content_type=1&extras=url_m&format=json&lat=\(lat)&lon=\(long)&method=flickr.photos.search&nojsoncallback=1&page=\(newPage)&per_page=21&safe_search=1"
+		print("\(query)")
+
+		return query
 	}
 
 	// MARK: - API
@@ -60,19 +64,6 @@ final internal class VirtualTouristTravelLocation: NSManagedObject {
 
 		latitude  = coordinate.latitude
 		longitude = coordinate.longitude
-	}
-
-	internal init(responseData: FlickrPhotosResponseData, annotation: MKPointAnnotation, context: NSManagedObjectContext) {
-		let entity = NSEntityDescription.entityForName(Consts.EntityName, inManagedObjectContext: context)!
-		super.init(entity: entity, insertIntoManagedObjectContext: context)
-
-		page               = responseData.page
-		perPage            = responseData.perpage
-		
-		annotationTitle    = annotation.title!
-		annotationSubtitle = annotation.subtitle!
-		latitude           = annotation.coordinate.latitude
-		longitude          = annotation.coordinate.longitude
 	}
 
 }

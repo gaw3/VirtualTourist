@@ -9,6 +9,7 @@
 import CoreGraphics
 import Foundation
 import MapKit
+import UIKit
 
 final internal class TravelLocationPinAnnotationView: MKPinAnnotationView {
 

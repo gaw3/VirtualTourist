@@ -19,7 +19,18 @@ final internal class CoreDataManager: NSObject {
 
 	// MARK: - Internal Constants
 
-	struct Consts {
+	internal struct SortKey {
+		static let Title = "title"
+	}
+
+	internal struct Predicate {
+		static let LocationByLatLong = "latitude == %lf and longitude == %lf"
+		static let PhotosByLocation  = "location == %@"
+	}
+	
+	// MARK: - Private Constants
+
+	private struct Consts {
 		static let DBFilename     = "VirtualTourist.sqlite"
 		static let ModelName      = "VirtualTourist"
 		static let ModelExtension = "momd"
