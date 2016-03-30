@@ -11,7 +11,7 @@ import UIKit
 
 private let _sharedCache = PhotoCache()
 
-final internal class PhotoCache : NSObject {
+final internal class PhotoCache {
 
 	class internal var sharedCache: PhotoCache {
 		return _sharedCache
@@ -19,7 +19,7 @@ final internal class PhotoCache : NSObject {
 
 	// MARK: - Private Stored Variables
 
-	private var inMemoryCache = NSCache()
+	private var memoryCache = NSCache()
 
 	// MARK: - Private Computed Variables
 
@@ -29,55 +29,55 @@ final internal class PhotoCache : NSObject {
 
 	// MARK: - API
 
-	internal func imageWithIdentifier(identifier: String?) -> UIImage? {
-
-		// If the identifier is nil, or empty, return nil
-		if identifier == nil || identifier! == "" {
-			return nil
-		}
-
-		let path = pathForIdentifier(identifier!)
+	internal func imageWithCacheID(id: String) -> UIImage? {
 
 		// First try the memory cache
-		if let image = inMemoryCache.objectForKey(path) as? UIImage {
+		if let image = memoryCache.objectForKey(id) as? UIImage {
 			return image
 		}
 
-		// Next Try the hard drive
-		if let data = NSData(contentsOfFile: path) {
+		// Next try the hard drive
+		if let data = NSData(contentsOfFile: pathForIdentifier(id)) {
 			return UIImage(data: data)
 		}
 
 		return nil
 	}
 
-	internal func storeImage(image: UIImage?, withIdentifier identifier: String) {
-		let path = pathForIdentifier(identifier)
+	internal func removeImageWithCacheID(id: String) {
+		memoryCache.removeObjectForKey(id)
 
-		// If the image is nil, remove images from the cache
-		if image == nil {
-			inMemoryCache.removeObjectForKey(path)
+		let path = pathForIdentifier(id)
+
+		if fileMgr.fileExistsAtPath(path) {
 
 			do {
 				try fileMgr.removeItemAtPath(path)
-			} catch _ {}
-
-			return
+			} catch let error as NSError {
+				print("\(error)")
+			}
+			
 		}
 
-		// Otherwise, keep the image in memory
-		inMemoryCache.setObject(image!, forKey: path)
+	}
 
-		// And in documents directory
-		let data = UIImagePNGRepresentation(image!)!
-		data.writeToFile(path, atomically: true)
+	internal func storeImage(image: UIImage, withCacheID id: String) {
+		memoryCache.setObject(image, forKey: id)
+
+		let imageData = UIImagePNGRepresentation(image)!
+		let path      = pathForIdentifier(id)
+
+		if !imageData.writeToFile(path, atomically: true) {
+			print("FAILED adding image to documents = \(path)")
+		}
+
 	}
 
 	// MARK: - Private
 
 	private func pathForIdentifier(identifier: String) -> String {
-		let documentsDirectoryURL: NSURL = fileMgr.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
-		let fullURL = documentsDirectoryURL.URLByAppendingPathComponent(identifier)
+		let documentsDirectoryURL = fileMgr.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
+		let fullURL               = documentsDirectoryURL.URLByAppendingPathComponent(identifier)
 
 		return fullURL.path!
 	}

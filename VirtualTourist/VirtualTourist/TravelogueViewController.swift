@@ -215,7 +215,7 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 	
 	// MARK: - Private:  Completion Handlers
 
-	private func getRemoteImageWithURLStringCompletionHandler(URLString: String, cellForPhoto: TravelogueCollectionViewCell) -> APIDataTaskWithRequestCompletionHandler {
+	private func getRemoteImageCompletionHandler(vtPhoto: VirtualTouristPhoto, cellForPhoto: TravelogueCollectionViewCell) -> APIDataTaskWithRequestCompletionHandler {
 
 		return { (result, error) -> Void in
 
@@ -230,14 +230,14 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 			}
 
 			let downloadedImage = result as! UIImage
-			self.photoCache.storeImage(downloadedImage, withIdentifier: URLString)
+			self.photoCache.storeImage(downloadedImage, withCacheID: vtPhoto.fileName)
 
 			dispatch_async(dispatch_get_main_queue(), {
 				cellForPhoto.activityIndicator?.stopAnimating()
 				cellForPhoto.imageView?.backgroundColor = UIColor.whiteColor()
 				cellForPhoto.imageView?.image = downloadedImage
 			})
-			
+
 		}
 
 	}
@@ -297,15 +297,14 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 		cell.imageView?.backgroundColor = UIColor.blueColor()
 		cell.activityIndicator?.startAnimating()
 
-		if let cachedImage = photoCache.imageWithIdentifier(vtPhoto.imageURLString) {
+		if let cachedImage = photoCache.imageWithCacheID(vtPhoto.fileName) {
 			cell.activityIndicator?.stopAnimating()
 			cell.imageView?.backgroundColor = UIColor.whiteColor()
 			cell.imageView?.image           = cachedImage
-
 			return
 		}
 
-		let downloadTask = flickrClient.getRemotePhotoWithURLStringTask(vtPhoto.imageURLString, completionHandler: getRemoteImageWithURLStringCompletionHandler(vtPhoto.imageURLString, cellForPhoto: cell))
+		let downloadTask = flickrClient.getRemotePhoto(vtPhoto, completionHandler: getRemoteImageCompletionHandler(vtPhoto, cellForPhoto: cell))
 		cell.taskToCancelIfCellIsReused = downloadTask
 	}
 
@@ -324,8 +323,7 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 		trashButton.enabled   = false
 		refreshButton.enabled = true
-
-
+		
 		selectedPhotos.removeAll()
 	}
 

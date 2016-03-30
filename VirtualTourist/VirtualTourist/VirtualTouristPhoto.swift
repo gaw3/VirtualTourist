@@ -23,6 +23,10 @@ final internal class VirtualTouristPhoto: NSManagedObject {
 		static let EntityName = "VirtualTouristPhoto"
 	}
 
+	internal var fileName: String {
+		return imageURLString.componentsSeparatedByString("/").last!
+	}
+
 	// MARK: - API
 
 	internal override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
@@ -38,7 +42,7 @@ final internal class VirtualTouristPhoto: NSManagedObject {
 	}
 
 	internal override func prepareForDeletion() {
-		PhotoCache.sharedCache.storeImage(nil, withIdentifier: imageURLString)
+		PhotoCache.sharedCache.removeImageWithCacheID(fileName)
 	}
 
 }

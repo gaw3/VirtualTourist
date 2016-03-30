@@ -47,8 +47,6 @@ final internal class VirtualTouristTravelLocation: NSManagedObject {
 		let newPage = (page as Int) + 1
       let query   = "api_key=850364777cd6c0359001c9aa67b5b1b4&content_type=1&extras=url_m&format=json&lat=\(lat)&lon=\(long)&method=flickr.photos.search&nojsoncallback=1&page=\(newPage)&per_page=21&safe_search=1"
 
-		print("\(query)")
-
 		return query
 	}
 
