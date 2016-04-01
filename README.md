@@ -1,6 +1,6 @@
 # ![App Icon](./Paperwork/READMEFiles/VirtualTourist_80.png)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VirtualTourist
 
-VirtualTourist allows ...
+VirtualTourist allows the user to drop a pin on a map, and then download photos from Flickr that are tagged with this location.  The photos and their association with the location of the pin are persisted.  
 
 ## Project
 
@@ -10,11 +10,12 @@ Program.  The following list contains pertinent course documents:
 * [Udacity Grading Rubric](./Paperwork/Udacity/UdacityGradingRubric.pdf)  
 * [GitHub Swift Style Guide](./Paperwork/Udacity/GitHubSwiftStyleGuide.pdf)  
 * [Udacity Git Commit Message Style Guide](./Paperwork/Udacity/UdacityGitCommitMessageStyleGuide.pdf)  
+* [Udacity Project & Code Reviews](https://review.udacity.com/#!/reviews/125674)<br/><br/>
 
 
-|               | Currently                  |
+|               | Project Submission         |
 | :----------   | :-------------             |
-| Grade:        |                            |
+| Grade:        | ***Meets Expectations***   |
 | App Version:  | In Work                    |
 | Environment:  | Xcode 7.3 / iOS 9.3        |
 | Devices:      | iPhone Only                |
@@ -22,6 +23,8 @@ Program.  The following list contains pertinent course documents:
 
 
 ## Design
+
+In work...
 
 ## 3rd-Party
 
