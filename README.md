@@ -16,7 +16,7 @@ Program.  The following list contains pertinent course documents:
 |               | Project Submission         |
 | :----------   | :-------------             |
 | Grade:        | ***Meets Expectations***   |
-| App Version:  | In Work                    |
+| App Version:  | 1.0                        |
 | Environment:  | Xcode 7.3 / iOS 9.3        |
 | Devices:      | iPhone Only                |
 | Orientations: | Portrait Only              |
