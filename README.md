@@ -58,7 +58,7 @@ This view consists of a map segment with a pin dropped at the travel location an
 
 * Tap the **< OK** button in the navigation bar at any time to return to the **Travel Locations View**.
 * Tap the **Refresh** button in the navigation bar in order to download a new group of images from Flickr.
-  - 21 images are requested;  however, any number ⋲ [0, 21] of images returned is valid.</br>
+  - 21 images are requested;  however, any number ⋲ [0, 21] of images returned is valid.</br></br>
 * If a needed image exists in the persistence framework, it is loaded straightaway.
 * Otherwise, the needed image is downloaded from Flickr & added to the persistence framework
 * When a cell is waiting for its assigned image to download, the cell is blue with an animating white activity indicator in the center.
