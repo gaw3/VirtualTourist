@@ -22,6 +22,10 @@ VirtualTourist is Portfolio Project #4 of the Udacity iOS Developer Nanodegree P
 
 ## Design
 
+### Persistence Framework
+
+
+
 ### Travel Locations View
 
 TABLE 1 - Travel Locations View 
@@ -36,11 +40,11 @@ TABLE 2 - Navigation Bar Buttons
 | :---:   | :---: |
 | ![](./Paperwork/images/RefreshButtonIcon_50.png) | ![](./Paperwork/images/TrashButtonIcon_50.png) | 
 
-Upon app launch, the initial view is the ```Travel Locations View```.  A map view is presented, and pins are dropped at any travel locations that were saved at the end of the previous app session.  
+Upon app launch, the initial view is the **Travel Locations View**.  A map view is presented, and pins are dropped at any travel locations that were saved at the end of the previous app session.  
 
 * Tap & hold (i.e. long press) a spot on the map to drop a pin at that location & to save that location in the persistance framework.
-* Tap a pin to transition to the ```Travelogue View``` in order to display photos tagged with the lat/long of the pin.
-* Tap the **Trash** button in the navigation bar to enter ```Pin Deletion Mode```.  Instructions for using this mode appear in an alert view, tap ```OK``` to dismiss.  Tap a pin in this mode to remove the travel location & any associated photos from the persistence framework.
+* Tap a pin to transition to the **Travelogue View** in order to display photos tagged with the lat/long of the pin.
+* Tap the **Trash** button in the navigation bar to enter **Pin Deletion Mode**.  Instructions for using this mode appear in an alert view, tap **OK** to dismiss.  Tap a pin in this mode to remove the travel location & any associated photos from the persistence framework.
 
 ### Travelogue View
 
@@ -70,7 +74,6 @@ TABLE 4 - Travelogue View : Delete Images
 ### iOS Developer Libraries
 
 - [CoreData](./Paperwork/READMEFiles/CoreData.md)
-- [CoreGraphics](./Paperwork/READMEFiles/CoreGraphics.md)
 - [CoreLocation](./Paperwork/READMEFiles/CoreLocation.md)
 - [Foundation](./Paperwork/READMEFiles/Foundation.md)
 - [Grand Central Dispatch](./Paperwork/READMEFiles/GCD.md)
