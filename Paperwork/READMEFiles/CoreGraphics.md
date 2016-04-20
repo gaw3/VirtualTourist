@@ -1,0 +1,7 @@
+# CoreGraphics
+
+```
+CGFloat
+CGRect
+CGSizeMake
+```
