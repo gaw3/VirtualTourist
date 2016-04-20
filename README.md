@@ -54,12 +54,11 @@ TABLE 3 - Travelogue View : Present Images
 | :-----------------: | :------------------------------: | :-----------: |
 | ![](./Paperwork/images/TravelogueView_300x534.png) | ![](./Paperwork/images/ActivityIndicators_300x534.png) | ![](./Paperwork/images/EmptyTravelogue_300x534.png) |
 
-This view consists of a map segment with a pin dropped at the travel location and a collection of up to 21 images, downloaded from Flickr, that are associated with the travel location lat/long.</br>
+This view consists of a map segment with a pin dropped at the travel location and a collection of up to 21 images, downloaded from Flickr, that are associated with the travel location lat/long.
 
 * Tap the **< OK** button in the navigation bar at any time to return to the **Travel Locations View**.
 * Tap the **Refresh** button in the navigation bar in order to download a new group of images from Flickr.
-  - 21 images are requested;  however, any number ⋲ [0, 21] of images returned is valid.</br></br>
-
+  - 21 images are requested;  however, any number ⋲ [0, 21] of images returned is valid.
 * If a needed image exists in the persistence framework, it is loaded straightaway.
 * Otherwise, the needed image is downloaded from Flickr & added to the persistence framework
 * When a cell is waiting for its assigned image to download, the cell is blue with an animating white activity indicator in the center.
