@@ -9,7 +9,7 @@ VirtualTourist is Portfolio Project #4 of the Udacity iOS Developer Nanodegree P
 * [Udacity Grading Rubric](./Paperwork/Udacity/UdacityGradingRubric.pdf)  
 * [GitHub Swift Style Guide](./Paperwork/Udacity/GitHubSwiftStyleGuide.pdf)  
 * [Udacity Git Commit Message Style Guide](./Paperwork/Udacity/UdacityGitCommitMessageStyleGuide.pdf)  
-* [Udacity Project Review](./Paperwork/Udacity/ProjectReview.pdf)<br/><br/>
+* [Udacity Project Review](./Paperwork/Udacity/ProjectReview.pdf)
 
 |               | Project Submission       | Current State |
 | :----------   | :-------------           | :-----------: |
