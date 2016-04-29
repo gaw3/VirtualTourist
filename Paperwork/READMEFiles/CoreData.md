@@ -1,16 +1,15 @@
-# CoreData
+# CoreData Framework
 
 ```
 NSEntityDescription
 ```
 
 ```
-NSFetchedResultsControllerDelegate - protocol
-
-NSFetchRequest
 NSFetchedResultsChangeType
 NSFetchedResultsController
+NSFetchedResultsControllerDelegate - protocol
 NSFetchedResultsSectionInfo
+NSFetchRequest
 ```
 
 ```

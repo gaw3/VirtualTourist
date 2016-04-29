@@ -8,11 +8,10 @@ UIWindow
 ```
 
 ```
-UICollectionViewDataSource - protocol
-UICollectionViewDelegate - protocol
-
 UICollectionView
 UICollectionViewCell
+UICollectionViewDataSource - protocol
+UICollectionViewDelegate - protocol
 UICollectionViewFlowLayout
 ```
 

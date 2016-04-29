@@ -1,20 +1,21 @@
-# ![App Icon](./Paperwork/images/VirtualTourist_80.png)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VirtualTourist
+# ![][AppIcon]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VirtualTourist
 
 VirtualTourist allows the user to drop a pin on a map, and then download photos from Flickr that are tagged with this location.  The photos and their relationship with the location of the pin are persisted across app sessions.
 
 ## Project
 
 VirtualTourist is Portfolio Project #4 of the Udacity iOS Developer Nanodegree Program.  The following list contains pertinent course documents:
-* [Udacity App Specification](./Paperwork/Udacity/UdacityAppSpecification.pdf)  
-* [Udacity Grading Rubric](./Paperwork/Udacity/UdacityGradingRubric.pdf)  
-* [GitHub Swift Style Guide](./Paperwork/Udacity/GitHubSwiftStyleGuide.pdf)  
-* [Udacity Git Commit Message Style Guide](./Paperwork/Udacity/UdacityGitCommitMessageStyleGuide.pdf)  
-* [Udacity Project Review](./Paperwork/Udacity/ProjectReview.pdf)
+
+* [Udacity App Specification][AppSpec]
+* [Udacity Grading Rubric][GradingRubric]
+* [GitHub Swift Style Guide][SwiftStyleGuide]
+* [Udacity Git Commit Message Style Guide][CommitMsgStyleGuide]
+* [Udacity Project Review][ProjectReview]<br/><br/>
 
 |               | Project Submission       | Current State |
-| :----------   | :-------------           | :----------- |
+| :----------   | :-------------           | :-----------  |
 | Grade:        | ***Meets Expectations*** |               |
-| GitHub Tag:   | v1.0                     | v1.01&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[changelog](./Paperwork/READMEFiles/ChangeLog.md)|
+| GitHub Tag:   | v1.0                     | v1.01&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[changelog][ChangeLog] |
 | App Version:  | 1.0                      | same |
 | Environment:  | Xcode 7.3 / iOS 9.3      | same |
 | Devices:      | iPhone Only              | same |
@@ -50,13 +51,13 @@ TABLE 1 - Travel Locations View
 
 | **Travel Locations View** | **Pin Deletion Mode** | 
 | :-----------------------: | :-------------------: |
-| ![](./Paperwork/images/TravelLocationsView_300x534.png) | ![](./Paperwork/images/TapPinToDelete_300x534.png) | 
+| ![][TravLocsView]         | ![][Pin2Delete]       | 
 
 TABLE 2 - Navigation Bar Buttons 
 
-| Refresh | Trash |
-| :---:   | :---: |
-| ![](./Paperwork/images/RefreshButtonIcon_50.png) | ![](./Paperwork/images/TrashButtonIcon_50.png) | 
+| Refresh            | Trash            |
+| :---:              | :---:            |
+| ![][RefreshButton] | ![][TrashButton] | 
 
 Upon app launch, the initial view is the **Travel Locations View**.  A map view is presented, and pins are dropped at any Travel Locations that were saved at the end of the previous app session.  
 
@@ -68,9 +69,9 @@ Upon app launch, the initial view is the **Travel Locations View**.  A map view 
 
 TABLE 3 - Travelogue View : Present Images
 
-| **Travelogue View** | **Images Actively Downloading**  | **No Photos** |
-| :-----------------: | :------------------------------: | :-----------: |
-| ![](./Paperwork/images/TravelogueView_300x534.png) | ![](./Paperwork/images/ActivityIndicators_300x534.png) | ![](./Paperwork/images/EmptyTravelogue_300x534.png) |
+| **Travelogue View** | **Images Actively Downloading**  | **No Photos**  |
+| :-----------------: | :------------------------------: | :-----------:  |
+| ![][TravView]       | ![][ActInds]                     | ![][EmptyTrav] |
 
 This view consists of a map segment with a pin dropped at the Travel Location and a collection of up to 21 images that are related to the Travel Location.
 
@@ -84,7 +85,7 @@ TABLE 4 - Travelogue View : Delete Images
 
 | **Delete Selected Photos** | 
 | :------------------------: | 
-| ![](./Paperwork/images/SelectedPhotos_300x534.png) | 
+| ![][SelPhotos]             | 
 
 * Only *selected* photos can be deleted.
 * A *selected* photo appears to be washed out as compared to a *deselected* photo.
@@ -92,23 +93,58 @@ TABLE 4 - Travelogue View : Delete Images
 * The **Trash** button is available only if at least one photo is *selected*.
 * Tap the available **Trash** button to remove the selected photos from the persistence apparatus and the collection view.
 
-### iOS Frameworks & GCD
+### iOS Frameworks & Grand Central Dispatch
 
-- [CoreData](./Paperwork/READMEFiles/CoreData.md)
-- [CoreLocation](./Paperwork/READMEFiles/CoreLocation.md)
-- [Foundation](./Paperwork/READMEFiles/Foundation.md)
-- [MapKit](./Paperwork/READMEFiles/MapKit.md)
-- [UIKit](./Paperwork/READMEFiles/UIKit.md)
-- [Grand Central Dispatch](./Paperwork/READMEFiles/GCD.md)
+* [CoreData][CoreData]
+* [Foundation][Foundation]
+* [MapKit][MapKit]
+* [UIKit][UIKit]<br/><br/>
+* [GCD][GCD]
 
 ### Web APIs
 
-[Flickr API](https://www.flickr.com/services/api/) - Use as public source of photos.  Get photos tagged with a given lat/long.  [Website](https://www.flickr.com/) and [Terms of Service](https://policies.yahoo.com/us/en/yahoo/terms/utos/index.htm).
+[Flickr API][FlickrAPI] - Use as public source of photos.  Get photos tagged with a given lat/long.  [Website][FlickrWebsite] and [Terms of Service][FlickrTermsOfService].
 
 ### 3rd-Party
 
-* *GitHub Swift Style Guide* lives in this [repo](https://github.com/github/swift-style-guide).
-* `Swift.gitignore`, the template used to create the local `.gitignore` file, lives in this [repo](https://github.com/github/gitignore).
+* *GitHub Swift Style Guide* lives in this [repo][StyleGuideRepo].
+* `Swift.gitignore`, the template used to create the local `.gitignore` file, lives in this [repo][GitIgnoreRepo].
 
 ---
 **Copyright © 2016 Gregory White. All rights reserved.**
+
+
+
+
+
+[ChangeLog]:             ./Paperwork/READMEFiles/ChangeLog.md
+
+[CoreData]:              ./Paperwork/READMEFiles/CoreData.md
+[Foundation]:            ./Paperwork/READMEFiles/Foundation.md
+[GCD]:                   ./Paperwork/READMEFiles/GCD.md
+[MapKit]:                ./Paperwork/READMEFiles/MapKit.md
+[UIKit]:                 ./Paperwork/READMEFiles/UIKit.md
+
+[ActInds]:               ./Paperwork/images/ActivityIndicators_300x534.png
+[AppIcon]:               ./Paperwork/images/VirtualTourist_80.png
+[EmptyTrav]:             ./Paperwork/images/EmptyTravelogue_300x534.png
+[Pin2Delete]:            ./Paperwork/images/TapPinToDelete_300x534.png
+[RefreshButton]:         ./Paperwork/images/RefreshButtonIcon_50.png
+[SelPhotos]:             ./Paperwork/images/SelectedPhotos_300x534.png
+[TrashButton]:           ./Paperwork/images/TrashButtonIcon_50.png
+[TravLocsView]:          ./Paperwork/images/TravelLocationsView_300x534.png
+[TravView]:              ./Paperwork/images/TravelogueView_300x534.png
+
+[AppSpec]:               ./Paperwork/Udacity/UdacityAppSpecification.pdf
+[CommitMsgStyleGuide]:   ./Paperwork/Udacity/UdacityGitCommitMessageStyleGuide.pdf
+[GradingRubric]:         ./Paperwork/Udacity/UdacityGradingRubric.pdf
+[ProjectReview]:         ./Paperwork/Udacity/UdacityProjectReview.pdf
+[SwiftStyleGuide]:       ./Paperwork/Udacity/GitHubSwiftStyleGuide.pdf  
+
+[FlickrAPI]:             https://www.flickr.com/services/api/
+[FlickrTermsOfService]:  https://policies.yahoo.com/us/en/yahoo/terms/utos/index.htm
+[FlickrWebsite]:         https://www.flickr.com/
+[GitIgnoreRepo]:         https://github.com/github/gitignore
+[StyleGuideRepo]:        https://github.com/github/swift-style-guide
+
+
