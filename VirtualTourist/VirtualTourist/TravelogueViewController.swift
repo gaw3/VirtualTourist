@@ -295,6 +295,7 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 		cell.imageView?.image           = nil
 		cell.imageView?.backgroundColor = UIColor.blueColor()
+		cell.imageView?.alpha           = Alpha.Full
 		cell.activityIndicator?.startAnimating()
 
 		if let cachedImage = photoCache.imageWithCacheID(vtPhoto.fileName) {
