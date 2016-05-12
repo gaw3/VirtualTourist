@@ -111,15 +111,6 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 	}
 
-	override internal func viewWillLayoutSubviews() {
-		super.viewWillLayoutSubviews()
-
-		let numOfCellsAcross: CGFloat = UIDeviceOrientationIsPortrait(UIDevice.currentDevice().orientation) ? Layout.NumberOfCellsAcrossInPortrait : Layout.NumberOfCellsAcrossInLandscape
-		let itemWidth: CGFloat = (view.frame.size.width - (flowLayout.minimumInteritemSpacing * (numOfCellsAcross - 1))) / numOfCellsAcross
-
-		flowLayout.itemSize = CGSizeMake(itemWidth, itemWidth) // yes, a square on purpose
-	}
-
 	// MARK: - IB Outlets
 
 	@IBAction func refreshButtonWasTapped(sender: UIBarButtonItem) {
@@ -178,7 +169,6 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 		assert(collectionView == self.collectionView, "Unexpected collection view reqesting number of items in section")
 
 		let sectionInfo = frc.sections![section]
-//		collectionView.hidden = (sectionInfo.numberOfObjects == 0)
 		return sectionInfo.numberOfObjects
 	}
 
@@ -268,10 +258,8 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 				if responseData.photoArray.isEmpty {
 					self.travelLocation?.page  = 0
-//					self.collectionView.hidden = true
 				} else {
 					self.travelLocation?.page  = responseData.page
-//					self.collectionView.hidden = false
 
 					for photoResponseData in responseData.photoArray {
 						let photo = VirtualTouristPhoto(responseData: photoResponseData, context: CoreDataManager.sharedManager.moc)
@@ -370,10 +358,13 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 //
 //		collectionView?.backgroundView?.addSubview(label)
 
+		let numOfCellsAcross: CGFloat = Layout.NumberOfCellsAcrossInPortrait
+		let itemWidth: CGFloat = (view.frame.size.width - (flowLayout.minimumInteritemSpacing * (numOfCellsAcross - 1))) / numOfCellsAcross
 
-
+		flowLayout.itemSize                = CGSizeMake(itemWidth, itemWidth) // yes, a square on purpose
 		flowLayout.minimumInteritemSpacing = Layout.MinimumInteritemSpacing
 		flowLayout.minimumLineSpacing      = Layout.MinimumInteritemSpacing
+		flowLayout.sectionInset            = UIEdgeInsetsZero
 	}
 
 }
