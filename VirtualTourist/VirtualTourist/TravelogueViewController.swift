@@ -44,6 +44,8 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 		static let NumberOfCellsAcrossInPortrait:  CGFloat = 3.0
 		static let NumberOfCellsAcrossInLandscape: CGFloat = 5.0
 		static let MinimumInteritemSpacing:        CGFloat = 3.0
+
+		static let NoPhotosLabel = "This pin has no images."
 	}
 
 	// MARK: - Internal Stored Variables
@@ -55,6 +57,7 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 	private var travelLocation: VirtualTouristTravelLocation? = nil
 	private var selectedPhotos = [NSIndexPath]()
+	private var noPhotosLevel: UILabel?
 
 	// MARK: - Private Computed Variables
 
@@ -86,10 +89,9 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 	override internal func viewDidLoad() {
 		super.viewDidLoad()
 
+		initCollectionView()
 		refreshButton.enabled = true
 		trashButton.enabled   = false
-
-		initCollectionView()
 
 		travelLocation = getTravelLocation()
 
@@ -109,6 +111,13 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 		}
 
+	}
+
+	override internal func viewDidAppear(animated: Bool) {
+		super.viewDidAppear(animated)
+
+		noPhotosLevel!.center = (collectionView?.backgroundView?.center)!
+		noPhotosLevel!.hidden = false
 	}
 
 	// MARK: - IB Outlets
@@ -257,9 +266,11 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 				self.travelLocation?.perPage = responseData.perpage
 
 				if responseData.photoArray.isEmpty {
-					self.travelLocation?.page  = 0
+					self.collectionView?.backgroundView?.hidden = false
+					self.travelLocation?.page = 0
 				} else {
-					self.travelLocation?.page  = responseData.page
+					self.collectionView?.backgroundView?.hidden = true
+					self.travelLocation?.page = responseData.page
 
 					for photoResponseData in responseData.photoArray {
 						let photo = VirtualTouristPhoto(responseData: photoResponseData, context: CoreDataManager.sharedManager.moc)
@@ -347,19 +358,22 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 	}
 
 	private func initCollectionView() {
-		collectionView?.backgroundColor = UIColor.whiteColor()
-		
-//		collectionView?.backgroundView = UIView()
-//		collectionView?.backgroundView?.backgroundColor = UIColor.whiteColor()
-//		collectionView?.backgroundView?.autoresizesSubviews = true
-//      let label = UILabel()
-//		label.text = "This pin has no images."
-//		label.center = (collectionView?.backgroundView?.center)!
-//
-//		collectionView?.backgroundView?.addSubview(label)
+		noPhotosLevel = UILabel(frame: CGRectMake(0, 0, 200, 21))
+		noPhotosLevel!.text          = Layout.NoPhotosLabel
+		noPhotosLevel!.textColor     = UIColor.blackColor()
+		noPhotosLevel!.textAlignment = .Center
+		noPhotosLevel!.hidden        = true
+
+		collectionView.backgroundColor = UIColor.whiteColor()
+
+		collectionView?.backgroundView = UIView(frame: CGRectZero)
+		collectionView?.backgroundView?.backgroundColor     = UIColor.whiteColor()
+		collectionView?.backgroundView?.autoresizesSubviews = true
+		collectionView?.backgroundView?.hidden              = true
+		collectionView?.backgroundView?.addSubview(noPhotosLevel!)
 
 		let numOfCellsAcross: CGFloat = Layout.NumberOfCellsAcrossInPortrait
-		let itemWidth: CGFloat = (view.frame.size.width - (flowLayout.minimumInteritemSpacing * (numOfCellsAcross - 1))) / numOfCellsAcross
+		let itemWidth:        CGFloat = (view.frame.size.width - (flowLayout.minimumInteritemSpacing * (numOfCellsAcross - 1))) / numOfCellsAcross
 
 		flowLayout.itemSize                = CGSizeMake(itemWidth, itemWidth) // yes, a square on purpose
 		flowLayout.minimumInteritemSpacing = Layout.MinimumInteritemSpacing
