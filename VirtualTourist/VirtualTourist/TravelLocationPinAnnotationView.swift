@@ -26,16 +26,12 @@ final internal class TravelLocationPinAnnotationView: MKPinAnnotationView {
 
 		animatesDrop   = true
 		canShowCallout = false
-      pinTintColor   = MKPinAnnotationView.redPinColor()
+        pinTintColor   = MKPinAnnotationView.redPinColor()
 		rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
 	}
 
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
-	}
-
-	override init(frame: CGRect) {
-		super.init(frame: frame)
 	}
 
 }

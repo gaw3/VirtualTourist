@@ -60,8 +60,8 @@ final internal class VirtualTouristTravelLocation: NSManagedObject {
 		let entity = NSEntityDescription.entity(forEntityName: Consts.EntityName, in: context)!
 		super.init(entity: entity, insertInto: context)
 
-		latitude  = NSNumber(coordinate.latitude)
-		longitude = NSNumber(coordinate.longitude)
+        latitude  = NSNumber(value: coordinate.latitude)
+        longitude = NSNumber(value: coordinate.longitude)
 	}
 
 }

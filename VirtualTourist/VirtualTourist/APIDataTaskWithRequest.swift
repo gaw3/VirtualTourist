@@ -37,13 +37,13 @@ final internal class APIDataTaskWithRequest: NSObject {
 
 	// MARK: - Private Stored Variables
 
-	fileprivate var URLRequest:        NSMutableURLRequest
+	fileprivate var urlRequest:        NSMutableURLRequest
 	fileprivate var completionHandler: APIDataTaskWithRequestCompletionHandler
 
 	// MARK: - API
 
-	internal init(URLRequest: NSMutableURLRequest, completionHandler: @escaping APIDataTaskWithRequestCompletionHandler) {
-		self.URLRequest        = URLRequest
+	internal init(urlRequest: NSMutableURLRequest, completionHandler: @escaping APIDataTaskWithRequestCompletionHandler) {
+		self.urlRequest        = urlRequest
 		self.completionHandler = completionHandler
 
 		super.init()
@@ -51,14 +51,14 @@ final internal class APIDataTaskWithRequest: NSObject {
 
 	internal func getImageDownloadTask() -> URLSessionTask {
 
-		let task = URLSession.shared.dataTask(with: URLRequest, completionHandler: { (rawImageData, HTTPResponse, URLSessionError) in
+		let task = URLSession.shared.dataTask(with: urlRequest as URLRequest, completionHandler: { (rawImageData, HTTPResponse, URLSessionError) in
 
 			DispatchQueue.main.async(execute: {
 				NetworkActivityIndicatorManager.sharedManager.endActivity()
 			})
 
 			guard URLSessionError == nil else {
-				let userInfo = [NSLocalizedDescriptionKey: LocalizedErrorDescription.Network, NSUnderlyingErrorKey: URLSessionError!]
+				let userInfo = [NSLocalizedDescriptionKey: LocalizedErrorDescription.Network, NSUnderlyingErrorKey: URLSessionError!] as [String : Any]
 				let error    = NSError(domain: LocalizedError.Domain, code: LocalizedErrorCode.Network, userInfo: userInfo)
 
 				self.completeWithHandler(self.completionHandler, result: nil, error: error)
@@ -100,14 +100,14 @@ final internal class APIDataTaskWithRequest: NSObject {
 
 	internal func resume() {
 
-		let task = URLSession.shared.dataTask(with: URLRequest, completionHandler: { (rawJSONResponse, HTTPResponse, URLSessionError) in
+		let task = URLSession.shared.dataTask(with: urlRequest as URLRequest, completionHandler: { (rawJSONResponse, HTTPResponse, URLSessionError) in
 
 			DispatchQueue.main.async(execute: {
 				NetworkActivityIndicatorManager.sharedManager.endActivity()
 			})
 
 			guard URLSessionError == nil else {
-				let userInfo = [NSLocalizedDescriptionKey: LocalizedErrorDescription.Network, NSUnderlyingErrorKey: URLSessionError!]
+				let userInfo = [NSLocalizedDescriptionKey: LocalizedErrorDescription.Network, NSUnderlyingErrorKey: URLSessionError!] as [String : Any]
 				let error    = NSError(domain: LocalizedError.Domain, code: LocalizedErrorCode.Network, userInfo: userInfo)
 
 				self.completeWithHandler(self.completionHandler, result: nil, error: error)
@@ -137,9 +137,9 @@ final internal class APIDataTaskWithRequest: NSObject {
 			do {
 				let JSONData = try JSONSerialization.jsonObject(with: rawJSONResponse, options: .allowFragments) as! JSONDictionary
 
-				self.completeWithHandler(self.completionHandler, result: JSONData, error: nil)
+				self.completeWithHandler(self.completionHandler, result: JSONData as AnyObject!, error: nil)
 			} catch let JSONError as NSError {
-				let userInfo = [NSLocalizedDescriptionKey: LocalizedErrorDescription.JSONSerialization, NSUnderlyingErrorKey: JSONError]
+				let userInfo = [NSLocalizedDescriptionKey: LocalizedErrorDescription.JSONSerialization, NSUnderlyingErrorKey: JSONError] as [String : Any]
 				let error    = NSError(domain: LocalizedError.Domain, code: LocalizedErrorCode.JSONSerialization, userInfo: userInfo)
 
 				self.completeWithHandler(self.completionHandler, result: nil, error: error)

@@ -39,23 +39,23 @@ final internal class FlickrAPIClient: NSObject {
 
 	// MARK: - API
 
-	internal func searchPhotosByLocation(_ travelLocation: VirtualTouristTravelLocation, completionHandler: APIDataTaskWithRequestCompletionHandler) {
+	internal func searchPhotosByLocation(_ travelLocation: VirtualTouristTravelLocation, completionHandler: @escaping APIDataTaskWithRequestCompletionHandler) {
 		var components = URLComponents(string: HTTP.RESTServicesURL)
 		components!.query = travelLocation.searchQuery
 
 		let URLRequest = NSMutableURLRequest(url: components!.url!)
 		URLRequest.httpMethod = HTTP.GETMethod
 
-		let dataTaskWithRequest = APIDataTaskWithRequest(URLRequest: URLRequest, completionHandler: completionHandler)
+		let dataTaskWithRequest = APIDataTaskWithRequest(urlRequest: URLRequest, completionHandler: completionHandler)
 		dataTaskWithRequest.resume()
 	}
 
-	internal func getRemotePhoto(_ vtPhoto: VirtualTouristPhoto, completionHandler: APIDataTaskWithRequestCompletionHandler) -> URLSessionTask {
+	internal func getRemotePhoto(_ vtPhoto: VirtualTouristPhoto, completionHandler: @escaping APIDataTaskWithRequestCompletionHandler) -> URLSessionTask {
 		let components = URLComponents(string: vtPhoto.imageURLString)
 		let URLRequest = NSMutableURLRequest(url: components!.url!)
 		URLRequest.httpMethod = HTTP.GETMethod
 
-		let dataTaskWithRequest = APIDataTaskWithRequest(URLRequest: URLRequest, completionHandler: completionHandler)
+		let dataTaskWithRequest = APIDataTaskWithRequest(urlRequest: URLRequest, completionHandler: completionHandler)
 		return dataTaskWithRequest.getImageDownloadTask()
 	}
 
