@@ -15,7 +15,7 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 
 	// MARK: - Private Constants
 
-	private struct Alert {
+	fileprivate struct Alert {
 
 		struct Message {
 //			static let NoPlacemarks      = "Did not receive any placemarks"
@@ -32,20 +32,20 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 
 	}
 
-	private struct SEL {
+	fileprivate struct SEL {
 		static let TrashButtonTapped = #selector(TravelLocationsMapViewController.trashButtonWasTapped)
 		static let DoneButtonTapped  = #selector(TravelLocationsMapViewController.doneButtonWasTapped)
 	}
 
 	// MARK: - Private Stored Variables
 
-	private var inPinDeletionMode = false
+	fileprivate var inPinDeletionMode = false
 
-	lazy private var frc: NSFetchedResultsController = {
-		let fetchRequest = NSFetchRequest(entityName: VirtualTouristTravelLocation.Consts.EntityName)
+	lazy fileprivate var frc: NSFetchedResultsController<NSFetchRequestResult> = {
+		let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: VirtualTouristTravelLocation.Consts.EntityName)
 		fetchRequest.sortDescriptors = []
 
-		let frc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: CoreDataManager.sharedManager.moc, sectionNameKeyPath: nil, cacheName: nil)
+		let frc = NSFetchedResultsController<NSFetchRequestResult>(fetchRequest: fetchRequest, managedObjectContext: CoreDataManager.sharedManager.moc, sectionNameKeyPath: nil, cacheName: nil)
 		frc.delegate = self
 		
 		return frc
@@ -61,7 +61,7 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 	override internal func viewDidLoad() {
 		super.viewDidLoad()
 
-		navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: SEL.TrashButtonTapped)
+		navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: SEL.TrashButtonTapped)
 		mapView.addGestureRecognizer(longPress)
 
 		do {
@@ -79,14 +79,14 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 
 	// MARK: - IB Actions
 
-	@IBAction internal func handleLongPress(gesture: UIGestureRecognizer) {
+	@IBAction internal func handleLongPress(_ gesture: UIGestureRecognizer) {
 
-		if gesture.state == .Began {
+		if gesture.state == .began {
 
 			if inPinDeletionMode {
 				presentAlert(Alert.Title.CannotDropPin, message: Alert.Message.WhileInDeleteMode)
 			} else {
-				let coord = mapView.convertPoint(gesture.locationInView(mapView), toCoordinateFromView: mapView)
+				let coord = mapView.convert(gesture.location(in: mapView), toCoordinateFrom: mapView)
 				_ = VirtualTouristTravelLocation(coordinate: coord, context: CoreDataManager.sharedManager.moc)
 				CoreDataManager.sharedManager.saveContext()
 			}
@@ -96,43 +96,43 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 	}
 
 	internal func doneButtonWasTapped() {
-		navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: SEL.TrashButtonTapped)
+		navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: SEL.TrashButtonTapped)
 		inPinDeletionMode = false
 	}
 
 	internal func trashButtonWasTapped() {
-		navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: SEL.DoneButtonTapped)
+		navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: SEL.DoneButtonTapped)
 		inPinDeletionMode = true
 		presentAlert(Alert.Title.TapPins, message: Alert.Message.TapDoneButton)
 	}
 
 	// MARK: - NSFetchedResultsControllerDelegate
 
-	internal func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+	internal func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 
-		if type == .Insert {
+		if type == .insert {
 			let travelLocation = anObject as! VirtualTouristTravelLocation
 			mapView.addAnnotation(travelLocation.pointAnnotation)
 		}
 							
 	}
 
-	func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo,
-	                atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
+	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo,
+	                atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
 		return
 	}
 
-	func controllerDidChangeContent(controller: NSFetchedResultsController) {
+	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 		return
 	}
 
-	func controllerWillChangeContent(controller: NSFetchedResultsController) {
+	func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 		return
 	}
 
 	// MARK: - MKMapViewDelegate
 
-	internal func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+	internal func mapView(_ mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
 		assert(mapView == self.mapView, "Unexpected map view selecting an annotation")
 
 		mapView.deselectAnnotation(view.annotation, animated: true)
@@ -147,12 +147,12 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 
 			if let travelLocation = getTravelLocation(tlpAnnotation!.coordinate) {
 				deleteAssociatedPhotos(travelLocation)
-            CoreDataManager.sharedManager.moc.deleteObject(travelLocation)
+            CoreDataManager.sharedManager.moc.delete(travelLocation)
 				CoreDataManager.sharedManager.saveContext()
 			}
 
 		} else {
-			let travelogueVC = self.storyboard?.instantiateViewControllerWithIdentifier(TravelogueViewController.UI.StoryboardID) as! TravelogueViewController
+			let travelogueVC = self.storyboard?.instantiateViewController(withIdentifier: TravelogueViewController.UI.StoryboardID) as! TravelogueViewController
 
 			travelogueVC.coordinate = tlpAnnotation!.coordinate
 			navigationController?.pushViewController(travelogueVC, animated: true)
@@ -160,10 +160,10 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 
 	}
 
-	internal func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+	internal func mapView(_ mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
 		assert(mapView == self.mapView, "Unexpected map view requesting view for annotation")
 
-		var tlPinAnnoView = mapView.dequeueReusableAnnotationViewWithIdentifier(TravelLocationPinAnnotationView.UI.ReuseID) as? TravelLocationPinAnnotationView
+		var tlPinAnnoView = mapView.dequeueReusableAnnotationView(withIdentifier: TravelLocationPinAnnotationView.UI.ReuseID) as? TravelLocationPinAnnotationView
 
 		if let _ = tlPinAnnoView {
 			tlPinAnnoView!.annotation = annotation as! MKPointAnnotation
@@ -176,18 +176,18 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 
 	// MARK: - Private
 
-	private func deleteAssociatedPhotos(travelLocation: VirtualTouristTravelLocation)  {
-		let photosFetchRequest = NSFetchRequest(entityName: VirtualTouristPhoto.Consts.EntityName)
+	fileprivate func deleteAssociatedPhotos(_ travelLocation: VirtualTouristTravelLocation)  {
+		let photosFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: VirtualTouristPhoto.Consts.EntityName)
 		photosFetchRequest.sortDescriptors = [NSSortDescriptor(key: CoreDataManager.SortKey.Title, ascending: true)]
 		photosFetchRequest.predicate = NSPredicate(format: CoreDataManager.Predicate.PhotosByLocation, travelLocation)
 
 		do {
-			let fetchedPhotos = try CoreDataManager.sharedManager.moc.executeFetchRequest(photosFetchRequest) as! [VirtualTouristPhoto]
+			let fetchedPhotos = try CoreDataManager.sharedManager.moc.fetch(photosFetchRequest) as! [VirtualTouristPhoto]
 
 			if !fetchedPhotos.isEmpty {
 
 				for vtPhoto in fetchedPhotos {
-					CoreDataManager.sharedManager.moc.deleteObject(vtPhoto)
+					CoreDataManager.sharedManager.moc.delete(vtPhoto)
 				}
 
 				CoreDataManager.sharedManager.saveContext()
@@ -199,14 +199,14 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 		
 	}
 	
-	private func getTravelLocation(coordinate: CLLocationCoordinate2D) -> VirtualTouristTravelLocation? {
-		let fetchRequest = NSFetchRequest(entityName: VirtualTouristTravelLocation.Consts.EntityName)
+	fileprivate func getTravelLocation(_ coordinate: CLLocationCoordinate2D) -> VirtualTouristTravelLocation? {
+		let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: VirtualTouristTravelLocation.Consts.EntityName)
 
 		fetchRequest.sortDescriptors = []
 		fetchRequest.predicate       = NSPredicate(format: CoreDataManager.Predicate.LocationByLatLong, coordinate.latitude, coordinate.longitude)
 
 		do {
-			let travelLocations = try CoreDataManager.sharedManager.moc.executeFetchRequest(fetchRequest) as! [VirtualTouristTravelLocation]
+			let travelLocations = try CoreDataManager.sharedManager.moc.fetch(fetchRequest) as! [VirtualTouristTravelLocation]
 
 			if !travelLocations.isEmpty { return travelLocations[0] }
 			else                        { return nil }

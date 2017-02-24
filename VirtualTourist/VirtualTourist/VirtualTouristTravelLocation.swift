@@ -52,16 +52,16 @@ final internal class VirtualTouristTravelLocation: NSManagedObject {
 
 	// MARK: - API
 
-	override internal init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
-		super.init(entity: entity, insertIntoManagedObjectContext: context)
+	override internal init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
+		super.init(entity: entity, insertInto: context)
 	}
 
 	internal init(coordinate: CLLocationCoordinate2D, context: NSManagedObjectContext) {
-		let entity = NSEntityDescription.entityForName(Consts.EntityName, inManagedObjectContext: context)!
-		super.init(entity: entity, insertIntoManagedObjectContext: context)
+		let entity = NSEntityDescription.entity(forEntityName: Consts.EntityName, in: context)!
+		super.init(entity: entity, insertInto: context)
 
-		latitude  = coordinate.latitude
-		longitude = coordinate.longitude
+		latitude  = NSNumber(coordinate.latitude)
+		longitude = NSNumber(coordinate.longitude)
 	}
 
 }

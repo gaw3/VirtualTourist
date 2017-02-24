@@ -24,18 +24,18 @@ final internal class VirtualTouristPhoto: NSManagedObject {
 	}
 
 	internal var fileName: String {
-		return imageURLString.componentsSeparatedByString("/").last!
+		return imageURLString.components(separatedBy: "/").last!
 	}
 
 	// MARK: - API
 
-	internal override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
-		super.init(entity: entity, insertIntoManagedObjectContext: context)
+	internal override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
+		super.init(entity: entity, insertInto: context)
 	}
 
 	internal init(responseData: FlickrPhotoResponseData, context: NSManagedObjectContext) {
-		let entity =  NSEntityDescription.entityForName(Consts.EntityName, inManagedObjectContext: context)!
-		super.init(entity: entity, insertIntoManagedObjectContext: context)
+		let entity =  NSEntityDescription.entity(forEntityName: Consts.EntityName, in: context)!
+		super.init(entity: entity, insertInto: context)
 
 		title          = responseData.title
 		imageURLString = responseData.url_m

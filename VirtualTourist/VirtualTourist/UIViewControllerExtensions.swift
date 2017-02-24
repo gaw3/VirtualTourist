@@ -13,7 +13,7 @@ extension UIViewController {
 
 	// MARK: - Private Constants
 
-	private struct Alert {
+	fileprivate struct Alert {
 		static let ActionTitle = "OK"
 	}
 
@@ -29,13 +29,13 @@ extension UIViewController {
 
 	// MARK: - API
 
-	internal func presentAlert(title: String, message: String) {
-		let alert  = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-		let action = UIAlertAction(title: Alert.ActionTitle, style: .Default, handler: nil)
+	internal func presentAlert(_ title: String, message: String) {
+		let alert  = UIAlertController(title: title, message: message, preferredStyle: .alert)
+		let action = UIAlertAction(title: Alert.ActionTitle, style: .default, handler: nil)
 		alert.addAction(action)
 
-		dispatch_async(dispatch_get_main_queue(), {
-			self.presentViewController(alert, animated: true, completion: nil)
+		DispatchQueue.main.async(execute: {
+			self.present(alert, animated: true, completion: nil)
 		})
 
 	}

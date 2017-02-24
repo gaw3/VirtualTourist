@@ -23,7 +23,7 @@ final internal class TravelogueCollectionViewCell: UICollectionViewCell {
 
 	// MARK: - Internal Computed Variables
 
-	var taskToCancelIfCellIsReused: NSURLSessionTask? {
+	var taskToCancelIfCellIsReused: URLSessionTask? {
 
 		didSet {
 			if let taskToCancel = oldValue {

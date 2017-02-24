@@ -22,7 +22,7 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 	// MARK: - Private Constants
 
-	private struct Alert {
+	fileprivate struct Alert {
 
 		struct Message {
 			static let NoJSONData = "JSON data unavailable"
@@ -35,12 +35,12 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 	}
 
-	private struct Alpha {
+	fileprivate struct Alpha {
 		static let Full:                   CGFloat = 1.0
 		static let ReducedForSelectedCell: CGFloat = 0.3
 	}
 
-	private struct Layout {
+	fileprivate struct Layout {
 		static let NumberOfCellsAcrossInPortrait:  CGFloat = 3.0
 		static let NumberOfCellsAcrossInLandscape: CGFloat = 5.0
 		static let MinimumInteritemSpacing:        CGFloat = 3.0
@@ -55,24 +55,24 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 	// MARK: - Private Stored Variables
 
-	private var travelLocation: VirtualTouristTravelLocation? = nil
-	private var selectedPhotos = [NSIndexPath]()
-	private var noPhotosLevel: UILabel?
+	fileprivate var travelLocation: VirtualTouristTravelLocation? = nil
+	fileprivate var selectedPhotos = [IndexPath]()
+	fileprivate var noPhotosLevel: UILabel?
 
 	// MARK: - Private Computed Variables
 
-	lazy private var frc: NSFetchedResultsController = {
-		let photosFetchRequest = NSFetchRequest(entityName: VirtualTouristPhoto.Consts.EntityName)
+	lazy fileprivate var frc: NSFetchedResultsController<NSFetchRequestResult> = {
+		let photosFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: VirtualTouristPhoto.Consts.EntityName)
 		photosFetchRequest.sortDescriptors = [NSSortDescriptor(key: CoreDataManager.SortKey.Title, ascending: true)]
 		photosFetchRequest.predicate = NSPredicate(format: CoreDataManager.Predicate.PhotosByLocation, self.travelLocation!)
 
-		let frc = NSFetchedResultsController(fetchRequest: photosFetchRequest, managedObjectContext: CoreDataManager.sharedManager.moc, sectionNameKeyPath: nil, cacheName: nil)
+		let frc = NSFetchedResultsController<NSFetchRequestResult>(fetchRequest: photosFetchRequest, managedObjectContext: CoreDataManager.sharedManager.moc, sectionNameKeyPath: nil, cacheName: nil)
 		frc.delegate = self
 
 		return frc
 	}()
 
-	private var photoCache: PhotoCache {
+	fileprivate var photoCache: PhotoCache {
 		return PhotoCache.sharedCache
 	}
 
@@ -90,8 +90,8 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 		super.viewDidLoad()
 
 		initCollectionView()
-		refreshButton.enabled = true
-		trashButton.enabled   = false
+		refreshButton.isEnabled = true
+		trashButton.isEnabled   = false
 
 		travelLocation = getTravelLocation()
 
@@ -113,27 +113,27 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 	}
 
-	override internal func viewDidAppear(animated: Bool) {
+	override internal func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 
 		noPhotosLevel!.center = (collectionView?.backgroundView?.center)!
-		noPhotosLevel!.hidden = false
+		noPhotosLevel!.isHidden = false
 	}
 
 	// MARK: - IB Outlets
 
-	@IBAction func refreshButtonWasTapped(sender: UIBarButtonItem) {
+	@IBAction func refreshButtonWasTapped(_ sender: UIBarButtonItem) {
 		getNewCollection()
 	}
 
-	@IBAction func trashButtonWasTapped(sender: UIBarButtonItem) {
+	@IBAction func trashButtonWasTapped(_ sender: UIBarButtonItem) {
 		deleteSelectedPhotos()
 	}
 
 	// MARK: - MKMapViewDelegate
 
-	internal func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
-		var tlPinAnnoView = mapView.dequeueReusableAnnotationViewWithIdentifier(TravelLocationPinAnnotationView.UI.ReuseID) as? TravelLocationPinAnnotationView
+	internal func mapView(_ mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+		var tlPinAnnoView = mapView.dequeueReusableAnnotationView(withIdentifier: TravelLocationPinAnnotationView.UI.ReuseID) as? TravelLocationPinAnnotationView
 
 		if let _ = tlPinAnnoView {
 			tlPinAnnoView!.annotation = annotation as! MKPointAnnotation
@@ -146,42 +146,42 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 	
 	// MARK: - NSFetchedResultsControllerDelegate
 
-	func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 		return
 	}
 
-	func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo,
-		atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
+	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo,
+		atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
 		return
 	}
 
-	func controllerDidChangeContent(controller: NSFetchedResultsController) {
+	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 		return
 	}
 
-	func controllerWillChangeContent(controller: NSFetchedResultsController) {
+	func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 		return
 	}
 
 	// MARK: - UICollectionViewDataSource
 
-	internal func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+	internal func collectionView(_ collectionView: UICollectionView, cellForItemAtIndexPath indexPath: IndexPath) -> UICollectionViewCell {
 		assert(collectionView == self.collectionView, "Unexpected collection view reqesting cell of item at index path")
 
-		let cell = collectionView.dequeueReusableCellWithReuseIdentifier(TravelogueCollectionViewCell.UI.ReuseID, forIndexPath: indexPath) as! TravelogueCollectionViewCell
+		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TravelogueCollectionViewCell.UI.ReuseID, for: indexPath) as! TravelogueCollectionViewCell
 		configureCell(cell, atIndexPath: indexPath)
 
 		return cell
 	}
 
-	internal func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+	internal func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 		assert(collectionView == self.collectionView, "Unexpected collection view reqesting number of items in section")
 
 		let sectionInfo = frc.sections![section]
 		return sectionInfo.numberOfObjects
 	}
 
-	internal func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+	internal func numberOfSectionsInCollectionView(_ collectionView: UICollectionView) -> Int {
 		assert(collectionView == self.collectionView, "Unexpected collection view reqesting number of sections in view")
 
 		return frc.sections?.count ?? 0
@@ -189,32 +189,32 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 	// MARK: - UICollectionViewDelegate
 
-	internal func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+	internal func collectionView(_ collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: IndexPath) {
 		assert(collectionView == self.collectionView, "Unexpected collection view selected an item")
 
-		let cell = collectionView.cellForItemAtIndexPath(indexPath) as! TravelogueCollectionViewCell
+		let cell = collectionView.cellForItem(at: indexPath) as! TravelogueCollectionViewCell
 
-		if let index = selectedPhotos.indexOf(indexPath) {
-			selectedPhotos.removeAtIndex(index)
+		if let index = selectedPhotos.index(of: indexPath) {
+			selectedPhotos.remove(at: index)
 			cell.imageView?.alpha = Alpha.Full
 
 			if selectedPhotos.isEmpty {
-				trashButton.enabled   = false
-				refreshButton.enabled = true
+				trashButton.isEnabled   = false
+				refreshButton.isEnabled = true
 			}
 
 		} else {
 			selectedPhotos.append(indexPath)
 			cell.imageView?.alpha = Alpha.ReducedForSelectedCell
-			trashButton.enabled   = true
-			refreshButton.enabled = false
+			trashButton.isEnabled   = true
+			refreshButton.isEnabled = false
 		}
 
 	}
 	
 	// MARK: - Private:  Completion Handlers
 
-	private func getRemoteImageCompletionHandler(vtPhoto: VirtualTouristPhoto, cellForPhoto: TravelogueCollectionViewCell) -> APIDataTaskWithRequestCompletionHandler {
+	fileprivate func getRemoteImageCompletionHandler(_ vtPhoto: VirtualTouristPhoto, cellForPhoto: TravelogueCollectionViewCell) -> APIDataTaskWithRequestCompletionHandler {
 
 		return { (result, error) -> Void in
 
@@ -231,9 +231,9 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 			let downloadedImage = result as! UIImage
 			self.photoCache.storeImage(downloadedImage, withCacheID: vtPhoto.fileName)
 
-			dispatch_async(dispatch_get_main_queue(), {
+			DispatchQueue.main.async(execute: {
 				cellForPhoto.activityIndicator?.stopAnimating()
-				cellForPhoto.imageView?.backgroundColor = UIColor.whiteColor()
+				cellForPhoto.imageView?.backgroundColor = UIColor.white
 				cellForPhoto.imageView?.image = downloadedImage
 			})
 
@@ -241,7 +241,7 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 	}
 
-	private var searchPhotosByLocationCompletionHandler: APIDataTaskWithRequestCompletionHandler {
+	fileprivate var searchPhotosByLocationCompletionHandler: APIDataTaskWithRequestCompletionHandler {
 
 		return { (result, error) -> Void in
 
@@ -262,15 +262,15 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
             return
 			}
 
-			dispatch_async(dispatch_get_main_queue(), {
-				self.travelLocation?.perPage = responseData.perpage
+			DispatchQueue.main.async(execute: {
+                self.travelLocation?.perPage = NSNumber(value: responseData.perpage)
 
 				if responseData.photoArray.isEmpty {
-					self.collectionView?.backgroundView?.hidden = false
+					self.collectionView?.backgroundView?.isHidden = false
 					self.travelLocation?.page = 0
 				} else {
-					self.collectionView?.backgroundView?.hidden = true
-					self.travelLocation?.page = responseData.page
+					self.collectionView?.backgroundView?.isHidden = true
+					self.travelLocation?.page = NSNumber(value: responseData.page)
 
 					for photoResponseData in responseData.photoArray {
 						let photo = VirtualTouristPhoto(responseData: photoResponseData, context: CoreDataManager.sharedManager.moc)
@@ -289,17 +289,17 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 	// MARK: - Private
 
-	private func configureCell(cell: TravelogueCollectionViewCell, atIndexPath: NSIndexPath) {
-		let vtPhoto = frc.objectAtIndexPath(atIndexPath) as! VirtualTouristPhoto
+	fileprivate func configureCell(_ cell: TravelogueCollectionViewCell, atIndexPath: IndexPath) {
+		let vtPhoto = frc.object(at: atIndexPath) as! VirtualTouristPhoto
 
 		cell.imageView?.image           = nil
-		cell.imageView?.backgroundColor = UIColor.blueColor()
+		cell.imageView?.backgroundColor = UIColor.blue
 		cell.imageView?.alpha           = Alpha.Full
 		cell.activityIndicator?.startAnimating()
 
 		if let cachedImage = photoCache.imageWithCacheID(vtPhoto.fileName) {
 			cell.activityIndicator?.stopAnimating()
-			cell.imageView?.backgroundColor = UIColor.whiteColor()
+			cell.imageView?.backgroundColor = UIColor.white
 			cell.imageView?.image           = cachedImage
 			return
 		}
@@ -308,29 +308,29 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 		cell.taskToCancelIfCellIsReused = downloadTask
 	}
 
-	private func deleteSelectedPhotos() {
+	fileprivate func deleteSelectedPhotos() {
 		let vtPhotos = frc.fetchedObjects as! [VirtualTouristPhoto]
 
 		for photoIndex in selectedPhotos {
-			CoreDataManager.sharedManager.moc.deleteObject(vtPhotos[photoIndex.row])
+			CoreDataManager.sharedManager.moc.delete(vtPhotos[photoIndex.row])
 		}
 
 		CoreDataManager.sharedManager.saveContext()
 
 		collectionView!.performBatchUpdates({() -> Void in
-			self.collectionView!.deleteItemsAtIndexPaths(self.selectedPhotos)
+			self.collectionView!.deleteItems(at: self.selectedPhotos)
 			}, completion: nil)
 
-		trashButton.enabled   = false
-		refreshButton.enabled = true
+		trashButton.isEnabled   = false
+		refreshButton.isEnabled = true
 		
 		selectedPhotos.removeAll()
 	}
 
-	private func getNewCollection() {
+	fileprivate func getNewCollection() {
 
 		for vtPhoto in frc.fetchedObjects as! [VirtualTouristPhoto] {
-			CoreDataManager.sharedManager.moc.deleteObject(vtPhoto)
+			CoreDataManager.sharedManager.moc.delete(vtPhoto)
 		}
 
 		CoreDataManager.sharedManager.saveContext()
@@ -338,14 +338,14 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 		flickrClient.searchPhotosByLocation(travelLocation!, completionHandler: searchPhotosByLocationCompletionHandler)
 	}
 
-	private func getTravelLocation() -> VirtualTouristTravelLocation? {
-		let fetchRequest = NSFetchRequest(entityName: VirtualTouristTravelLocation.Consts.EntityName)
+	fileprivate func getTravelLocation() -> VirtualTouristTravelLocation? {
+		let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: VirtualTouristTravelLocation.Consts.EntityName)
 
 		fetchRequest.sortDescriptors = []
 		fetchRequest.predicate       = NSPredicate(format: CoreDataManager.Predicate.LocationByLatLong, coordinate!.latitude, coordinate!.longitude)
 
 		do {
-			let travelLocations = try CoreDataManager.sharedManager.moc.executeFetchRequest(fetchRequest) as! [VirtualTouristTravelLocation]
+			let travelLocations = try CoreDataManager.sharedManager.moc.fetch(fetchRequest) as! [VirtualTouristTravelLocation]
 
 			if !travelLocations.isEmpty { return travelLocations[0] }
 			else                        { return nil }
@@ -357,28 +357,28 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 		return nil
 	}
 
-	private func initCollectionView() {
-		noPhotosLevel = UILabel(frame: CGRectMake(0, 0, 200, 21))
+	fileprivate func initCollectionView() {
+		noPhotosLevel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 21))
 		noPhotosLevel!.text          = Layout.NoPhotosLabel
-		noPhotosLevel!.textColor     = UIColor.blackColor()
-		noPhotosLevel!.textAlignment = .Center
-		noPhotosLevel!.hidden        = true
+		noPhotosLevel!.textColor     = UIColor.black
+		noPhotosLevel!.textAlignment = .center
+		noPhotosLevel!.isHidden        = true
 
-		collectionView.backgroundColor = UIColor.whiteColor()
+		collectionView.backgroundColor = UIColor.white
 
-		collectionView?.backgroundView = UIView(frame: CGRectZero)
-		collectionView?.backgroundView?.backgroundColor     = UIColor.whiteColor()
+		collectionView?.backgroundView = UIView(frame: CGRect.zero)
+		collectionView?.backgroundView?.backgroundColor     = UIColor.white
 		collectionView?.backgroundView?.autoresizesSubviews = true
-		collectionView?.backgroundView?.hidden              = true
+		collectionView?.backgroundView?.isHidden              = true
 		collectionView?.backgroundView?.addSubview(noPhotosLevel!)
 
 		let numOfCellsAcross: CGFloat = Layout.NumberOfCellsAcrossInPortrait
 		let itemWidth:        CGFloat = (view.frame.size.width - (flowLayout.minimumInteritemSpacing * (numOfCellsAcross - 1))) / numOfCellsAcross
 
-		flowLayout.itemSize                = CGSizeMake(itemWidth, itemWidth) // yes, a square on purpose
+		flowLayout.itemSize                = CGSize(width: itemWidth, height: itemWidth) // yes, a square on purpose
 		flowLayout.minimumInteritemSpacing = Layout.MinimumInteritemSpacing
 		flowLayout.minimumLineSpacing      = Layout.MinimumInteritemSpacing
-		flowLayout.sectionInset            = UIEdgeInsetsZero
+		flowLayout.sectionInset            = UIEdgeInsets.zero
 	}
 
 }

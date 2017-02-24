@@ -12,7 +12,7 @@ internal struct FlickrPhotoResponseData {
 
 	// MARK: - Private Stored Variables
 
-	private var _photo: JSONDictionary
+	fileprivate var _photo: JSONDictionary
 
 	// MARK: - Internal Computed Variables
 

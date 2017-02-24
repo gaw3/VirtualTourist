@@ -19,40 +19,40 @@ final internal class PhotoCache {
 
 	// MARK: - Private Stored Variables
 
-	private var memoryCache = NSCache()
+	fileprivate var memoryCache = NSCache<AnyObject, AnyObject>()
 
 	// MARK: - Private Computed Variables
 
-	private var fileMgr: NSFileManager {
-		return NSFileManager.defaultManager()
+	fileprivate var fileMgr: FileManager {
+		return FileManager.default
 	}
 
 	// MARK: - API
 
-	internal func imageWithCacheID(id: String) -> UIImage? {
+	internal func imageWithCacheID(_ id: String) -> UIImage? {
 
 		// First try the memory cache
-		if let image = memoryCache.objectForKey(id) as? UIImage {
+		if let image = memoryCache.object(forKey: id as AnyObject) as? UIImage {
 			return image
 		}
 
 		// Next try the hard drive
-		if let data = NSData(contentsOfFile: pathForIdentifier(id)) {
+		if let data = try? Data(contentsOf: URL(fileURLWithPath: pathForIdentifier(id))) {
 			return UIImage(data: data)
 		}
 
 		return nil
 	}
 
-	internal func removeImageWithCacheID(id: String) {
-		memoryCache.removeObjectForKey(id)
+	internal func removeImageWithCacheID(_ id: String) {
+		memoryCache.removeObject(forKey: id as AnyObject)
 
 		let path = pathForIdentifier(id)
 
-		if fileMgr.fileExistsAtPath(path) {
+		if fileMgr.fileExists(atPath: path) {
 
 			do {
-				try fileMgr.removeItemAtPath(path)
+				try fileMgr.removeItem(atPath: path)
 			} catch let error as NSError {
 				print("\(error)")
 			}
@@ -61,13 +61,13 @@ final internal class PhotoCache {
 
 	}
 
-	internal func storeImage(image: UIImage, withCacheID id: String) {
-		memoryCache.setObject(image, forKey: id)
+	internal func storeImage(_ image: UIImage, withCacheID id: String) {
+		memoryCache.setObject(image, forKey: id as AnyObject)
 
 		let imageData = UIImagePNGRepresentation(image)!
 		let path      = pathForIdentifier(id)
 
-		if !imageData.writeToFile(path, atomically: true) {
+		if !((try? imageData.write(to: URL(fileURLWithPath: path), options: [.atomic])) != nil) {
 			print("FAILED adding image to documents = \(path)")
 		}
 
@@ -75,11 +75,11 @@ final internal class PhotoCache {
 
 	// MARK: - Private
 
-	private func pathForIdentifier(identifier: String) -> String {
-		let documentsDirectoryURL = fileMgr.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
-		let fullURL               = documentsDirectoryURL.URLByAppendingPathComponent(identifier)
+	fileprivate func pathForIdentifier(_ identifier: String) -> String {
+		let documentsDirectoryURL = fileMgr.urls(for: .documentDirectory, in: .userDomainMask).first!
+		let fullURL               = documentsDirectoryURL.appendingPathComponent(identifier)
 
-		return fullURL.path!
+		return fullURL.path
 	}
 	
 }

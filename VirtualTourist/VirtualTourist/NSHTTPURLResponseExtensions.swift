@@ -8,14 +8,14 @@
 
 import Foundation
 
-extension NSHTTPURLResponse {
+extension HTTPURLResponse {
 
 	internal enum HTTPStatusCodeClass: Int {
-		case Informational = 1,
-		Successful,
-		Redirection,
-		ClientError,
-		ServerError
+		case informational = 1,
+		successful,
+		redirection,
+		clientError,
+		serverError
 	}
 
 	// MARK: - Internal Computed Variables
@@ -25,7 +25,7 @@ extension NSHTTPURLResponse {
 		if let scClass = HTTPStatusCodeClass.init(rawValue: self.statusCode / 100) {
 			return scClass
 		} else {
-			return .ServerError
+			return .serverError
 		}
 
 	}

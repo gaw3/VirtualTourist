@@ -9,26 +9,26 @@
 import Foundation
 import UIKit
 
-typealias APIDataTaskWithRequestCompletionHandler = (result: AnyObject!, error: NSError?) -> Void
+typealias APIDataTaskWithRequestCompletionHandler = (_ result: AnyObject?, _ error: NSError?) -> Void
 typealias JSONDictionary = [String: AnyObject]
 
 final internal class APIDataTaskWithRequest: NSObject {
 
 	// MARK: - Private Constants
 
-	private struct LocalizedError {
+	fileprivate struct LocalizedError {
 		static let Domain         = "VirtualTouristExternalAPIInterfaceError"
 		static let FlickrHostName = "www.flickr.com"
 	}
 
-	private struct LocalizedErrorCode {
+	fileprivate struct LocalizedErrorCode {
 		static let Network           = 1
 		static let HTTP              = 2
 		static let JSON              = 3
 		static let JSONSerialization = 4
 	}
 
-	private struct LocalizedErrorDescription {
+	fileprivate struct LocalizedErrorDescription {
 		static let Network           = "Network Error"
 		static let HTTP              = "HTTP Error"
 		static let JSON	           = "JSON Error"
@@ -37,23 +37,23 @@ final internal class APIDataTaskWithRequest: NSObject {
 
 	// MARK: - Private Stored Variables
 
-	private var URLRequest:        NSMutableURLRequest
-	private var completionHandler: APIDataTaskWithRequestCompletionHandler
+	fileprivate var URLRequest:        NSMutableURLRequest
+	fileprivate var completionHandler: APIDataTaskWithRequestCompletionHandler
 
 	// MARK: - API
 
-	internal init(URLRequest: NSMutableURLRequest, completionHandler: APIDataTaskWithRequestCompletionHandler) {
+	internal init(URLRequest: NSMutableURLRequest, completionHandler: @escaping APIDataTaskWithRequestCompletionHandler) {
 		self.URLRequest        = URLRequest
 		self.completionHandler = completionHandler
 
 		super.init()
 	}
 
-	internal func getImageDownloadTask() -> NSURLSessionTask {
+	internal func getImageDownloadTask() -> URLSessionTask {
 
-		let task = NSURLSession.sharedSession().dataTaskWithRequest(URLRequest) { (rawImageData, HTTPResponse, URLSessionError) in
+		let task = URLSession.shared.dataTask(with: URLRequest, completionHandler: { (rawImageData, HTTPResponse, URLSessionError) in
 
-			dispatch_async(dispatch_get_main_queue(), {
+			DispatchQueue.main.async(execute: {
 				NetworkActivityIndicatorManager.sharedManager.endActivity()
 			})
 
@@ -65,10 +65,10 @@ final internal class APIDataTaskWithRequest: NSObject {
 				return
 			}
 
-			let HTTPURLResponse = HTTPResponse as? NSHTTPURLResponse
+			let HTTPURLResponse = HTTPResponse as? Foundation.HTTPURLResponse
 
-			guard HTTPURLResponse?.statusCodeClass == .Successful else {
-				let HTTPStatusText = NSHTTPURLResponse.localizedStringForStatusCode((HTTPURLResponse?.statusCode)!)
+			guard HTTPURLResponse?.statusCodeClass == .successful else {
+				let HTTPStatusText = Foundation.HTTPURLResponse.localizedString(forStatusCode: (HTTPURLResponse?.statusCode)!)
 				let failureReason  = "HTTP status code = \(HTTPURLResponse?.statusCode), HTTP status text = \(HTTPStatusText)"
 				let userInfo       = [NSLocalizedDescriptionKey: LocalizedErrorDescription.HTTP, NSLocalizedFailureReasonErrorKey: failureReason]
 				let error          = NSError(domain: LocalizedError.Domain, code: LocalizedErrorCode.HTTP, userInfo: userInfo)
@@ -91,7 +91,7 @@ final internal class APIDataTaskWithRequest: NSObject {
 				return
 			}
 			
-		}
+		}) 
 
 		NetworkActivityIndicatorManager.sharedManager.startActivity()
 		task.resume()
@@ -100,9 +100,9 @@ final internal class APIDataTaskWithRequest: NSObject {
 
 	internal func resume() {
 
-		let task = NSURLSession.sharedSession().dataTaskWithRequest(URLRequest) { (rawJSONResponse, HTTPResponse, URLSessionError) in
+		let task = URLSession.shared.dataTask(with: URLRequest, completionHandler: { (rawJSONResponse, HTTPResponse, URLSessionError) in
 
-			dispatch_async(dispatch_get_main_queue(), {
+			DispatchQueue.main.async(execute: {
 				NetworkActivityIndicatorManager.sharedManager.endActivity()
 			})
 
@@ -114,10 +114,10 @@ final internal class APIDataTaskWithRequest: NSObject {
 				return
 			}
 
-			let HTTPURLResponse = HTTPResponse as? NSHTTPURLResponse
+			let HTTPURLResponse = HTTPResponse as? Foundation.HTTPURLResponse
 
-			guard HTTPURLResponse?.statusCodeClass == .Successful else {
-				let HTTPStatusText = NSHTTPURLResponse.localizedStringForStatusCode((HTTPURLResponse?.statusCode)!)
+			guard HTTPURLResponse?.statusCodeClass == .successful else {
+				let HTTPStatusText = Foundation.HTTPURLResponse.localizedString(forStatusCode: (HTTPURLResponse?.statusCode)!)
 				let failureReason  = "HTTP status code = \(HTTPURLResponse?.statusCode), HTTP status text = \(HTTPStatusText)"
 				let userInfo       = [NSLocalizedDescriptionKey: LocalizedErrorDescription.HTTP, NSLocalizedFailureReasonErrorKey: failureReason]
 				let error          = NSError(domain: LocalizedError.Domain, code: LocalizedErrorCode.HTTP, userInfo: userInfo)
@@ -135,7 +135,7 @@ final internal class APIDataTaskWithRequest: NSObject {
 			}
 
 			do {
-				let JSONData = try NSJSONSerialization.JSONObjectWithData(rawJSONResponse, options: .AllowFragments) as! JSONDictionary
+				let JSONData = try JSONSerialization.jsonObject(with: rawJSONResponse, options: .allowFragments) as! JSONDictionary
 
 				self.completeWithHandler(self.completionHandler, result: JSONData, error: nil)
 			} catch let JSONError as NSError {
@@ -146,7 +146,7 @@ final internal class APIDataTaskWithRequest: NSObject {
 				return
 			}
 
-		}
+		}) 
 
 		NetworkActivityIndicatorManager.sharedManager.startActivity()
 		task.resume()
@@ -154,10 +154,10 @@ final internal class APIDataTaskWithRequest: NSObject {
 
 	// MARK: - Private
 
-	private func completeWithHandler(completionHandler: APIDataTaskWithRequestCompletionHandler, result: AnyObject!, error: NSError?) {
+	fileprivate func completeWithHandler(_ completionHandler: @escaping APIDataTaskWithRequestCompletionHandler, result: AnyObject!, error: NSError?) {
 
-		dispatch_async(dispatch_get_main_queue()) {
-			completionHandler(result: result, error: error)
+		DispatchQueue.main.async {
+			completionHandler(result, error)
 		}
 		
 	}
