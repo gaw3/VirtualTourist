@@ -14,27 +14,6 @@ import UIKit
 
 final class TravelogueViewController: UIViewController, NSFetchedResultsControllerDelegate {
     
-    // MARK: - Constants
-    
-    struct UI {
-        static let StoryboardID = "TravelogueVC"
-    }
-    
-    // MARK: - Private Constants
-    
-    fileprivate struct Alert {
-        
-        struct Message {
-            static let NoJSONData = "JSON data unavailable"
-        }
-        
-        struct Title {
-            static let BadFetch = "Unable to access app database"
-            static let NoPhotos = "Unable to obtain photos"
-        }
-        
-    }
-    
     fileprivate struct Alpha {
         static let Full:                   CGFloat = 1.0
         static let ReducedForSelectedCell: CGFloat = 0.3
@@ -133,7 +112,7 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
     // MARK: - MKMapViewDelegate
     
     func mapView(_ mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
-        var tlPinAnnoView = mapView.dequeueReusableAnnotationView(withIdentifier: TravelLocationPinAnnotationView.UI.ReuseID) as? TravelLocationPinAnnotationView
+        var tlPinAnnoView = mapView.dequeueReusableAnnotationView(withIdentifier: IB.ReuseID.TravelLocsPinAnnoView) as? TravelLocationPinAnnotationView
         
         if let _ = tlPinAnnoView {
             tlPinAnnoView!.annotation = annotation as! MKPointAnnotation
@@ -168,7 +147,7 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
     func collectionView(_ collectionView: UICollectionView, cellForItemAtIndexPath indexPath: IndexPath) -> UICollectionViewCell {
         assert(collectionView == self.collectionView, "Unexpected collection view reqesting cell of item at index path")
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TravelogueCollectionViewCell.UI.ReuseID, for: indexPath) as! TravelogueCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: IB.ReuseID.TravelogueCollectionViewCell, for: indexPath) as! TravelogueCollectionViewCell
         configureCell(cell, atIndexPath: indexPath)
         
         return cell

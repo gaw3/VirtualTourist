@@ -10,12 +10,6 @@ import UIKit
 
 final class TravelogueCollectionViewCell: UICollectionViewCell {
     
-    // MARK: - Constants
-    
-    struct UI {
-        static let ReuseID = "TravelogueCollectionViewCell"
-    }
-    
     // MARK: - Variables
     
     var title:     String?
@@ -37,5 +31,5 @@ final class TravelogueCollectionViewCell: UICollectionViewCell {
     // MARK: - IB Outlets
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    @IBOutlet weak var imageView:			  UIImageView!
+    @IBOutlet weak var imageView:		  UIImageView!
 }

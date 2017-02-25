@@ -13,16 +13,10 @@ import UIKit
 
 final class TravelLocationPinAnnotationView: MKPinAnnotationView {
     
-    // MARK: - Constants
-    
-    struct UI {
-        static let ReuseID = "TravelLocsPinAnnoViewReuseID"
-    }
-    
     // MARK: - API
     
     init(annotation: MKPointAnnotation) {
-        super.init(annotation: annotation, reuseIdentifier: UI.ReuseID)
+        super.init(annotation: annotation, reuseIdentifier: IB.ReuseID.TravelLocsPinAnnoView)
         
         animatesDrop   = true
         canShowCallout = false

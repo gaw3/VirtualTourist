@@ -13,25 +13,6 @@ import UIKit
 
 final class TravelLocationsMapViewController: UIViewController, NSFetchedResultsControllerDelegate {
     
-    // MARK: - Private Constants
-    
-    fileprivate struct Alert {
-        
-        struct Message {
-            //			static let NoPlacemarks      = "Did not receive any placemarks"
-            static let TapDoneButton     = "Tap the Done button when finished"
-            static let WhileInDeleteMode = "While in Pin Deletion Mode"
-        }
-        
-        struct Title {
-            //			static let BadGeocode    = "Unable to geocode location"
-            static let BadFetch      = "Unable to access app database"
-            static let TapPins       = "Tap Pins to Delete"
-            static let CannotDropPin = "Cannot Drop Pin"
-        }
-        
-    }
-    
     fileprivate struct SEL {
         static let TrashButtonTapped = #selector(TravelLocationsMapViewController.trashButtonWasTapped)
         static let DoneButtonTapped  = #selector(TravelLocationsMapViewController.doneButtonWasTapped)
@@ -152,7 +133,7 @@ final class TravelLocationsMapViewController: UIViewController, NSFetchedResults
             }
             
         } else {
-            let travelogueVC = self.storyboard?.instantiateViewController(withIdentifier: TravelogueViewController.UI.StoryboardID) as! TravelogueViewController
+            let travelogueVC = self.storyboard?.instantiateViewController(withIdentifier: IB.StoryboardID.TravelogueVC) as! TravelogueViewController
             
             travelogueVC.coordinate = tlpAnnotation!.coordinate
             navigationController?.pushViewController(travelogueVC, animated: true)
@@ -163,7 +144,7 @@ final class TravelLocationsMapViewController: UIViewController, NSFetchedResults
     func mapView(_ mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
         assert(mapView == self.mapView, "Unexpected map view requesting view for annotation")
         
-        var tlPinAnnoView = mapView.dequeueReusableAnnotationView(withIdentifier: TravelLocationPinAnnotationView.UI.ReuseID) as? TravelLocationPinAnnotationView
+        var tlPinAnnoView = mapView.dequeueReusableAnnotationView(withIdentifier: IB.ReuseID.TravelLocsPinAnnoView) as? TravelLocationPinAnnotationView
         
         if let _ = tlPinAnnoView {
             tlPinAnnoView!.annotation = annotation as! MKPointAnnotation
