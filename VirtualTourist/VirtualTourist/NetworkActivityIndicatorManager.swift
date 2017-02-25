@@ -9,12 +9,12 @@
 import Foundation
 import UIKit
 
-private let _sharedClient = NetworkActivityIndicatorManager()
+private let _shared = NetworkActivityIndicatorManager()
 
 final class NetworkActivityIndicatorManager: NSObject {
     
-    class var sharedManager: NetworkActivityIndicatorManager {
-        return _sharedClient
+    class var shared: NetworkActivityIndicatorManager {
+        return _shared
     }
     
     // MARK: - Private Constants

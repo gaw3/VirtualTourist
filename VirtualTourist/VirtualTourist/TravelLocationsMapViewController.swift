@@ -45,7 +45,7 @@ final class TravelLocationsMapViewController: UIViewController, NSFetchedResults
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: VirtualTouristTravelLocation.Consts.EntityName)
         fetchRequest.sortDescriptors = []
         
-        let frc = NSFetchedResultsController<NSFetchRequestResult>(fetchRequest: fetchRequest, managedObjectContext: CoreDataManager.sharedManager.moc, sectionNameKeyPath: nil, cacheName: nil)
+        let frc = NSFetchedResultsController<NSFetchRequestResult>(fetchRequest: fetchRequest, managedObjectContext: CoreDataManager.shared.moc, sectionNameKeyPath: nil, cacheName: nil)
         frc.delegate = self
         
         return frc
@@ -87,8 +87,8 @@ final class TravelLocationsMapViewController: UIViewController, NSFetchedResults
                 presentAlert(Alert.Title.CannotDropPin, message: Alert.Message.WhileInDeleteMode)
             } else {
                 let coord = mapView.convert(gesture.location(in: mapView), toCoordinateFrom: mapView)
-                _ = VirtualTouristTravelLocation(coordinate: coord, context: CoreDataManager.sharedManager.moc)
-                CoreDataManager.sharedManager.saveContext()
+                _ = VirtualTouristTravelLocation(coordinate: coord, context: CoreDataManager.shared.moc)
+                CoreDataManager.shared.saveContext()
             }
             
         }
@@ -147,8 +147,8 @@ final class TravelLocationsMapViewController: UIViewController, NSFetchedResults
             
             if let travelLocation = getTravelLocation(tlpAnnotation!.coordinate) {
                 deleteAssociatedPhotos(travelLocation)
-                CoreDataManager.sharedManager.moc.delete(travelLocation)
-                CoreDataManager.sharedManager.saveContext()
+                CoreDataManager.shared.moc.delete(travelLocation)
+                CoreDataManager.shared.saveContext()
             }
             
         } else {
@@ -182,15 +182,15 @@ final class TravelLocationsMapViewController: UIViewController, NSFetchedResults
         photosFetchRequest.predicate = NSPredicate(format: CoreDataManager.Predicate.PhotosByLocation, travelLocation)
         
         do {
-            let fetchedPhotos = try CoreDataManager.sharedManager.moc.fetch(photosFetchRequest) as! [VirtualTouristPhoto]
+            let fetchedPhotos = try CoreDataManager.shared.moc.fetch(photosFetchRequest) as! [VirtualTouristPhoto]
             
             if !fetchedPhotos.isEmpty {
                 
                 for vtPhoto in fetchedPhotos {
-                    CoreDataManager.sharedManager.moc.delete(vtPhoto)
+                    CoreDataManager.shared.moc.delete(vtPhoto)
                 }
                 
-                CoreDataManager.sharedManager.saveContext()
+                CoreDataManager.shared.saveContext()
             }
             
         } catch let error as NSError {
@@ -206,7 +206,7 @@ final class TravelLocationsMapViewController: UIViewController, NSFetchedResults
         fetchRequest.predicate       = NSPredicate(format: CoreDataManager.Predicate.LocationByLatLong, coordinate.latitude, coordinate.longitude)
         
         do {
-            let travelLocations = try CoreDataManager.sharedManager.moc.fetch(fetchRequest) as! [VirtualTouristTravelLocation]
+            let travelLocations = try CoreDataManager.shared.moc.fetch(fetchRequest) as! [VirtualTouristTravelLocation]
             
             if !travelLocations.isEmpty { return travelLocations[0] }
             else                        { return nil }

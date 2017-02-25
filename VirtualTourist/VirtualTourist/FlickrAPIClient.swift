@@ -9,12 +9,12 @@
 import CoreLocation
 import Foundation
 
-private let _sharedClient = FlickrAPIClient()
+private let _shared = FlickrAPIClient()
 
 final class FlickrAPIClient: NSObject {
     
-    class var sharedClient: FlickrAPIClient {
-        return _sharedClient
+    class var shared: FlickrAPIClient {
+        return _shared
     }
     
     // MARK: - Constants

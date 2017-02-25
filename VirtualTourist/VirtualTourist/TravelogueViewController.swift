@@ -66,7 +66,7 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
         photosFetchRequest.sortDescriptors = [NSSortDescriptor(key: CoreDataManager.SortKey.Title, ascending: true)]
         photosFetchRequest.predicate = NSPredicate(format: CoreDataManager.Predicate.PhotosByLocation, self.travelLocation!)
         
-        let frc = NSFetchedResultsController<NSFetchRequestResult>(fetchRequest: photosFetchRequest, managedObjectContext: CoreDataManager.sharedManager.moc, sectionNameKeyPath: nil, cacheName: nil)
+        let frc = NSFetchedResultsController<NSFetchRequestResult>(fetchRequest: photosFetchRequest, managedObjectContext: CoreDataManager.shared.moc, sectionNameKeyPath: nil, cacheName: nil)
         frc.delegate = self
         
         return frc
@@ -102,7 +102,7 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
                 try frc.performFetch()
                 
                 if frc.fetchedObjects!.isEmpty {
-                    flickrClient.searchPhotosByLocation(travelLocation!, completionHandler: searchPhotosByLocationCompletionHandler)
+                    FlickrAPIClient.shared.searchPhotosByLocation(travelLocation!, completionHandler: searchPhotosByLocationCompletionHandler)
                 }
                 
             } catch let error as NSError {
@@ -273,13 +273,13 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
                     self.travelLocation?.page = NSNumber(value: responseData.page)
                     
                     for photoResponseData in responseData.photoArray {
-                        let photo = VirtualTouristPhoto(responseData: photoResponseData, context: CoreDataManager.sharedManager.moc)
+                        let photo = VirtualTouristPhoto(responseData: photoResponseData, context: CoreDataManager.shared.moc)
                         photo.location = self.travelLocation!
                     }
                     
                 }
                 
-                CoreDataManager.sharedManager.saveContext()
+                CoreDataManager.shared.saveContext()
                 self.collectionView?.reloadData()
             })
             
@@ -304,7 +304,7 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
             return
         }
         
-        let downloadTask = flickrClient.getRemotePhoto(vtPhoto, completionHandler: getRemoteImageCompletionHandler(vtPhoto, cellForPhoto: cell))
+        let downloadTask = FlickrAPIClient.shared.getRemotePhoto(vtPhoto, completionHandler: getRemoteImageCompletionHandler(vtPhoto, cellForPhoto: cell))
         cell.taskToCancelIfCellIsReused = downloadTask
     }
     
@@ -312,10 +312,10 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
         let vtPhotos = frc.fetchedObjects as! [VirtualTouristPhoto]
         
         for photoIndex in selectedPhotos {
-            CoreDataManager.sharedManager.moc.delete(vtPhotos[photoIndex.row])
+            CoreDataManager.shared.moc.delete(vtPhotos[photoIndex.row])
         }
         
-        CoreDataManager.sharedManager.saveContext()
+        CoreDataManager.shared.saveContext()
         
         collectionView!.performBatchUpdates({() -> Void in
             self.collectionView!.deleteItems(at: self.selectedPhotos)
@@ -330,12 +330,12 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
     fileprivate func getNewCollection() {
         
         for vtPhoto in frc.fetchedObjects as! [VirtualTouristPhoto] {
-            CoreDataManager.sharedManager.moc.delete(vtPhoto)
+            CoreDataManager.shared.moc.delete(vtPhoto)
         }
         
-        CoreDataManager.sharedManager.saveContext()
+        CoreDataManager.shared.saveContext()
         collectionView!.reloadData()
-        flickrClient.searchPhotosByLocation(travelLocation!, completionHandler: searchPhotosByLocationCompletionHandler)
+        FlickrAPIClient.shared.searchPhotosByLocation(travelLocation!, completionHandler: searchPhotosByLocationCompletionHandler)
     }
     
     fileprivate func getTravelLocation() -> VirtualTouristTravelLocation? {
@@ -345,7 +345,7 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
         fetchRequest.predicate       = NSPredicate(format: CoreDataManager.Predicate.LocationByLatLong, coordinate!.latitude, coordinate!.longitude)
         
         do {
-            let travelLocations = try CoreDataManager.sharedManager.moc.fetch(fetchRequest) as! [VirtualTouristTravelLocation]
+            let travelLocations = try CoreDataManager.shared.moc.fetch(fetchRequest) as! [VirtualTouristTravelLocation]
             
             if !travelLocations.isEmpty { return travelLocations[0] }
             else                        { return nil }

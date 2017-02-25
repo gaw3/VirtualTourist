@@ -9,12 +9,12 @@
 import CoreData
 import Foundation
 
-private let _sharedManager = CoreDataManager()
+private let _shared = CoreDataManager()
 
 final class CoreDataManager: NSObject {
     
-    class var sharedManager: CoreDataManager {
-        return _sharedManager
+    class var shared: CoreDataManager {
+        return _shared
     }
     
     // MARK: - Constants

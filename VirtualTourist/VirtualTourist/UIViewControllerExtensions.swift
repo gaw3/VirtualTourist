@@ -17,16 +17,6 @@ extension UIViewController {
         static let ActionTitle = "OK"
     }
     
-    // MARK: - Variables
-    
-    var flickrClient: FlickrAPIClient {
-        return FlickrAPIClient.sharedClient
-    }
-    
-    var nai: NetworkActivityIndicatorManager {
-        return NetworkActivityIndicatorManager.sharedManager
-    }
-    
     // MARK: - API
     
     func presentAlert(_ title: String, message: String) {
