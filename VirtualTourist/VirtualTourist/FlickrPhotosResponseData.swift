@@ -15,8 +15,6 @@ struct FlickrPhotosResponseData {
     fileprivate var _photos: JSONDictionary
     fileprivate var _stat:   String
     
-    // MARK: - Variables
-    
     var isStatusOK: Bool {
         return _stat == FlickrAPIClient.API.StatusValueOK
     }

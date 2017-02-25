@@ -11,7 +11,7 @@ import Foundation
 
 private let _shared = FlickrAPIClient()
 
-final class FlickrAPIClient: NSObject {
+final class FlickrAPIClient {
     
     class var shared: FlickrAPIClient {
         return _shared
@@ -30,16 +30,21 @@ final class FlickrAPIClient: NSObject {
         static let URLKey        = "url_m"
     }
     
-    // MARK: - Private Constants
-    
     fileprivate struct HTTP {
         static let GETMethod       = "GET"
         static let RESTServicesURL = "https://api.flickr.com/services/rest/"
     }
     
-    // MARK: - API
-    
-    func searchPhotosByLocation(_ travelLocation: VirtualTouristTravelLocation, completionHandler: @escaping APIDataTaskWithRequestCompletionHandler) {
+}
+
+
+
+// MARK: -
+// MARK: - API
+
+extension FlickrAPIClient {
+
+    func searchPhotos(at travelLocation: VirtualTouristTravelLocation, completionHandler: @escaping APIDataTaskWithRequestCompletionHandler) {
         var components = URLComponents(string: HTTP.RESTServicesURL)
         components!.query = travelLocation.searchQuery
         
@@ -50,7 +55,7 @@ final class FlickrAPIClient: NSObject {
         dataTaskWithRequest.resume()
     }
     
-    func getRemotePhoto(_ vtPhoto: VirtualTouristPhoto, completionHandler: @escaping APIDataTaskWithRequestCompletionHandler) -> URLSessionTask {
+    func downloadPhoto(_ vtPhoto: VirtualTouristPhoto, completionHandler: @escaping APIDataTaskWithRequestCompletionHandler) -> URLSessionTask {
         let components = URLComponents(string: vtPhoto.imageURLString)
         let URLRequest = NSMutableURLRequest(url: components!.url!)
         URLRequest.httpMethod = HTTP.GETMethod

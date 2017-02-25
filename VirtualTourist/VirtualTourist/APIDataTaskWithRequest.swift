@@ -12,9 +12,9 @@ import UIKit
 typealias APIDataTaskWithRequestCompletionHandler = (_ result: AnyObject?, _ error: NSError?) -> Void
 typealias JSONDictionary = [String: AnyObject]
 
-final class APIDataTaskWithRequest: NSObject {
+final class APIDataTaskWithRequest {
     
-    // MARK: - Private Constants
+    // MARK: - Constants
     
     fileprivate struct LocalizedError {
         static let Domain         = "VirtualTouristExternalAPIInterfaceError"
@@ -31,24 +31,31 @@ final class APIDataTaskWithRequest: NSObject {
     fileprivate struct LocalizedErrorDescription {
         static let Network           = "Network Error"
         static let HTTP              = "HTTP Error"
-        static let JSON	           = "JSON Error"
+        static let JSON	             = "JSON Error"
         static let JSONSerialization = "JSON JSONSerialization Error"
     }
     
-    // MARK: - Private Stored Variables
+    // MARK: - Variables
     
     fileprivate var urlRequest:        NSMutableURLRequest
     fileprivate var completionHandler: APIDataTaskWithRequestCompletionHandler
     
-    // MARK: - API
+    // MARK: - Init
     
     init(urlRequest: NSMutableURLRequest, completionHandler: @escaping APIDataTaskWithRequestCompletionHandler) {
         self.urlRequest        = urlRequest
         self.completionHandler = completionHandler
-        
-        super.init()
     }
     
+}
+
+
+
+// MARK: -
+// MARK: - API
+
+extension APIDataTaskWithRequest {
+
     func getImageDownloadTask() -> URLSessionTask {
         
         let task = URLSession.shared.dataTask(with: urlRequest as URLRequest, completionHandler: { (rawImageData, HTTPResponse, URLSessionError) in
@@ -146,15 +153,22 @@ final class APIDataTaskWithRequest: NSObject {
                 return
             }
             
-        }) 
+        })
         
         NetworkActivityIndicatorManager.shared.begin()
         task.resume()
     }
     
-    // MARK: - Private
-    
-    fileprivate func completeWithHandler(_ completionHandler: @escaping APIDataTaskWithRequestCompletionHandler, result: AnyObject!, error: NSError?) {
+}
+
+
+
+// MARK: -
+// MARK: - Private Helpers
+
+private extension APIDataTaskWithRequest {
+
+    func completeWithHandler(_ completionHandler: @escaping APIDataTaskWithRequestCompletionHandler, result: AnyObject!, error: NSError?) {
         
         DispatchQueue.main.async {
             completionHandler(result, error)
@@ -163,3 +177,5 @@ final class APIDataTaskWithRequest: NSObject {
     }
     
 }
+
+

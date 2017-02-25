@@ -81,7 +81,7 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
                 try frc.performFetch()
                 
                 if frc.fetchedObjects!.isEmpty {
-                    FlickrAPIClient.shared.searchPhotosByLocation(travelLocation!, completionHandler: searchPhotosByLocationCompletionHandler)
+                    FlickrAPIClient.shared.searchPhotos(at: travelLocation!, completionHandler: searchPhotosByLocationCompletionHandler)
                 }
                 
             } catch let error as NSError {
@@ -283,7 +283,7 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
             return
         }
         
-        let downloadTask = FlickrAPIClient.shared.getRemotePhoto(vtPhoto, completionHandler: getRemoteImageCompletionHandler(vtPhoto, cellForPhoto: cell))
+        let downloadTask = FlickrAPIClient.shared.downloadPhoto(vtPhoto, completionHandler: getRemoteImageCompletionHandler(vtPhoto, cellForPhoto: cell))
         cell.taskToCancelIfCellIsReused = downloadTask
     }
     
@@ -314,7 +314,7 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
         
         CoreDataManager.shared.saveContext()
         collectionView!.reloadData()
-        FlickrAPIClient.shared.searchPhotosByLocation(travelLocation!, completionHandler: searchPhotosByLocationCompletionHandler)
+        FlickrAPIClient.shared.searchPhotos(at: travelLocation!, completionHandler: searchPhotosByLocationCompletionHandler)
     }
     
     fileprivate func getTravelLocation() -> VirtualTouristTravelLocation? {

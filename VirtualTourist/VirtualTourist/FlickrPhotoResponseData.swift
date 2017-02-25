@@ -14,8 +14,6 @@ struct FlickrPhotoResponseData {
     
     fileprivate var _photo: JSONDictionary
     
-    // MARK: - Variables
-    
     var title: String {
         return _photo[FlickrAPIClient.API.TitleKey] as! String
     }
