@@ -16,10 +16,12 @@ final class PhotoCache {
         return _shared
     }
     
-    // MARK: -Variables
+    // MARK: - Variables
     
     fileprivate var cache = NSCache<AnyObject, AnyObject>()
 }
+
+
 
 // MARK: -
 // MARK: - API

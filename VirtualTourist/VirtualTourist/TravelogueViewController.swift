@@ -13,13 +13,7 @@ import MapKit
 import UIKit
 
 final class TravelogueViewController: UIViewController {
-    
-    
-    
-//    fileprivate var photoCache: PhotoCache {
-//        return PhotoCache.shared
-//    }
-    
+        
     // MARK: - IB Outlets
     
     @IBOutlet weak var collectionView: UICollectionView!
