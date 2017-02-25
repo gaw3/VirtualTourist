@@ -11,70 +11,39 @@ import UIKit
 
 private let _shared = NetworkActivityIndicatorManager()
 
-final class NetworkActivityIndicatorManager: NSObject {
+final class NetworkActivityIndicatorManager {
     
     class var shared: NetworkActivityIndicatorManager {
         return _shared
     }
     
-    // MARK: - Private Constants
+    // MARK: - Constants
     
     fileprivate struct QName {
         static let NAIUpdateQueue = "com.gaw3.OnTheMap.NetworkActivityIndicatorUpdateQueue"
     }
     
-    // MARK: - Private Stored Variables
+    // MARK: - Variables
     
     fileprivate var numOfUpdateTasks      = 0
     fileprivate let concurrentUpdateQueue = DispatchQueue(label: QName.NAIUpdateQueue, attributes: DispatchQueue.Attributes.concurrent)
+}
+
+
+
+// MARK: -
+// MARK: - API
+
+extension NetworkActivityIndicatorManager {
     
-    // MARK: - Private Computed Variables
-    
-    fileprivate var app: UIApplication {
-        return UIApplication.shared
-    }
-    
-    // MARK: - API
-    
-    func completeAllActivities() {
+    func begin() {
         
         concurrentUpdateQueue.sync(execute: {
             
-            if !self.app.isStatusBarHidden {
-                self.app.isNetworkActivityIndicatorVisible = false
-                self.numOfUpdateTasks = 0
-            }
-            
-        })
-        
-    }
-    
-    func endActivity() {
-        
-        concurrentUpdateQueue.sync(execute: {
-            
-            if !self.app.isStatusBarHidden {
-                self.numOfUpdateTasks -= 1
+            if !UIApplication.shared.isStatusBarHidden {
                 
-                if self.numOfUpdateTasks <= 0 {
-                    self.app.isNetworkActivityIndicatorVisible = false
-                    self.numOfUpdateTasks = 0
-                }
-                
-            }
-            
-        })
-        
-    }
-    
-    func startActivity() {
-        
-        concurrentUpdateQueue.sync(execute: {
-            
-            if !self.app.isStatusBarHidden {
-                
-                if !self.app.isNetworkActivityIndicatorVisible {
-                    self.app.isNetworkActivityIndicatorVisible = true
+                if !UIApplication.shared.isNetworkActivityIndicatorVisible {
+                    UIApplication.shared.isNetworkActivityIndicatorVisible = true
                     self.numOfUpdateTasks = 0
                 }
                 
@@ -85,10 +54,22 @@ final class NetworkActivityIndicatorManager: NSObject {
         
     }
     
-    // MARK: - Private
-    
-    override fileprivate init() {
-        super.init()
+    func end() {
+        
+        concurrentUpdateQueue.sync(execute: {
+            
+            if !UIApplication.shared.isStatusBarHidden {
+                self.numOfUpdateTasks -= 1
+                
+                if self.numOfUpdateTasks <= 0 {
+                    UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                    self.numOfUpdateTasks = 0
+                }
+                
+            }
+            
+        })
+        
     }
     
 }

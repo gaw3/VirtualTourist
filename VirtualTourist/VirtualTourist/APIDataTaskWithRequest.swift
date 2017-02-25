@@ -54,7 +54,7 @@ final class APIDataTaskWithRequest: NSObject {
         let task = URLSession.shared.dataTask(with: urlRequest as URLRequest, completionHandler: { (rawImageData, HTTPResponse, URLSessionError) in
             
             DispatchQueue.main.async(execute: {
-                NetworkActivityIndicatorManager.shared.endActivity()
+                NetworkActivityIndicatorManager.shared.end()
             })
             
             guard URLSessionError == nil else {
@@ -93,7 +93,7 @@ final class APIDataTaskWithRequest: NSObject {
             
         })
         
-        NetworkActivityIndicatorManager.shared.startActivity()
+        NetworkActivityIndicatorManager.shared.begin()
         task.resume()
         return task
     }
@@ -103,7 +103,7 @@ final class APIDataTaskWithRequest: NSObject {
         let task = URLSession.shared.dataTask(with: urlRequest as URLRequest, completionHandler: { (rawJSONResponse, HTTPResponse, URLSessionError) in
             
             DispatchQueue.main.async(execute: {
-                NetworkActivityIndicatorManager.shared.endActivity()
+                NetworkActivityIndicatorManager.shared.end()
             })
             
             guard URLSessionError == nil else {
@@ -148,7 +148,7 @@ final class APIDataTaskWithRequest: NSObject {
             
         }) 
         
-        NetworkActivityIndicatorManager.shared.startActivity()
+        NetworkActivityIndicatorManager.shared.begin()
         task.resume()
     }
     
