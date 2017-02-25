@@ -10,12 +10,15 @@ import UIKit
 
 final class TravelogueCollectionViewCell: UICollectionViewCell {
     
+    // MARK: - IB Outlets
+    
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var imageView:		  UIImageView!
+    
     // MARK: - Variables
     
     var title:     String?
     var URLString: String?
-    
-    // MARK: - Variables
     
     var taskToCancelIfCellIsReused: URLSessionTask? {
         
@@ -28,8 +31,4 @@ final class TravelogueCollectionViewCell: UICollectionViewCell {
         
     }
     
-    // MARK: - IB Outlets
-    
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    @IBOutlet weak var imageView:		  UIImageView!
 }
