@@ -11,19 +11,19 @@ import Foundation
 
 private let _sharedManager = CoreDataManager()
 
-final internal class CoreDataManager: NSObject {
+final class CoreDataManager: NSObject {
 
-	class internal var sharedManager: CoreDataManager {
+	class var sharedManager: CoreDataManager {
 		return _sharedManager
 	}
 
-	// MARK: - Internal Constants
+	// MARK: - Constants
 
-	internal struct SortKey {
+	struct SortKey {
 		static let Title = "title"
 	}
 
-	internal struct Predicate {
+	struct Predicate {
 		static let LocationByLatLong = "latitude == %lf and longitude == %lf"
 		static let PhotosByLocation  = "location == %@"
 	}
@@ -36,24 +36,24 @@ final internal class CoreDataManager: NSObject {
 		static let ModelExtension = "momd"
 	}
 	
-	// MARK: - Internal Computed Variables
+	// MARK: - Variables
 
-	lazy internal var appDocsDir: URL = {
+	lazy var appDocsDir: URL = {
 		return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
 	}()
 
-	lazy internal var moc: NSManagedObjectContext = {
+	lazy var moc: NSManagedObjectContext = {
 		let moc = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
 		moc.persistentStoreCoordinator = self.psc
 		return moc
 	}()
 
-	lazy internal var mom: NSManagedObjectModel = {
+	lazy var mom: NSManagedObjectModel = {
 		let modelURL = Bundle.main.url(forResource: Consts.ModelName, withExtension: Consts.ModelExtension)!
 		return NSManagedObjectModel(contentsOf: modelURL)!
 	}()
 
-	lazy internal var psc: NSPersistentStoreCoordinator? = {
+	lazy var psc: NSPersistentStoreCoordinator? = {
 		let psc    = NSPersistentStoreCoordinator(managedObjectModel: self.mom)
 		let pscURL = self.appDocsDir.appendingPathComponent(Consts.DBFilename)
 
@@ -69,7 +69,7 @@ final internal class CoreDataManager: NSObject {
 
 	// MARK: - API
 
-	internal func saveContext() {
+	func saveContext() {
 
 		if moc.hasChanges {
 

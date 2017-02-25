@@ -11,11 +11,11 @@ import Foundation
 import MapKit
 import UIKit
 
-final internal class TravelLocationPinAnnotationView: MKPinAnnotationView {
+final class TravelLocationPinAnnotationView: MKPinAnnotationView {
 
-	// MARK: - Internal Constants
+	// MARK: - Constants
 
-	internal struct UI {
+	struct UI {
 		static let ReuseID = "TravelLocsPinAnnoViewReuseID"
 	}
 

@@ -8,25 +8,25 @@
 
 import Foundation
 
-internal struct FlickrPhotoResponseData {
+struct FlickrPhotoResponseData {
 
-	// MARK: - Private Stored Variables
+	// MARK: - Variables
 
 	fileprivate var _photo: JSONDictionary
 
-	// MARK: - Internal Computed Variables
+	// MARK: - Variables
 
-	internal var title: String {
+	var title: String {
 		return _photo[FlickrAPIClient.API.TitleKey] as! String
 	}
 
-	internal var url_m: String {
+	var url_m: String {
 		return _photo[FlickrAPIClient.API.URLKey] as! String
 	}
 
 	// MARK: - API
 
-	internal init(dictionary: JSONDictionary) {
+	init(dictionary: JSONDictionary) {
       _photo = dictionary
 	}
 

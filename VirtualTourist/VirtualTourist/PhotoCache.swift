@@ -11,9 +11,9 @@ import UIKit
 
 private let _sharedCache = PhotoCache()
 
-final internal class PhotoCache {
+final class PhotoCache {
 
-	class internal var sharedCache: PhotoCache {
+	class var sharedCache: PhotoCache {
 		return _sharedCache
 	}
 
@@ -29,7 +29,7 @@ final internal class PhotoCache {
 
 	// MARK: - API
 
-	internal func imageWithCacheID(_ id: String) -> UIImage? {
+	func imageWithCacheID(_ id: String) -> UIImage? {
 
 		// First try the memory cache
 		if let image = memoryCache.object(forKey: id as AnyObject) as? UIImage {
@@ -44,7 +44,7 @@ final internal class PhotoCache {
 		return nil
 	}
 
-	internal func removeImageWithCacheID(_ id: String) {
+	func removeImageWithCacheID(_ id: String) {
 		memoryCache.removeObject(forKey: id as AnyObject)
 
 		let path = pathForIdentifier(id)
@@ -61,7 +61,7 @@ final internal class PhotoCache {
 
 	}
 
-	internal func storeImage(_ image: UIImage, withCacheID id: String) {
+	func storeImage(_ image: UIImage, withCacheID id: String) {
 		memoryCache.setObject(image, forKey: id as AnyObject)
 
 		let imageData = UIImagePNGRepresentation(image)!

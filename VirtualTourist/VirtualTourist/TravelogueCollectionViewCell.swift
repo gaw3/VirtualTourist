@@ -8,20 +8,20 @@
 
 import UIKit
 
-final internal class TravelogueCollectionViewCell: UICollectionViewCell {
+final class TravelogueCollectionViewCell: UICollectionViewCell {
 
-	// MARK: - Internal Constants
+	// MARK: - Constants
 
-	internal struct UI {
+	struct UI {
 		static let ReuseID = "TravelogueCollectionViewCell"
 	}
 
-	// MARK: - Internal Stored Variables
+	// MARK: - Variables
 
-	internal var title:     String?
-	internal var URLString: String?
+	var title:     String?
+	var URLString: String?
 
-	// MARK: - Internal Computed Variables
+	// MARK: - Variables
 
 	var taskToCancelIfCellIsReused: URLSessionTask? {
 

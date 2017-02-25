@@ -12,11 +12,11 @@ import CoreLocation
 import MapKit
 import UIKit
 
-final internal class TravelogueViewController: UIViewController, NSFetchedResultsControllerDelegate {
+final class TravelogueViewController: UIViewController, NSFetchedResultsControllerDelegate {
 
-	// MARK: - Internal Constants
+	// MARK: - Constants
 
-	internal struct UI {
+	struct UI {
 		static let StoryboardID = "TravelogueVC"
 	}
 
@@ -48,10 +48,10 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 		static let NoPhotosLabel = "This pin has no images."
 	}
 
-	// MARK: - Internal Stored Variables
+	// MARK: - Variables
 
-	internal var tlPinAnnoView: TravelLocationPinAnnotationView? = nil
-	internal var coordinate:    CLLocationCoordinate2D? = nil
+	var tlPinAnnoView: TravelLocationPinAnnotationView? = nil
+	var coordinate:    CLLocationCoordinate2D? = nil
 
 	// MARK: - Private Stored Variables
 
@@ -86,7 +86,7 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 	// MARK: - View Events
 
-	override internal func viewDidLoad() {
+	override func viewDidLoad() {
 		super.viewDidLoad()
 
 		initCollectionView()
@@ -113,7 +113,7 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 	}
 
-	override internal func viewDidAppear(_ animated: Bool) {
+	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 
 		noPhotosLevel!.center = (collectionView?.backgroundView?.center)!
@@ -132,7 +132,7 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 	// MARK: - MKMapViewDelegate
 
-	internal func mapView(_ mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+	func mapView(_ mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
 		var tlPinAnnoView = mapView.dequeueReusableAnnotationView(withIdentifier: TravelLocationPinAnnotationView.UI.ReuseID) as? TravelLocationPinAnnotationView
 
 		if let _ = tlPinAnnoView {
@@ -165,7 +165,7 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 	// MARK: - UICollectionViewDataSource
 
-	internal func collectionView(_ collectionView: UICollectionView, cellForItemAtIndexPath indexPath: IndexPath) -> UICollectionViewCell {
+	func collectionView(_ collectionView: UICollectionView, cellForItemAtIndexPath indexPath: IndexPath) -> UICollectionViewCell {
 		assert(collectionView == self.collectionView, "Unexpected collection view reqesting cell of item at index path")
 
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TravelogueCollectionViewCell.UI.ReuseID, for: indexPath) as! TravelogueCollectionViewCell
@@ -174,14 +174,14 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 		return cell
 	}
 
-	internal func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 		assert(collectionView == self.collectionView, "Unexpected collection view reqesting number of items in section")
 
 		let sectionInfo = frc.sections![section]
 		return sectionInfo.numberOfObjects
 	}
 
-	internal func numberOfSectionsInCollectionView(_ collectionView: UICollectionView) -> Int {
+	func numberOfSectionsInCollectionView(_ collectionView: UICollectionView) -> Int {
 		assert(collectionView == self.collectionView, "Unexpected collection view reqesting number of sections in view")
 
 		return frc.sections?.count ?? 0
@@ -189,7 +189,7 @@ final internal class TravelogueViewController: UIViewController, NSFetchedResult
 
 	// MARK: - UICollectionViewDelegate
 
-	internal func collectionView(_ collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: IndexPath) {
+	func collectionView(_ collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: IndexPath) {
 		assert(collectionView == self.collectionView, "Unexpected collection view selected an item")
 
 		let cell = collectionView.cellForItem(at: indexPath) as! TravelogueCollectionViewCell

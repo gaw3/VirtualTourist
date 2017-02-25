@@ -17,19 +17,19 @@ extension UIViewController {
 		static let ActionTitle = "OK"
 	}
 
-	// MARK: - Internal Computed Variables
+	// MARK: - Variables
 
-	internal var flickrClient: FlickrAPIClient {
+    var flickrClient: FlickrAPIClient {
 		return FlickrAPIClient.sharedClient
 	}
 
-	internal var nai: NetworkActivityIndicatorManager {
+    var nai: NetworkActivityIndicatorManager {
 		return NetworkActivityIndicatorManager.sharedManager
 	}
 
 	// MARK: - API
 
-	internal func presentAlert(_ title: String, message: String) {
+    func presentAlert(_ title: String, message: String) {
 		let alert  = UIAlertController(title: title, message: message, preferredStyle: .alert)
 		let action = UIAlertAction(title: Alert.ActionTitle, style: .default, handler: nil)
 		alert.addAction(action)

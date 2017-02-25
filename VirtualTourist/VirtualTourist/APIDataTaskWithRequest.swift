@@ -12,7 +12,7 @@ import UIKit
 typealias APIDataTaskWithRequestCompletionHandler = (_ result: AnyObject?, _ error: NSError?) -> Void
 typealias JSONDictionary = [String: AnyObject]
 
-final internal class APIDataTaskWithRequest: NSObject {
+final class APIDataTaskWithRequest: NSObject {
 
 	// MARK: - Private Constants
 
@@ -42,14 +42,14 @@ final internal class APIDataTaskWithRequest: NSObject {
 
 	// MARK: - API
 
-	internal init(urlRequest: NSMutableURLRequest, completionHandler: @escaping APIDataTaskWithRequestCompletionHandler) {
+	init(urlRequest: NSMutableURLRequest, completionHandler: @escaping APIDataTaskWithRequestCompletionHandler) {
 		self.urlRequest        = urlRequest
 		self.completionHandler = completionHandler
 
 		super.init()
 	}
 
-	internal func getImageDownloadTask() -> URLSessionTask {
+    func getImageDownloadTask() -> URLSessionTask {
 
 		let task = URLSession.shared.dataTask(with: urlRequest as URLRequest, completionHandler: { (rawImageData, HTTPResponse, URLSessionError) in
 
@@ -98,7 +98,7 @@ final internal class APIDataTaskWithRequest: NSObject {
 		return task
 	}
 
-	internal func resume() {
+	func resume() {
 
 		let task = URLSession.shared.dataTask(with: urlRequest as URLRequest, completionHandler: { (rawJSONResponse, HTTPResponse, URLSessionError) in
 

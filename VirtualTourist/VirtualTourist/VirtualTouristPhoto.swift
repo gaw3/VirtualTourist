@@ -9,7 +9,7 @@
 import CoreData
 import Foundation
 
-final internal class VirtualTouristPhoto: NSManagedObject {
+final class VirtualTouristPhoto: NSManagedObject {
 	
 	// MARK: - @NSManaged
 
@@ -17,23 +17,23 @@ final internal class VirtualTouristPhoto: NSManagedObject {
 	@NSManaged var title:          String
 	@NSManaged var location:       VirtualTouristTravelLocation?
 
-	// MARK: - Internal Constants
+	// MARK: - Constants
 
-	internal struct Consts {
+    struct Consts {
 		static let EntityName = "VirtualTouristPhoto"
 	}
 
-	internal var fileName: String {
+    var fileName: String {
 		return imageURLString.components(separatedBy: "/").last!
 	}
 
 	// MARK: - API
 
-	internal override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
+    override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
 		super.init(entity: entity, insertInto: context)
 	}
 
-	internal init(responseData: FlickrPhotoResponseData, context: NSManagedObjectContext) {
+    init(responseData: FlickrPhotoResponseData, context: NSManagedObjectContext) {
 		let entity =  NSEntityDescription.entity(forEntityName: Consts.EntityName, in: context)!
 		super.init(entity: entity, insertInto: context)
 
@@ -41,7 +41,7 @@ final internal class VirtualTouristPhoto: NSManagedObject {
 		imageURLString = responseData.url_m
 	}
 
-	internal override func prepareForDeletion() {
+    override func prepareForDeletion() {
 		PhotoCache.sharedCache.removeImageWithCacheID(fileName)
 	}
 

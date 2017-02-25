@@ -11,7 +11,7 @@ import CoreLocation
 import MapKit
 import UIKit
 
-final internal class TravelLocationsMapViewController: UIViewController, NSFetchedResultsControllerDelegate {
+final class TravelLocationsMapViewController: UIViewController, NSFetchedResultsControllerDelegate {
 
 	// MARK: - Private Constants
 
@@ -53,12 +53,12 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 
 	// MARK: - IB Outlets
 
-	@IBOutlet      internal var longPress: UILongPressGestureRecognizer!
-	@IBOutlet weak internal var mapView:   MKMapView!
+	@IBOutlet      var longPress: UILongPressGestureRecognizer!
+	@IBOutlet weak var mapView:   MKMapView!
 
 	// MARK: - View Events
 
-	override internal func viewDidLoad() {
+	override func viewDidLoad() {
 		super.viewDidLoad()
 
 		navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: SEL.TrashButtonTapped)
@@ -79,7 +79,7 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 
 	// MARK: - IB Actions
 
-	@IBAction internal func handleLongPress(_ gesture: UIGestureRecognizer) {
+	@IBAction func handleLongPress(_ gesture: UIGestureRecognizer) {
 
 		if gesture.state == .began {
 
@@ -95,12 +95,12 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 
 	}
 
-	internal func doneButtonWasTapped() {
+	func doneButtonWasTapped() {
 		navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: SEL.TrashButtonTapped)
 		inPinDeletionMode = false
 	}
 
-	internal func trashButtonWasTapped() {
+	func trashButtonWasTapped() {
 		navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: SEL.DoneButtonTapped)
 		inPinDeletionMode = true
 		presentAlert(Alert.Title.TapPins, message: Alert.Message.TapDoneButton)
@@ -108,7 +108,7 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 
 	// MARK: - NSFetchedResultsControllerDelegate
 
-	internal func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 
 		if type == .insert {
 			let travelLocation = anObject as! VirtualTouristTravelLocation
@@ -132,7 +132,7 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 
 	// MARK: - MKMapViewDelegate
 
-	internal func mapView(_ mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+	func mapView(_ mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
 		assert(mapView == self.mapView, "Unexpected map view selecting an annotation")
 
 		mapView.deselectAnnotation(view.annotation, animated: true)
@@ -160,7 +160,7 @@ final internal class TravelLocationsMapViewController: UIViewController, NSFetch
 
 	}
 
-	internal func mapView(_ mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+	func mapView(_ mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
 		assert(mapView == self.mapView, "Unexpected map view requesting view for annotation")
 
 		var tlPinAnnoView = mapView.dequeueReusableAnnotationView(withIdentifier: TravelLocationPinAnnotationView.UI.ReuseID) as? TravelLocationPinAnnotationView

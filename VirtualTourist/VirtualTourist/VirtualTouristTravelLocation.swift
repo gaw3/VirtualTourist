@@ -11,7 +11,7 @@ import CoreLocation
 import Foundation
 import MapKit
 
-final internal class VirtualTouristTravelLocation: NSManagedObject {
+final class VirtualTouristTravelLocation: NSManagedObject {
 
 	// MARK: - @NSManaged
 
@@ -24,15 +24,15 @@ final internal class VirtualTouristTravelLocation: NSManagedObject {
 	@NSManaged var perPage:            NSNumber
 	@NSManaged var photos:             [VirtualTouristPhoto]
 
-	// MARK: - Internal Constants
+	// MARK: - Constants
 
-	internal struct Consts {
+	struct Consts {
 		static let EntityName = "VirtualTouristTravelLocation"
 	}
 
 	// MARK: - API
 
-	internal var pointAnnotation: MKPointAnnotation {
+	var pointAnnotation: MKPointAnnotation {
 		let anno = MKPointAnnotation()
 
 		anno.coordinate.latitude  = latitude  as CLLocationDegrees
@@ -41,7 +41,7 @@ final internal class VirtualTouristTravelLocation: NSManagedObject {
 		return anno
 	}
 
-	internal var searchQuery: String {
+	var searchQuery: String {
 		let lat     = latitude  as Double
 		let long    = longitude as Double
 		let newPage = (page as Int) + 1
@@ -52,11 +52,11 @@ final internal class VirtualTouristTravelLocation: NSManagedObject {
 
 	// MARK: - API
 
-	override internal init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
+	override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
 		super.init(entity: entity, insertInto: context)
 	}
 
-	internal init(coordinate: CLLocationCoordinate2D, context: NSManagedObjectContext) {
+	init(coordinate: CLLocationCoordinate2D, context: NSManagedObjectContext) {
 		let entity = NSEntityDescription.entity(forEntityName: Consts.EntityName, in: context)!
 		super.init(entity: entity, insertInto: context)
 
