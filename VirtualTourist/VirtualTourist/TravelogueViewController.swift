@@ -12,19 +12,30 @@ import CoreLocation
 import MapKit
 import UIKit
 
-final class TravelogueViewController: UIViewController, NSFetchedResultsControllerDelegate {
+final class TravelogueViewController: UIViewController {
     
-    fileprivate struct Alpha {
-        static let Full:                   CGFloat = 1.0
-        static let ReducedForSelectedCell: CGFloat = 0.3
+    
+    
+//    fileprivate var photoCache: PhotoCache {
+//        return PhotoCache.shared
+//    }
+    
+    // MARK: - IB Outlets
+    
+    @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var flowLayout:     UICollectionViewFlowLayout!
+    @IBOutlet weak var mapView:        MKMapView!
+    @IBOutlet weak var refreshButton:  UIBarButtonItem!
+    @IBOutlet weak var trashButton:    UIBarButtonItem!
+    
+    // MARK: - IB Actions
+    
+    @IBAction func refreshButtonWasTapped(_ sender: UIBarButtonItem) {
+        getNewCollection()
     }
     
-    fileprivate struct Layout {
-        static let NumberOfCellsAcrossInPortrait:  CGFloat = 3.0
-        static let NumberOfCellsAcrossInLandscape: CGFloat = 5.0
-        static let MinimumInteritemSpacing:        CGFloat = 3.0
-        
-        static let NoPhotosLabel = "This pin has no images."
+    @IBAction func trashButtonWasTapped(_ sender: UIBarButtonItem) {
+        deleteSelectedPhotos()
     }
     
     // MARK: - Variables
@@ -32,13 +43,9 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
     var tlPinAnnoView: TravelLocationPinAnnotationView? = nil
     var coordinate:    CLLocationCoordinate2D? = nil
     
-    // MARK: - Private Stored Variables
-    
     fileprivate var travelLocation: VirtualTouristTravelLocation? = nil
     fileprivate var selectedPhotos = [IndexPath]()
     fileprivate var noPhotosLevel: UILabel?
-    
-    // MARK: - Private Computed Variables
     
     lazy fileprivate var frc: NSFetchedResultsController<NSFetchRequestResult> = {
         let photosFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: VirtualTouristPhoto.Entity.Name)
@@ -51,19 +58,14 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
         return frc
     }()
     
-    fileprivate var photoCache: PhotoCache {
-        return PhotoCache.shared
-    }
-    
-    // MARK: - IB Outlets
-    
-    @IBOutlet weak var collectionView: UICollectionView!
-    @IBOutlet weak var flowLayout:     UICollectionViewFlowLayout!
-    @IBOutlet weak var mapView:        MKMapView!
-    @IBOutlet weak var refreshButton:  UIBarButtonItem!
-    @IBOutlet weak var trashButton:    UIBarButtonItem!
-    
     // MARK: - View Events
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        noPhotosLevel!.center = (collectionView?.backgroundView?.center)!
+        noPhotosLevel!.isHidden = false
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -92,57 +94,14 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
         
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        noPhotosLevel!.center = (collectionView?.backgroundView?.center)!
-        noPhotosLevel!.isHidden = false
-    }
-    
-    // MARK: - IB Outlets
-    
-    @IBAction func refreshButtonWasTapped(_ sender: UIBarButtonItem) {
-        getNewCollection()
-    }
-    
-    @IBAction func trashButtonWasTapped(_ sender: UIBarButtonItem) {
-        deleteSelectedPhotos()
-    }
-    
-    // MARK: - MKMapViewDelegate
-    
-    func mapView(_ mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
-        var tlPinAnnoView = mapView.dequeueReusableAnnotationView(withIdentifier: IB.ReuseID.TravelLocsPinAnnoView) as? TravelLocationPinAnnotationView
-        
-        if let _ = tlPinAnnoView {
-            tlPinAnnoView!.annotation = annotation as! MKPointAnnotation
-        } else {
-            tlPinAnnoView = TravelLocationPinAnnotationView(annotation: annotation as! MKPointAnnotation)
-        }
-        
-        return tlPinAnnoView
-    }
-    
-    // MARK: - NSFetchedResultsControllerDelegate
-    
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        return
-    }
-    
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo,
-                    atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-        return
-    }
-    
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        return
-    }
-    
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        return
-    }
-    
-    // MARK: - UICollectionViewDataSource
+}
+
+
+
+// MARK: -
+// MARK: - Collection View Data Source
+
+extension TravelogueViewController {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAtIndexPath indexPath: IndexPath) -> UICollectionViewCell {
         assert(collectionView == self.collectionView, "Unexpected collection view reqesting cell of item at index path")
@@ -166,7 +125,14 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
         return frc.sections?.count ?? 0
     }
     
-    // MARK: - UICollectionViewDelegate
+}
+
+
+
+// MARK: -
+// MARK: - Collection View Delegate
+
+extension TravelogueViewController {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: IndexPath) {
         assert(collectionView == self.collectionView, "Unexpected collection view selected an item")
@@ -191,9 +157,63 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
         
     }
     
-    // MARK: - Private:  Completion Handlers
+}
+
+
+
+// MARK: -
+// MARK: - Fetched Results Controller Delegate
+
+extension TravelogueViewController: NSFetchedResultsControllerDelegate  {
     
-    fileprivate func getRemoteImageCompletionHandler(_ vtPhoto: VirtualTouristPhoto, cellForPhoto: TravelogueCollectionViewCell) -> DataTaskWithRequestCompletionHandler {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        return
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo,
+                    atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+        return
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        return
+    }
+    
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        return
+    }
+    
+}
+
+
+
+// MARK: -
+// MARK: - Map View Delegate
+
+extension TravelogueViewController {
+    
+    func mapView(_ mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        var tlPinAnnoView = mapView.dequeueReusableAnnotationView(withIdentifier: IB.ReuseID.TravelLocsPinAnnoView) as? TravelLocationPinAnnotationView
+        
+        if let _ = tlPinAnnoView {
+            tlPinAnnoView!.annotation = annotation as! MKPointAnnotation
+        } else {
+            tlPinAnnoView = TravelLocationPinAnnotationView(annotation: annotation as! MKPointAnnotation)
+        }
+        
+        return tlPinAnnoView
+    }
+    
+}
+
+
+
+// MARK: -
+// MARK: - Private Completion Handlers
+
+private extension TravelogueViewController {
+    
+    func getRemoteImageCompletionHandler(_ vtPhoto: VirtualTouristPhoto, cellForPhoto: TravelogueCollectionViewCell) -> DataTaskWithRequestCompletionHandler {
         
         return { (result, error) -> Void in
             
@@ -220,7 +240,7 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
         
     }
     
-    fileprivate var searchPhotosByLocationCompletionHandler: DataTaskWithRequestCompletionHandler {
+    var searchPhotosByLocationCompletionHandler: DataTaskWithRequestCompletionHandler {
         
         return { (result, error) -> Void in
             
@@ -266,9 +286,29 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
         
     }
     
-    // MARK: - Private
+}
+
+
+
+// MARK: -
+// MARK: - Private Helpers
+
+private extension TravelogueViewController {
     
-    fileprivate func configureCell(_ cell: TravelogueCollectionViewCell, atIndexPath: IndexPath) {
+    struct Alpha {
+        static let Full:                   CGFloat = 1.0
+        static let ReducedForSelectedCell: CGFloat = 0.3
+    }
+    
+    struct Layout {
+        static let NumberOfCellsAcrossInPortrait:  CGFloat = 3.0
+        static let NumberOfCellsAcrossInLandscape: CGFloat = 5.0
+        static let MinimumInteritemSpacing:        CGFloat = 3.0
+        
+        static let NoPhotosLabel = "This pin has no images."
+    }
+    
+    func configureCell(_ cell: TravelogueCollectionViewCell, atIndexPath: IndexPath) {
         let vtPhoto = frc.object(at: atIndexPath) as! VirtualTouristPhoto
         
         cell.imageView?.image           = nil
@@ -276,7 +316,7 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
         cell.imageView?.alpha           = Alpha.Full
         cell.activityIndicator?.startAnimating()
         
-        if let cachedImage = photoCache.image(withCacheID: vtPhoto.fileName) {
+        if let cachedImage = PhotoCache.shared.image(withCacheID: vtPhoto.fileName) {
             cell.activityIndicator?.stopAnimating()
             cell.imageView?.backgroundColor = UIColor.white
             cell.imageView?.image           = cachedImage
@@ -287,7 +327,7 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
         cell.taskToCancelIfCellIsReused = downloadTask
     }
     
-    fileprivate func deleteSelectedPhotos() {
+    func deleteSelectedPhotos() {
         let vtPhotos = frc.fetchedObjects as! [VirtualTouristPhoto]
         
         for photoIndex in selectedPhotos {
@@ -306,7 +346,7 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
         selectedPhotos.removeAll()
     }
     
-    fileprivate func getNewCollection() {
+    func getNewCollection() {
         
         for vtPhoto in frc.fetchedObjects as! [VirtualTouristPhoto] {
             CoreDataManager.shared.moc.delete(vtPhoto)
@@ -317,7 +357,7 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
         FlickrAPIClient.shared.searchPhotos(at: travelLocation!, completionHandler: searchPhotosByLocationCompletionHandler)
     }
     
-    fileprivate func getTravelLocation() -> VirtualTouristTravelLocation? {
+    func getTravelLocation() -> VirtualTouristTravelLocation? {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: VirtualTouristTravelLocation.Entity.Name)
         
         fetchRequest.sortDescriptors = []
@@ -336,7 +376,7 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
         return nil
     }
     
-    fileprivate func initCollectionView() {
+    func initCollectionView() {
         noPhotosLevel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 21))
         noPhotosLevel!.text          = Layout.NoPhotosLabel
         noPhotosLevel!.textColor     = UIColor.black
@@ -359,7 +399,8 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
         flowLayout.minimumLineSpacing      = Layout.MinimumInteritemSpacing
         flowLayout.sectionInset            = UIEdgeInsets.zero
     }
-    
+
 }
+
 
 
