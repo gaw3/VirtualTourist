@@ -1,5 +1,5 @@
 //
-//  APIDataTaskWithRequest.swift
+//  DataTaskWithRequest.swift
 //  VirtualTourist
 //
 //  Created by Gregory White on 3/12/16.
@@ -9,10 +9,10 @@
 import Foundation
 import UIKit
 
-typealias APIDataTaskWithRequestCompletionHandler = (_ result: AnyObject?, _ error: NSError?) -> Void
+typealias DataTaskWithRequestCompletionHandler = (_ result: AnyObject?, _ error: NSError?) -> Void
 typealias JSONDictionary = [String: AnyObject]
 
-final class APIDataTaskWithRequest {
+final class DataTaskWithRequest {
     
     // MARK: - Constants
     
@@ -38,11 +38,11 @@ final class APIDataTaskWithRequest {
     // MARK: - Variables
     
     fileprivate var urlRequest:        NSMutableURLRequest
-    fileprivate var completionHandler: APIDataTaskWithRequestCompletionHandler
+    fileprivate var completionHandler: DataTaskWithRequestCompletionHandler
     
     // MARK: - Init
     
-    init(urlRequest: NSMutableURLRequest, completionHandler: @escaping APIDataTaskWithRequestCompletionHandler) {
+    init(urlRequest: NSMutableURLRequest, completionHandler: @escaping DataTaskWithRequestCompletionHandler) {
         self.urlRequest        = urlRequest
         self.completionHandler = completionHandler
     }
@@ -54,7 +54,7 @@ final class APIDataTaskWithRequest {
 // MARK: -
 // MARK: - API
 
-extension APIDataTaskWithRequest {
+extension DataTaskWithRequest {
 
     func getImageDownloadTask() -> URLSessionTask {
         
@@ -166,9 +166,9 @@ extension APIDataTaskWithRequest {
 // MARK: -
 // MARK: - Private Helpers
 
-private extension APIDataTaskWithRequest {
+private extension DataTaskWithRequest {
 
-    func completeWithHandler(_ completionHandler: @escaping APIDataTaskWithRequestCompletionHandler, result: AnyObject!, error: NSError?) {
+    func completeWithHandler(_ completionHandler: @escaping DataTaskWithRequestCompletionHandler, result: AnyObject!, error: NSError?) {
         
         DispatchQueue.main.async {
             completionHandler(result, error)

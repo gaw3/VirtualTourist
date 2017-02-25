@@ -44,23 +44,23 @@ final class FlickrAPIClient {
 
 extension FlickrAPIClient {
 
-    func searchPhotos(at travelLocation: VirtualTouristTravelLocation, completionHandler: @escaping APIDataTaskWithRequestCompletionHandler) {
+    func searchPhotos(at travelLocation: VirtualTouristTravelLocation, completionHandler: @escaping DataTaskWithRequestCompletionHandler) {
         var components = URLComponents(string: HTTP.RESTServicesURL)
         components!.query = travelLocation.searchQuery
         
         let URLRequest = NSMutableURLRequest(url: components!.url!)
         URLRequest.httpMethod = HTTP.GETMethod
         
-        let dataTaskWithRequest = APIDataTaskWithRequest(urlRequest: URLRequest, completionHandler: completionHandler)
+        let dataTaskWithRequest = DataTaskWithRequest(urlRequest: URLRequest, completionHandler: completionHandler)
         dataTaskWithRequest.resume()
     }
     
-    func downloadPhoto(_ vtPhoto: VirtualTouristPhoto, completionHandler: @escaping APIDataTaskWithRequestCompletionHandler) -> URLSessionTask {
+    func downloadPhoto(_ vtPhoto: VirtualTouristPhoto, completionHandler: @escaping DataTaskWithRequestCompletionHandler) -> URLSessionTask {
         let components = URLComponents(string: vtPhoto.imageURLString)
         let URLRequest = NSMutableURLRequest(url: components!.url!)
         URLRequest.httpMethod = HTTP.GETMethod
         
-        let dataTaskWithRequest = APIDataTaskWithRequest(urlRequest: URLRequest, completionHandler: completionHandler)
+        let dataTaskWithRequest = DataTaskWithRequest(urlRequest: URLRequest, completionHandler: completionHandler)
         return dataTaskWithRequest.getImageDownloadTask()
     }
     

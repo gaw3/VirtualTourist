@@ -193,7 +193,7 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
     
     // MARK: - Private:  Completion Handlers
     
-    fileprivate func getRemoteImageCompletionHandler(_ vtPhoto: VirtualTouristPhoto, cellForPhoto: TravelogueCollectionViewCell) -> APIDataTaskWithRequestCompletionHandler {
+    fileprivate func getRemoteImageCompletionHandler(_ vtPhoto: VirtualTouristPhoto, cellForPhoto: TravelogueCollectionViewCell) -> DataTaskWithRequestCompletionHandler {
         
         return { (result, error) -> Void in
             
@@ -220,7 +220,7 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
         
     }
     
-    fileprivate var searchPhotosByLocationCompletionHandler: APIDataTaskWithRequestCompletionHandler {
+    fileprivate var searchPhotosByLocationCompletionHandler: DataTaskWithRequestCompletionHandler {
         
         return { (result, error) -> Void in
             
