@@ -23,7 +23,7 @@ final class TravelLocationsMapViewController: UIViewController, NSFetchedResults
     fileprivate var inPinDeletionMode = false
     
     lazy fileprivate var frc: NSFetchedResultsController<NSFetchRequestResult> = {
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: VirtualTouristTravelLocation.Consts.EntityName)
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: VirtualTouristTravelLocation.Entity.Name)
         fetchRequest.sortDescriptors = []
         
         let frc = NSFetchedResultsController<NSFetchRequestResult>(fetchRequest: fetchRequest, managedObjectContext: CoreDataManager.shared.moc, sectionNameKeyPath: nil, cacheName: nil)
@@ -158,7 +158,7 @@ final class TravelLocationsMapViewController: UIViewController, NSFetchedResults
     // MARK: - Private
     
     fileprivate func deleteAssociatedPhotos(_ travelLocation: VirtualTouristTravelLocation)  {
-        let photosFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: VirtualTouristPhoto.Consts.EntityName)
+        let photosFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: VirtualTouristPhoto.Entity.Name)
         photosFetchRequest.sortDescriptors = [NSSortDescriptor(key: CoreDataManager.SortKey.Title, ascending: true)]
         photosFetchRequest.predicate = NSPredicate(format: CoreDataManager.Predicate.PhotosByLocation, travelLocation)
         
@@ -181,7 +181,7 @@ final class TravelLocationsMapViewController: UIViewController, NSFetchedResults
     }
     
     fileprivate func getTravelLocation(_ coordinate: CLLocationCoordinate2D) -> VirtualTouristTravelLocation? {
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: VirtualTouristTravelLocation.Consts.EntityName)
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: VirtualTouristTravelLocation.Entity.Name)
         
         fetchRequest.sortDescriptors = []
         fetchRequest.predicate       = NSPredicate(format: CoreDataManager.Predicate.LocationByLatLong, coordinate.latitude, coordinate.longitude)

@@ -13,24 +13,13 @@ import MapKit
 
 final class VirtualTouristTravelLocation: NSManagedObject {
     
-    // MARK: - @NSManaged
-    
-    @NSManaged var annotationID:       String
-    @NSManaged var annotationTitle:    String
-    @NSManaged var annotationSubtitle: String
-    @NSManaged var latitude:           NSNumber
-    @NSManaged var longitude:          NSNumber
-    @NSManaged var page:               NSNumber
-    @NSManaged var perPage:            NSNumber
-    @NSManaged var photos:             [VirtualTouristPhoto]
-    
     // MARK: - Constants
     
-    struct Consts {
-        static let EntityName = "VirtualTouristTravelLocation"
+    struct Entity {
+        static let Name = "VirtualTouristTravelLocation"
     }
     
-    // MARK: - API
+    // MARK: - Variables
     
     var pointAnnotation: MKPointAnnotation {
         let anno = MKPointAnnotation()
@@ -50,15 +39,24 @@ final class VirtualTouristTravelLocation: NSManagedObject {
         return query
     }
     
-    // MARK: - API
+    // MARK: - Init
     
     override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
         super.init(entity: entity, insertInto: context)
     }
     
-    init(coordinate: CLLocationCoordinate2D, context: NSManagedObjectContext) {
-        let entity = NSEntityDescription.entity(forEntityName: Consts.EntityName, in: context)!
-        super.init(entity: entity, insertInto: context)
+}
+
+
+
+// MARK: -
+// MARK: - API
+
+extension VirtualTouristTravelLocation {
+
+    convenience init(coordinate: CLLocationCoordinate2D, context: NSManagedObjectContext) {
+        let entity = NSEntityDescription.entity(forEntityName: Entity.Name, in: context)!
+        self.init(entity: entity, insertInto: context)
         
         latitude  = NSNumber(value: coordinate.latitude)
         longitude = NSNumber(value: coordinate.longitude)

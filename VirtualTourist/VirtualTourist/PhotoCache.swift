@@ -6,53 +6,48 @@
 //  Copyright © 2016 Gregory White. All rights reserved.
 //
 
-import Foundation
 import UIKit
 
-private let _sharedCache = PhotoCache()
+private let _shared = PhotoCache()
 
 final class PhotoCache {
     
-    class var sharedCache: PhotoCache {
-        return _sharedCache
+    class var shared: PhotoCache {
+        return _shared
     }
     
-    // MARK: - Private Stored Variables
+    // MARK: -Variables
     
-    fileprivate var memoryCache = NSCache<AnyObject, AnyObject>()
-    
-    // MARK: - Private Computed Variables
-    
-    fileprivate var fileMgr: FileManager {
-        return FileManager.default
-    }
-    
-    // MARK: - API
-    
-    func imageWithCacheID(_ id: String) -> UIImage? {
+    fileprivate var cache = NSCache<AnyObject, AnyObject>()
+}
+
+// MARK: -
+// MARK: - API
+
+extension PhotoCache {
+
+    func image(withCacheID id: String) -> UIImage? {
         
         // First try the memory cache
-        if let image = memoryCache.object(forKey: id as AnyObject) as? UIImage {
+        if let image = cache.object(forKey: id as AnyObject) as? UIImage {
             return image
         }
         
         // Next try the hard drive
-        if let data = try? Data(contentsOf: URL(fileURLWithPath: pathForIdentifier(id))) {
+        if let data = try? Data(contentsOf: URL(fileURLWithPath: path(forIdentifier: id))) {
             return UIImage(data: data)
         }
         
         return nil
     }
     
-    func removeImageWithCacheID(_ id: String) {
-        memoryCache.removeObject(forKey: id as AnyObject)
+    func removeImage(withCacheID id: String) {
+        self.cache.removeObject(forKey: id as AnyObject)
         
-        let path = pathForIdentifier(id)
-        
-        if fileMgr.fileExists(atPath: path) {
+        if FileManager.default.fileExists(atPath: path(forIdentifier: id)) {
             
             do {
-                try fileMgr.removeItem(atPath: path)
+                try FileManager.default.removeItem(atPath: path(forIdentifier: id))
             } catch let error as NSError {
                 print("\(error)")
             }
@@ -62,21 +57,27 @@ final class PhotoCache {
     }
     
     func storeImage(_ image: UIImage, withCacheID id: String) {
-        memoryCache.setObject(image, forKey: id as AnyObject)
+        cache.setObject(image, forKey: id as AnyObject)
         
         let imageData = UIImagePNGRepresentation(image)!
-        let path      = pathForIdentifier(id)
         
-        if !((try? imageData.write(to: URL(fileURLWithPath: path), options: [.atomic])) != nil) {
+        if !((try? imageData.write(to: URL(fileURLWithPath: path(forIdentifier: id)), options: [.atomic])) != nil) {
             print("FAILED adding image to documents = \(path)")
         }
         
     }
     
-    // MARK: - Private
+}
+
+
+
+// MARK: -
+// MARK: - Private Helpers
+
+private extension PhotoCache {
     
-    fileprivate func pathForIdentifier(_ identifier: String) -> String {
-        let documentsDirectoryURL = fileMgr.urls(for: .documentDirectory, in: .userDomainMask).first!
+    func path(forIdentifier identifier: String) -> String {
+        let documentsDirectoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let fullURL               = documentsDirectoryURL.appendingPathComponent(identifier)
         
         return fullURL.path

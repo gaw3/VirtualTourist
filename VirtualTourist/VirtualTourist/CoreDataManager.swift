@@ -28,12 +28,10 @@ final class CoreDataManager: NSObject {
         static let PhotosByLocation  = "location == %@"
     }
     
-    // MARK: - Private Constants
-    
-    fileprivate struct Consts {
-        static let DBFilename     = "VirtualTourist.sqlite"
-        static let ModelName      = "VirtualTourist"
-        static let ModelExtension = "momd"
+    fileprivate struct Model {
+        static let Name       = "VirtualTourist"
+        static let Extension  = "momd"
+        static let DBFilename = "\(Name).sqlite"
     }
     
     // MARK: - Variables
@@ -49,13 +47,13 @@ final class CoreDataManager: NSObject {
     }()
     
     lazy var mom: NSManagedObjectModel = {
-        let modelURL = Bundle.main.url(forResource: Consts.ModelName, withExtension: Consts.ModelExtension)!
+        let modelURL = Bundle.main.url(forResource: Model.Name, withExtension: Model.Extension)!
         return NSManagedObjectModel(contentsOf: modelURL)!
     }()
     
     lazy var psc: NSPersistentStoreCoordinator? = {
         let psc    = NSPersistentStoreCoordinator(managedObjectModel: self.mom)
-        let pscURL = self.appDocsDir.appendingPathComponent(Consts.DBFilename)
+        let pscURL = self.appDocsDir.appendingPathComponent(Model.DBFilename)
         
         do {
             try psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: pscURL, options: nil)
@@ -67,7 +65,14 @@ final class CoreDataManager: NSObject {
         return psc
     }()
     
-    // MARK: - API
+}
+
+
+
+// MARK: -
+// MARK: - API
+
+extension CoreDataManager {
     
     func saveContext() {
         
@@ -84,3 +89,5 @@ final class CoreDataManager: NSObject {
     }
     
 }
+
+

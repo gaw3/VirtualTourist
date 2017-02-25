@@ -41,7 +41,7 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
     // MARK: - Private Computed Variables
     
     lazy fileprivate var frc: NSFetchedResultsController<NSFetchRequestResult> = {
-        let photosFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: VirtualTouristPhoto.Consts.EntityName)
+        let photosFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: VirtualTouristPhoto.Entity.Name)
         photosFetchRequest.sortDescriptors = [NSSortDescriptor(key: CoreDataManager.SortKey.Title, ascending: true)]
         photosFetchRequest.predicate = NSPredicate(format: CoreDataManager.Predicate.PhotosByLocation, self.travelLocation!)
         
@@ -52,7 +52,7 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
     }()
     
     fileprivate var photoCache: PhotoCache {
-        return PhotoCache.sharedCache
+        return PhotoCache.shared
     }
     
     // MARK: - IB Outlets
@@ -208,7 +208,7 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
             }
             
             let downloadedImage = result as! UIImage
-            self.photoCache.storeImage(downloadedImage, withCacheID: vtPhoto.fileName)
+            PhotoCache.shared.storeImage(downloadedImage, withCacheID: vtPhoto.fileName)
             
             DispatchQueue.main.async(execute: {
                 cellForPhoto.activityIndicator?.stopAnimating()
@@ -276,7 +276,7 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
         cell.imageView?.alpha           = Alpha.Full
         cell.activityIndicator?.startAnimating()
         
-        if let cachedImage = photoCache.imageWithCacheID(vtPhoto.fileName) {
+        if let cachedImage = photoCache.image(withCacheID: vtPhoto.fileName) {
             cell.activityIndicator?.stopAnimating()
             cell.imageView?.backgroundColor = UIColor.white
             cell.imageView?.image           = cachedImage
@@ -318,7 +318,7 @@ final class TravelogueViewController: UIViewController, NSFetchedResultsControll
     }
     
     fileprivate func getTravelLocation() -> VirtualTouristTravelLocation? {
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: VirtualTouristTravelLocation.Consts.EntityName)
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: VirtualTouristTravelLocation.Entity.Name)
         
         fetchRequest.sortDescriptors = []
         fetchRequest.predicate       = NSPredicate(format: CoreDataManager.Predicate.LocationByLatLong, coordinate!.latitude, coordinate!.longitude)
