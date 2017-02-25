@@ -12,26 +12,26 @@ import MapKit
 import UIKit
 
 final class TravelLocationPinAnnotationView: MKPinAnnotationView {
-
-	// MARK: - Constants
-
-	struct UI {
-		static let ReuseID = "TravelLocsPinAnnoViewReuseID"
-	}
-
-	// MARK: - API
-
-	init(annotation: MKPointAnnotation) {
-		super.init(annotation: annotation, reuseIdentifier: UI.ReuseID)
-
-		animatesDrop   = true
-		canShowCallout = false
+    
+    // MARK: - Constants
+    
+    struct UI {
+        static let ReuseID = "TravelLocsPinAnnoViewReuseID"
+    }
+    
+    // MARK: - API
+    
+    init(annotation: MKPointAnnotation) {
+        super.init(annotation: annotation, reuseIdentifier: UI.ReuseID)
+        
+        animatesDrop   = true
+        canShowCallout = false
         pinTintColor   = MKPinAnnotationView.redPinColor()
-		rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
-	}
-
-	required init?(coder aDecoder: NSCoder) {
-		super.init(coder: aDecoder)
-	}
-
+        rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
 }

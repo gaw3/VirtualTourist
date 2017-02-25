@@ -9,33 +9,33 @@
 import UIKit
 
 final class TravelogueCollectionViewCell: UICollectionViewCell {
-
-	// MARK: - Constants
-
-	struct UI {
-		static let ReuseID = "TravelogueCollectionViewCell"
-	}
-
-	// MARK: - Variables
-
-	var title:     String?
-	var URLString: String?
-
-	// MARK: - Variables
-
-	var taskToCancelIfCellIsReused: URLSessionTask? {
-
-		didSet {
-			if let taskToCancel = oldValue {
-				taskToCancel.cancel()
-			}
-
-		}
-
-	}
-
-	// MARK: - IB Outlets
-
-	@IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-	@IBOutlet weak var imageView:			  UIImageView!
+    
+    // MARK: - Constants
+    
+    struct UI {
+        static let ReuseID = "TravelogueCollectionViewCell"
+    }
+    
+    // MARK: - Variables
+    
+    var title:     String?
+    var URLString: String?
+    
+    // MARK: - Variables
+    
+    var taskToCancelIfCellIsReused: URLSessionTask? {
+        
+        didSet {
+            if let taskToCancel = oldValue {
+                taskToCancel.cancel()
+            }
+            
+        }
+        
+    }
+    
+    // MARK: - IB Outlets
+    
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var imageView:			  UIImageView!
 }
