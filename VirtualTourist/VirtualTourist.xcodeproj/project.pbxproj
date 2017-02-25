@@ -11,6 +11,7 @@
 		7A03D21A1E617D4300F62D16 /* AlertStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A03D2191E617D4300F62D16 /* AlertStrings.swift */; };
 		7A03D2601E61D34A00F62D16 /* VirtualTouristPhoto+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A03D25E1E61D34A00F62D16 /* VirtualTouristPhoto+CoreDataProperties.swift */; };
 		7A03D2611E61D34A00F62D16 /* VirtualTouristTravelLocation+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A03D25F1E61D34A00F62D16 /* VirtualTouristTravelLocation+CoreDataProperties.swift */; };
+		7A03D2631E61DB8E00F62D16 /* HTTPURLResponseExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A03D2621E61DB8E00F62D16 /* HTTPURLResponseExtensions.swift */; };
 		7A1AED141C7E7E9C001E7083 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A1AED131C7E7E9C001E7083 /* AppDelegate.swift */; };
 		7A1AED191C7E7E9C001E7083 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7A1AED171C7E7E9C001E7083 /* Main.storyboard */; };
 		7A1AED1C1C7E7E9D001E7083 /* VirtualTourist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7A1AED1A1C7E7E9D001E7083 /* VirtualTourist.xcdatamodeld */; };
@@ -24,7 +25,6 @@
 		7A9B3D5D1CA368A7009E1E54 /* PhotoCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A9B3D5C1CA368A7009E1E54 /* PhotoCache.swift */; };
 		7A9B3D5F1CA4C81F009E1E54 /* TravelogueCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A9B3D5E1CA4C81F009E1E54 /* TravelogueCollectionViewCell.swift */; };
 		7AE185B81C94866200294482 /* APIDataTaskWithRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE185B71C94866200294482 /* APIDataTaskWithRequest.swift */; };
-		7AE185BA1C94872C00294482 /* NSHTTPURLResponseExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE185B91C94872C00294482 /* NSHTTPURLResponseExtensions.swift */; };
 		7AE185BD1C94FF9100294482 /* VirtualTouristTravelLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE185BC1C94FF9100294482 /* VirtualTouristTravelLocation.swift */; };
 		7AE185BF1C94FFCE00294482 /* VirtualTouristPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE185BE1C94FFCE00294482 /* VirtualTouristPhoto.swift */; };
 		7AE185C11C9507DC00294482 /* FlickrPhotosResponseData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AE185C01C9507DC00294482 /* FlickrPhotosResponseData.swift */; };
@@ -37,6 +37,7 @@
 		7A03D2191E617D4300F62D16 /* AlertStrings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertStrings.swift; sourceTree = "<group>"; };
 		7A03D25E1E61D34A00F62D16 /* VirtualTouristPhoto+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VirtualTouristPhoto+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		7A03D25F1E61D34A00F62D16 /* VirtualTouristTravelLocation+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VirtualTouristTravelLocation+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		7A03D2621E61DB8E00F62D16 /* HTTPURLResponseExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPURLResponseExtensions.swift; sourceTree = "<group>"; };
 		7A1AED101C7E7E9C001E7083 /* VirtualTourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirtualTourist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A1AED131C7E7E9C001E7083 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7A1AED181C7E7E9C001E7083 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -52,7 +53,6 @@
 		7A9B3D5C1CA368A7009E1E54 /* PhotoCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCache.swift; sourceTree = "<group>"; };
 		7A9B3D5E1CA4C81F009E1E54 /* TravelogueCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TravelogueCollectionViewCell.swift; sourceTree = "<group>"; };
 		7AE185B71C94866200294482 /* APIDataTaskWithRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIDataTaskWithRequest.swift; sourceTree = "<group>"; };
-		7AE185B91C94872C00294482 /* NSHTTPURLResponseExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSHTTPURLResponseExtensions.swift; sourceTree = "<group>"; };
 		7AE185BC1C94FF9100294482 /* VirtualTouristTravelLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VirtualTouristTravelLocation.swift; sourceTree = "<group>"; };
 		7AE185BE1C94FFCE00294482 /* VirtualTouristPhoto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VirtualTouristPhoto.swift; sourceTree = "<group>"; };
 		7AE185C01C9507DC00294482 /* FlickrPhotosResponseData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrPhotosResponseData.swift; sourceTree = "<group>"; };
@@ -162,8 +162,8 @@
 		7A878C0D1C818BBA00516AB6 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				7A03D2621E61DB8E00F62D16 /* HTTPURLResponseExtensions.swift */,
 				7A878C0B1C818BB000516AB6 /* UIViewControllerExtensions.swift */,
-				7AE185B91C94872C00294482 /* NSHTTPURLResponseExtensions.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -256,7 +256,7 @@
 			files = (
 				7A878C041C815C9100516AB6 /* TravelLocationPinAnnotationView.swift in Sources */,
 				7A03D2181E617AE000F62D16 /* IBStrings.swift in Sources */,
-				7AE185BA1C94872C00294482 /* NSHTTPURLResponseExtensions.swift in Sources */,
+				7A03D2631E61DB8E00F62D16 /* HTTPURLResponseExtensions.swift in Sources */,
 				7A1AED141C7E7E9C001E7083 /* AppDelegate.swift in Sources */,
 				7A5039531C926E0500127814 /* FlickrAPIClient.swift in Sources */,
 				7A03D2601E61D34A00F62D16 /* VirtualTouristPhoto+CoreDataProperties.swift in Sources */,
