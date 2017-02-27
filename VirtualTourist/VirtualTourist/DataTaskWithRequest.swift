@@ -26,13 +26,15 @@ final class DataTaskWithRequest {
         static let HTTP              = 2
         static let JSON              = 3
         static let JSONSerialization = 4
+        static let Image             = 5
     }
     
     fileprivate struct LocalizedErrorDescription {
         static let Network           = "Network Error"
         static let HTTP              = "HTTP Error"
         static let JSON	             = "JSON Error"
-        static let JSONSerialization = "JSON JSONSerialization Error"
+        static let JSONSerialization = "JSON Serialization Error"
+        static let Image             = "Image Data Error"
     }
     
     // MARK: - Variables
@@ -58,43 +60,21 @@ extension DataTaskWithRequest {
 
     func getImageDownloadTask() -> URLSessionTask {
         
-        let task = URLSession.shared.dataTask(with: urlRequest as URLRequest, completionHandler: { (rawImageData, HTTPResponse, URLSessionError) in
+        let task = URLSession.shared.dataTask(with: urlRequest as URLRequest, completionHandler: { (rawData, urlResponse, error) in
             
-            DispatchQueue.main.async(execute: {
-                NetworkActivityIndicatorManager.shared.end()
-            })
+            NetworkActivityIndicatorManager.shared.end()
             
-            guard URLSessionError == nil else {
-                let userInfo = [NSLocalizedDescriptionKey: LocalizedErrorDescription.Network, NSUnderlyingErrorKey: URLSessionError!] as [String : Any]
-                let error    = NSError(domain: LocalizedError.Domain, code: LocalizedErrorCode.Network, userInfo: userInfo)
-                
-                self.completeWithHandler(self.completionHandler, result: nil, error: error)
-                return
-            }
+            guard !self.isError(urlSessionError: error as NSError?)                else { return }
+            guard !self.isError(httpURLResponse: urlResponse as! HTTPURLResponse?) else { return }
+            guard !self.isError(rawData: rawData, isImage: true)                   else { return }
             
-            let HTTPURLResponse = HTTPResponse as? Foundation.HTTPURLResponse
-            
-            guard HTTPURLResponse?.statusCodeClass == .successful else {
-                let HTTPStatusText = Foundation.HTTPURLResponse.localizedString(forStatusCode: (HTTPURLResponse?.statusCode)!)
-                let failureReason  = "HTTP status code = \(HTTPURLResponse?.statusCode), HTTP status text = \(HTTPStatusText)"
-                let userInfo       = [NSLocalizedDescriptionKey: LocalizedErrorDescription.HTTP, NSLocalizedFailureReasonErrorKey: failureReason]
-                let error          = NSError(domain: LocalizedError.Domain, code: LocalizedErrorCode.HTTP, userInfo: userInfo)
-                
-                self.completeWithHandler(self.completionHandler, result: nil, error: error)
-                return
-            }
-            
-            guard let rawImageData = rawImageData else {
-                let userInfo = [NSLocalizedDescriptionKey: LocalizedErrorDescription.JSON]
-                let error    = NSError(domain: LocalizedError.Domain, code: LocalizedErrorCode.JSON, userInfo: userInfo)
-                
-                self.completeWithHandler(self.completionHandler, result: nil, error: error)
-                return
-            }
-            
-            if let image = UIImage(data: rawImageData) {
-                self.completeWithHandler(self.completionHandler, result: image, error: nil)
+            if let image = UIImage(data: rawData!) {
+                self.completionHandler(image as AnyObject?, nil)
             } else {
+                let userInfo = [NSLocalizedDescriptionKey: LocalizedErrorDescription.Image] as [String : Any]
+                let error    = NSError(domain: LocalizedError.Domain, code: LocalizedErrorCode.Image, userInfo: userInfo)
+                
+                self.completionHandler(nil, error)
                 return
             }
             
@@ -107,49 +87,23 @@ extension DataTaskWithRequest {
     
     func resume() {
         
-        let task = URLSession.shared.dataTask(with: urlRequest as URLRequest, completionHandler: { (rawJSONResponse, HTTPResponse, URLSessionError) in
+        let task = URLSession.shared.dataTask(with: urlRequest as URLRequest, completionHandler: { (rawData, urlResponse, error) in
             
-            DispatchQueue.main.async(execute: {
-                NetworkActivityIndicatorManager.shared.end()
-            })
+            NetworkActivityIndicatorManager.shared.end()
             
-            guard URLSessionError == nil else {
-                let userInfo = [NSLocalizedDescriptionKey: LocalizedErrorDescription.Network, NSUnderlyingErrorKey: URLSessionError!] as [String : Any]
-                let error    = NSError(domain: LocalizedError.Domain, code: LocalizedErrorCode.Network, userInfo: userInfo)
-                
-                self.completeWithHandler(self.completionHandler, result: nil, error: error)
-                return
-            }
-            
-            let HTTPURLResponse = HTTPResponse as? Foundation.HTTPURLResponse
-            
-            guard HTTPURLResponse?.statusCodeClass == .successful else {
-                let HTTPStatusText = Foundation.HTTPURLResponse.localizedString(forStatusCode: (HTTPURLResponse?.statusCode)!)
-                let failureReason  = "HTTP status code = \(HTTPURLResponse?.statusCode), HTTP status text = \(HTTPStatusText)"
-                let userInfo       = [NSLocalizedDescriptionKey: LocalizedErrorDescription.HTTP, NSLocalizedFailureReasonErrorKey: failureReason]
-                let error          = NSError(domain: LocalizedError.Domain, code: LocalizedErrorCode.HTTP, userInfo: userInfo)
-                
-                self.completeWithHandler(self.completionHandler, result: nil, error: error)
-                return
-            }
-            
-            guard let rawJSONResponse = rawJSONResponse else {
-                let userInfo = [NSLocalizedDescriptionKey: LocalizedErrorDescription.JSON]
-                let error    = NSError(domain: LocalizedError.Domain, code: LocalizedErrorCode.JSON, userInfo: userInfo)
-                
-                self.completeWithHandler(self.completionHandler, result: nil, error: error)
-                return
-            }
+            guard !self.isError(urlSessionError: error as NSError?)                else { return }
+            guard !self.isError(httpURLResponse: urlResponse as! HTTPURLResponse?) else { return }
+            guard !self.isError(rawData: rawData, isImage: false)                  else { return }
             
             do {
-                let JSONData = try JSONSerialization.jsonObject(with: rawJSONResponse, options: .allowFragments) as! JSONDictionary
+                let JSONData = try JSONSerialization.jsonObject(with: rawData!, options: .allowFragments) as! JSONDictionary
                 
-                self.completeWithHandler(self.completionHandler, result: JSONData as AnyObject!, error: nil)
+                self.completionHandler(JSONData as AnyObject?, nil)
             } catch let JSONError as NSError {
                 let userInfo = [NSLocalizedDescriptionKey: LocalizedErrorDescription.JSONSerialization, NSUnderlyingErrorKey: JSONError] as [String : Any]
                 let error    = NSError(domain: LocalizedError.Domain, code: LocalizedErrorCode.JSONSerialization, userInfo: userInfo)
                 
-                self.completeWithHandler(self.completionHandler, result: nil, error: error)
+                self.completionHandler(nil, error)
                 return
             }
             
@@ -167,15 +121,50 @@ extension DataTaskWithRequest {
 // MARK: - Private Helpers
 
 private extension DataTaskWithRequest {
-
-    func completeWithHandler(_ completionHandler: @escaping DataTaskWithRequestCompletionHandler, result: AnyObject!, error: NSError?) {
+    
+    func isError(rawData data: Data?, isImage: Bool) -> Bool {
         
-        DispatchQueue.main.async {
-            completionHandler(result, error)
+        guard data != nil else {
+            let userInfo = [NSLocalizedDescriptionKey: (isImage ? LocalizedErrorDescription.Image : LocalizedErrorDescription.JSON)]
+            let error    = NSError(domain: LocalizedError.Domain, code: (isImage ? LocalizedErrorCode.Image : LocalizedErrorCode.JSON), userInfo: userInfo)
+            
+            self.completionHandler(nil, error)
+            return true
         }
         
+        return false
     }
     
+    func isError(httpURLResponse response: HTTPURLResponse?) -> Bool {
+        
+        guard response != nil else { return true }
+        
+        guard response?.statusCodeClass == .successful else {
+            let httpStatusText = Foundation.HTTPURLResponse.localizedString(forStatusCode: (response?.statusCode)!)
+            let failureReason  = "HTTP status code = \(response?.statusCode), HTTP status text = \(httpStatusText)"
+            let userInfo       = [NSLocalizedDescriptionKey: LocalizedErrorDescription.HTTP, NSLocalizedFailureReasonErrorKey: failureReason]
+            let error          = NSError(domain: LocalizedError.Domain, code: LocalizedErrorCode.HTTP, userInfo: userInfo)
+            
+            self.completionHandler(nil, error)
+            return true
+        }
+        
+        return false
+    }
+    
+    func isError(urlSessionError error: NSError?) -> Bool {
+        
+        guard error == nil else {
+            let userInfo = [NSLocalizedDescriptionKey: LocalizedErrorDescription.Network, NSUnderlyingErrorKey: error!] as [String : Any]
+            let newError = NSError(domain: LocalizedError.Domain, code: LocalizedErrorCode.Network, userInfo: userInfo)
+            
+            self.completionHandler(nil, newError)
+            return true
+        }
+        
+        return false
+    }
+
 }
 
 

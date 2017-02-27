@@ -77,7 +77,7 @@ final class TravelogueViewController: UIViewController {
                 try frc.performFetch()
                 
                 if frc.fetchedObjects!.isEmpty {
-                    FlickrAPIClient.shared.searchPhotos(at: travelLocation!, completionHandler: searchPhotosByLocationCompletionHandler)
+                    FlickrAPIClient.shared.searchPhotos(at: travelLocation!, completionHandler: finishSearchingPhotosByLocation)
                 }
                 
             } catch let error as NSError {
@@ -207,7 +207,7 @@ extension TravelogueViewController {
 
 private extension TravelogueViewController {
     
-    func getRemoteImageCompletionHandler(_ vtPhoto: VirtualTouristPhoto, cellForPhoto: TravelogueCollectionViewCell) -> DataTaskWithRequestCompletionHandler {
+    func finishDownloadingPhoto(_ vtPhoto: VirtualTouristPhoto, cellForPhoto: TravelogueCollectionViewCell) -> DataTaskWithRequestCompletionHandler {
         
         return { (result, error) -> Void in
             
@@ -234,7 +234,7 @@ private extension TravelogueViewController {
         
     }
     
-    var searchPhotosByLocationCompletionHandler: DataTaskWithRequestCompletionHandler {
+    var finishSearchingPhotosByLocation: DataTaskWithRequestCompletionHandler {
         
         return { (result, error) -> Void in
             
@@ -317,7 +317,7 @@ private extension TravelogueViewController {
             return
         }
         
-        let downloadTask = FlickrAPIClient.shared.downloadPhoto(vtPhoto, completionHandler: getRemoteImageCompletionHandler(vtPhoto, cellForPhoto: cell))
+        let downloadTask = FlickrAPIClient.shared.downloadPhoto(vtPhoto, completionHandler: finishDownloadingPhoto(vtPhoto, cellForPhoto: cell))
         cell.taskToCancelIfCellIsReused = downloadTask
     }
     
@@ -348,7 +348,7 @@ private extension TravelogueViewController {
         
         CoreDataManager.shared.saveContext()
         collectionView!.reloadData()
-        FlickrAPIClient.shared.searchPhotos(at: travelLocation!, completionHandler: searchPhotosByLocationCompletionHandler)
+        FlickrAPIClient.shared.searchPhotos(at: travelLocation!, completionHandler: finishSearchingPhotosByLocation)
     }
     
     func getTravelLocation() -> VirtualTouristTravelLocation? {
