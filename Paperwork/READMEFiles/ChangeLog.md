@@ -4,11 +4,11 @@
 * Update to Xcode 8.2.1 / iOS 10.2
 * Update to Swift 3.0
 * Update .gitignore
-* Update README</br>
+* Update README</br></br>
 * Fix collection flow layout for large iPhone sizes
 * Ensure photos in collection view are "not selected" at initial presentation
 * Add "No Photos" label to collection view when empty
-* Small bit of refactoring</br>
+* Small bit of refactoring</br></br>
 * Adhere to new "Swifty" conventions:
   - extensions handling delegate protocols
   - API creation
