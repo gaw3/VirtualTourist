@@ -94,11 +94,13 @@ TABLE 4 - Travelogue View : Delete Images
 
 ### iOS Frameworks & Grand Central Dispatch
 
-* [CoreData][CoreData]
-* [Foundation][Foundation]
-* [MapKit][MapKit]
-* [UIKit][UIKit]<br/><br/>
-* [GCD][GCD]
+* CoreData
+* CoreGraphics
+* CoreLocation
+* Foundation
+* Grand Central Dispatch
+* MapKit
+* UIKit
 
 ### Web APIs
 
