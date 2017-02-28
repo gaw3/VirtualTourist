@@ -12,14 +12,13 @@ VirtualTourist is Portfolio Project #4 of the Udacity iOS Developer Nanodegree P
 * [Udacity Git Commit Message Style Guide][CommitMsgStyleGuide]
 * [Udacity Project Review][ProjectReview]<br/><br/>
 
-|               | Project Submission       | Current State |
-| :----------   | :-------------           | :-----------  |
-| Grade:        | ***Meets Expectations*** |               |
-| GitHub Tag:   | v1.0                     | v1.01&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[changelog][ChangeLog] |
-| App Version:  | 1.0                      | same |
-| Environment:  | Xcode 7.3 / iOS 9.3      | same |
-| Devices:      | iPhone Only              | same |
-| Orientations: | Portrait Only            | same |
+| [Change Log][ChangeLog] | Current iOS 10 Build   | Project Submission - ***Meets Expectations*** | 
+| :----------             | :-----------------     | :-------------                                | 
+| GitHub Tag              | v2.0                   | v1.0                                          | 
+| App Version:            | 2.0                    | 1.0                                           | 
+| Environment:            | Xcode 8.2.1 / iOS 10.2 | Xcode 7.3 / iOS 9.3                           | 
+| Devices:                | iPhone Only            | iPhone Only                                   | 
+| Orientations:           | Portrait Only          | Portrait Only                                 | 
 
 ## Design
 
@@ -111,7 +110,7 @@ TABLE 4 - Travelogue View : Delete Images
 * `Swift.gitignore`, the template used to create the local `.gitignore` file, lives in this [repo][GitIgnoreRepo].
 
 ---
-**Copyright © 2016 Gregory White. All rights reserved.**
+**Copyright © 2016-2017 Gregory White. All rights reserved.**
 
 
 
