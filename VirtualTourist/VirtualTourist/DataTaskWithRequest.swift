@@ -139,9 +139,9 @@ private extension DataTaskWithRequest {
         
         guard response != nil else { return true }
         
-        guard response?.statusCodeClass == .successful else {
-            let httpStatusText = Foundation.HTTPURLResponse.localizedString(forStatusCode: (response?.statusCode)!)
-            let failureReason  = "HTTP status code = \(String(describing: response?.statusCode)), HTTP status text = \(httpStatusText)"
+        guard response!.statusCodeClass == .successful else {
+            let httpStatusText = Foundation.HTTPURLResponse.localizedString(forStatusCode: response!.statusCode)
+            let failureReason  = "HTTP status code = \(response!.statusCode), HTTP status text = \(httpStatusText)"
             let userInfo       = [NSLocalizedDescriptionKey: LocalizedErrorDescription.HTTP, NSLocalizedFailureReasonErrorKey: failureReason]
             let error          = NSError(domain: LocalizedError.Domain, code: LocalizedErrorCode.HTTP, userInfo: userInfo)
             
