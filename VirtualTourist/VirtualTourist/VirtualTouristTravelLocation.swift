@@ -24,16 +24,16 @@ final class VirtualTouristTravelLocation: NSManagedObject {
     var pointAnnotation: MKPointAnnotation {
         let anno = MKPointAnnotation()
         
-        anno.coordinate.latitude  = latitude  as CLLocationDegrees
-        anno.coordinate.longitude = longitude as CLLocationDegrees
+        anno.coordinate.latitude  = CLLocationDegrees(latitude)
+        anno.coordinate.longitude = CLLocationDegrees(longitude)
         
         return anno
     }
     
     var searchQuery: String {
-        let lat     = latitude  as Double
-        let long    = longitude as Double
-        let newPage = (page as Int) + 1
+        let lat     = Double(latitude)
+        let long    = Double(longitude)
+        let newPage = Int(page) + 1
         let query   = "api_key=850364777cd6c0359001c9aa67b5b1b4&content_type=1&extras=url_m&format=json&lat=\(lat)&lon=\(long)&method=flickr.photos.search&nojsoncallback=1&page=\(newPage)&per_page=21&safe_search=1"
         
         return query
