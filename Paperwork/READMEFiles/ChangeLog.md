@@ -3,6 +3,7 @@
 ### Version 2.1
 * Update to Xcode 8.3 / iOS 10.3
 * Update README
+* Fix new compiler warnings
 
 ### Version 2.0
 * Update to Xcode 8.2.1 / iOS 10.2
