@@ -1,5 +1,9 @@
 # ![][AppIcon]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Change Log
 
+### Version 2.1
+* Update to Xcode 8.3 / iOS 10.3
+* Update README
+
 ### Version 2.0
 * Update to Xcode 8.2.1 / iOS 10.2
 * Update to Swift 3.0
