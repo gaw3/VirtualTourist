@@ -133,7 +133,7 @@ extension TravelogueViewController {
         
         let cell = collectionView.cellForItem(at: indexPath) as! TravelogueCollectionViewCell
         
-        if let index = selectedPhotos.index(of: indexPath) {
+        if let index = selectedPhotos.firstIndex(of: indexPath) {
             selectedPhotos.remove(at: index)
             cell.imageView?.alpha = Alpha.Full
             

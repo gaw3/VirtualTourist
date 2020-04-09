@@ -61,10 +61,10 @@ extension PhotoCache {
     func storeImage(_ image: UIImage, withCacheID id: String) {
         cache.setObject(image, forKey: id as AnyObject)
         
-        let imageData = UIImagePNGRepresentation(image)!
+        let imageData = image.pngData()!
         
         if !((try? imageData.write(to: URL(fileURLWithPath: path(forIdentifier: id)), options: [.atomic])) != nil) {
-            print("FAILED adding image to documents = \(path)")
+            print("FAILED adding image to documents = \(String(describing: path))")
         }
         
     }

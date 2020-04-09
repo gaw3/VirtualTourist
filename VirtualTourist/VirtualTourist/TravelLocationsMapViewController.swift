@@ -20,7 +20,7 @@ final class TravelLocationsMapViewController: UIViewController {
     
     // MARK: - IB Actions
     
-    func doneButtonWasTapped() {
+    @objc func doneButtonWasTapped() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: SEL.TrashButtonTapped)
         inPinDeletionMode = false
     }
@@ -41,7 +41,7 @@ final class TravelLocationsMapViewController: UIViewController {
         
     }
     
-    func trashButtonWasTapped() {
+    @objc func trashButtonWasTapped() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: SEL.DoneButtonTapped)
         inPinDeletionMode = true
         presentAlert(Alert.Title.TapPins, message: Alert.Message.TapDoneButton)

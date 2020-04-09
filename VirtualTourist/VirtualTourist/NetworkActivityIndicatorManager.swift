@@ -38,37 +38,37 @@ extension NetworkActivityIndicatorManager {
     
     func begin() {
         
-        concurrentUpdateQueue.sync(execute: {
-            
-            if !UIApplication.shared.isStatusBarHidden {
-                
-                if !UIApplication.shared.isNetworkActivityIndicatorVisible {
-                    UIApplication.shared.isNetworkActivityIndicatorVisible = true
-                    self.numOfUpdateTasks = 0
-                }
-                
-                self.numOfUpdateTasks += 1
-            }
-            
-        })
+//        concurrentUpdateQueue.sync(execute: {
+//            
+//            if !UIApplication.shared.isStatusBarHidden {
+//                
+//                if !UIApplication.shared.isNetworkActivityIndicatorVisible {
+//                    UIApplication.shared.isNetworkActivityIndicatorVisible = true
+//                    self.numOfUpdateTasks = 0
+//                }
+//                
+//                self.numOfUpdateTasks += 1
+//            }
+//            
+//        })
         
     }
     
     func end() {
         
-        concurrentUpdateQueue.sync(execute: {
-            
-            if !UIApplication.shared.isStatusBarHidden {
-                self.numOfUpdateTasks -= 1
-                
-                if self.numOfUpdateTasks <= 0 {
-                    UIApplication.shared.isNetworkActivityIndicatorVisible = false
-                    self.numOfUpdateTasks = 0
-                }
-                
-            }
-            
-        })
+//        concurrentUpdateQueue.sync(execute: {
+//            
+//            if !UIApplication.shared.isStatusBarHidden {
+//                self.numOfUpdateTasks -= 1
+//                
+//                if self.numOfUpdateTasks <= 0 {
+//                    UIApplication.shared.isNetworkActivityIndicatorVisible = false
+//                    self.numOfUpdateTasks = 0
+//                }
+//                
+//            }
+//            
+//        })
         
     }
     
