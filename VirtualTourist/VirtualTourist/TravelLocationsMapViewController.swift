@@ -33,8 +33,9 @@ final class TravelLocationsMapViewController: UIViewController {
                 presentAlert(Alert.Title.CannotDropPin, message: Alert.Message.WhileInDeleteMode)
             } else {
                 let coord = mapView.convert(gesture.location(in: mapView), toCoordinateFrom: mapView)
-                _ = VirtualTouristTravelLocation(coordinate: coord, context: CoreDataManager.shared.moc)
-                CoreDataManager.shared.saveContext()
+                let location = CLLocation(latitude: coord.latitude, longitude: coord.longitude)
+                let geocoder = CLGeocoder()
+                geocoder.reverseGeocodeLocation(location, completionHandler: finishReverseGeocoding)
             }
             
         }
@@ -120,22 +121,20 @@ extension TravelLocationsMapViewController: NSFetchedResultsControllerDelegate {
 // MARK: -
 // MARK: - Map View Delegate
 
-extension TravelLocationsMapViewController {
+extension TravelLocationsMapViewController: MKMapViewDelegate {
     
-    func mapView(_ mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
-        assert(mapView == self.mapView, "Unexpected map view selecting an annotation")
-        
-        mapView.deselectAnnotation(view.annotation, animated: true)
-        let tlpAnnotation = (view as? TravelLocationPinAnnotationView)!.annotation
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+//        mapView.deselectAnnotation(view.annotation, animated: true)
+        let anno = (view as? MKMarkerAnnotationView)!.annotation
         
         if inPinDeletionMode {
-            mapView.removeAnnotation(tlpAnnotation!)
+            mapView.removeAnnotation(anno!)
             
             if mapView.annotations.isEmpty {
                 doneButtonWasTapped()
             }
             
-            if let travelLocation = getTravelLocation(withCoordinate: tlpAnnotation!.coordinate) {
+            if let travelLocation = getTravelLocation(withCoordinate: anno!.coordinate) {
                 deletePhotos(forTravelLocation: travelLocation)
                 CoreDataManager.shared.moc.delete(travelLocation)
                 CoreDataManager.shared.saveContext()
@@ -143,25 +142,57 @@ extension TravelLocationsMapViewController {
             
         } else {
             let travelogueVC = self.storyboard?.instantiateViewController(withIdentifier: IB.StoryboardID.TravelogueVC) as! TravelogueViewController
-            
-            travelogueVC.coordinate = tlpAnnotation!.coordinate
+
+            travelogueVC.coordinate = anno!.coordinate
             navigationController?.pushViewController(travelogueVC, animated: true)
         }
         
     }
     
-    func mapView(_ mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
-        assert(mapView == self.mapView, "Unexpected map view requesting view for annotation")
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
-        var tlPinAnnoView = mapView.dequeueReusableAnnotationView(withIdentifier: IB.ReuseID.TravelLocsPinAnnoView) as? TravelLocationPinAnnotationView
+        let marker = mapView.dequeueReusableAnnotationView(withIdentifier: "MarkerAnnotationView") as? MKMarkerAnnotationView ??
+                     MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: "MarkerAnnotationView")
+
+        marker.canShowCallout            = true
+        marker.animatesWhenAdded         = true
+        marker.glyphText                 = "🚀"
+        marker.markerTintColor           = .blue
+        marker.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+        marker.clusteringIdentifier      = "ClusterID"
         
-        if let _ = tlPinAnnoView {
-            tlPinAnnoView!.annotation = annotation as! MKPointAnnotation
-        } else {
-            tlPinAnnoView = TravelLocationPinAnnotationView(annotation: annotation as! MKPointAnnotation)
+        return marker
+    }
+    
+}
+
+
+
+// MARK: -
+// MARK: - Private Completion Handlers
+
+private extension TravelLocationsMapViewController {
+    
+    var finishReverseGeocoding: CLGeocodeCompletionHandler {
+        
+        return { [weak self] (placemarks, error) -> Void in
+            
+            guard let strongSelf = self else { return }
+                        
+            guard error == nil else {
+                strongSelf.presentAlert(".badGeocode", message: ".serverError")
+                return
+            }
+            
+            guard placemarks != nil, !placemarks!.isEmpty else {
+                strongSelf.presentAlert(".badGeocode", message: ".noPlacemarks")
+                return
+            }
+            
+            _ = VirtualTouristTravelLocation(placemark: placemarks![0] as CLPlacemark, context: CoreDataManager.shared.moc)
+            CoreDataManager.shared.saveContext()
         }
         
-        return tlPinAnnoView
     }
     
 }

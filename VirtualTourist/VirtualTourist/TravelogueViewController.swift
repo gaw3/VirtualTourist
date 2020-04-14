@@ -95,9 +95,9 @@ final class TravelogueViewController: UIViewController {
 // MARK: -
 // MARK: - Collection View Data Source
 
-extension TravelogueViewController {
+extension TravelogueViewController: UICollectionViewDataSource {
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAtIndexPath indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         assert(collectionView == self.collectionView, "Unexpected collection view reqesting cell of item at index path")
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: IB.ReuseID.TravelogueCollectionViewCell, for: indexPath) as! TravelogueCollectionViewCell
@@ -113,7 +113,7 @@ extension TravelogueViewController {
         return sectionInfo.numberOfObjects
     }
     
-    func numberOfSectionsInCollectionView(_ collectionView: UICollectionView) -> Int {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         assert(collectionView == self.collectionView, "Unexpected collection view reqesting number of sections in view")
         
         return frc.sections?.count ?? 0
@@ -126,9 +126,9 @@ extension TravelogueViewController {
 // MARK: -
 // MARK: - Collection View Delegate
 
-extension TravelogueViewController {
+extension TravelogueViewController: UICollectionViewDelegate {
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: IndexPath) {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         assert(collectionView == self.collectionView, "Unexpected collection view selected an item")
         
         let cell = collectionView.cellForItem(at: indexPath) as! TravelogueCollectionViewCell
@@ -184,9 +184,9 @@ extension TravelogueViewController: NSFetchedResultsControllerDelegate  {
 // MARK: -
 // MARK: - Map View Delegate
 
-extension TravelogueViewController {
+extension TravelogueViewController: MKMapViewDelegate {
     
-    func mapView(_ mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         var tlPinAnnoView = mapView.dequeueReusableAnnotationView(withIdentifier: IB.ReuseID.TravelLocsPinAnnoView) as? TravelLocationPinAnnotationView
         
         if let _ = tlPinAnnoView {
@@ -373,16 +373,16 @@ private extension TravelogueViewController {
     func initCollectionView() {
         noPhotosLevel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 21))
         noPhotosLevel!.text          = Layout.NoPhotosLabel
-        noPhotosLevel!.textColor     = UIColor.black
+        noPhotosLevel!.textColor     = .black
         noPhotosLevel!.textAlignment = .center
-        noPhotosLevel!.isHidden        = true
+        noPhotosLevel!.isHidden      = true
         
-        collectionView.backgroundColor = UIColor.white
+        collectionView.backgroundColor = .white
         
-        collectionView?.backgroundView = UIView(frame: CGRect.zero)
-        collectionView?.backgroundView?.backgroundColor     = UIColor.white
+        collectionView?.backgroundView = UIView(frame: .zero)
+        collectionView?.backgroundView?.backgroundColor     = .white
         collectionView?.backgroundView?.autoresizesSubviews = true
-        collectionView?.backgroundView?.isHidden              = true
+        collectionView?.backgroundView?.isHidden            = true
         collectionView?.backgroundView?.addSubview(noPhotosLevel!)
         
         let numOfCellsAcross: CGFloat = Layout.NumberOfCellsAcrossInPortrait
@@ -391,7 +391,7 @@ private extension TravelogueViewController {
         flowLayout.itemSize                = CGSize(width: itemWidth, height: itemWidth) // yes, a square on purpose
         flowLayout.minimumInteritemSpacing = Layout.MinimumInteritemSpacing
         flowLayout.minimumLineSpacing      = Layout.MinimumInteritemSpacing
-        flowLayout.sectionInset            = UIEdgeInsets.zero
+        flowLayout.sectionInset            = .zero
     }
 
 }

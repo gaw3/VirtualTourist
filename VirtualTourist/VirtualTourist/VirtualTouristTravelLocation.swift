@@ -26,6 +26,8 @@ final class VirtualTouristTravelLocation: NSManagedObject {
         
         anno.coordinate.latitude  = CLLocationDegrees(truncating: latitude)
         anno.coordinate.longitude = CLLocationDegrees(truncating: longitude)
+        anno.title                = annotationTitle
+        anno.subtitle             = annotationSubtitle
         
         return anno
     }
@@ -54,12 +56,30 @@ final class VirtualTouristTravelLocation: NSManagedObject {
 
 extension VirtualTouristTravelLocation {
 
-    convenience init(coordinate: CLLocationCoordinate2D, context: NSManagedObjectContext) {
+    convenience init(placemark: CLPlacemark, context: NSManagedObjectContext) {
         let entity = NSEntityDescription.entity(forEntityName: Entity.Name, in: context)!
         self.init(entity: entity, insertInto: context)
         
-        latitude  = NSNumber(value: coordinate.latitude)
-        longitude = NSNumber(value: coordinate.longitude)
+        latitude  = placemark.location!.coordinate.latitude  as NSNumber
+        longitude = placemark.location!.coordinate.longitude as NSNumber
+        
+        if let locality = placemark.locality {
+            annotationTitle = "\(locality), "
+        }
+        
+        if let adminArea = placemark.administrativeArea {
+            annotationTitle.append("\(adminArea), ")
+        }
+        
+        if let postalCode = placemark.postalCode {
+            annotationTitle.append("\(postalCode)  ")
+        }
+        
+        if let country = placemark.country {
+            annotationTitle.append(country)
+        }
+        
+        annotationSubtitle = "\(latitude), \(longitude)"
     }
     
 }
