@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19E287" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="VTLocation" representedClassName="VTLocation" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="String" defaultValueString=""/>
+        <attribute name="lat" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="long" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="page" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="perpage" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="subtitle" attributeType="String" defaultValueString=""/>
+        <attribute name="title" attributeType="String" defaultValueString=""/>
+        <relationship name="photos" toMany="YES" deletionRule="Cascade" destinationEntity="VTPhoto" inverseName="location" inverseEntity="VTPhoto"/>
+    </entity>
+    <entity name="VTPhoto" representedClassName="VTPhoto" syncable="YES" codeGenerationType="class">
+        <attribute name="image" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" defaultValueString=""/>
+        <attribute name="url" optional="YES" attributeType="String" defaultValueString=""/>
+        <relationship name="location" maxCount="1" deletionRule="Cascade" destinationEntity="VTLocation" inverseName="photos" inverseEntity="VTLocation"/>
+    </entity>
+    <elements>
+        <element name="VTLocation" positionX="-63" positionY="-18" width="128" height="163"/>
+        <element name="VTPhoto" positionX="-54" positionY="45" width="128" height="103"/>
+    </elements>
+</model>

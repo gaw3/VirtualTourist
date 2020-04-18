@@ -8,6 +8,8 @@
 
 import UIKit
 
+let coreData = CoreDataStack.shared
+
 @UIApplicationMain
 final class AppDelegate: UIResponder, UIApplicationDelegate {
     
@@ -21,9 +23,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-    func applicationWillTerminate(_ application: UIApplication) {
-        CoreDataManager.shared.saveContext()
-    }
+//    func applicationWillTerminate(_ application: UIApplication) {
+//        CoreDataManager.shared.saveContext()
+//    }
     
 }
 

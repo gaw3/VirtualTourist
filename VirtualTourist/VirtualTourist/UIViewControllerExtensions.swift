@@ -13,9 +13,9 @@ extension UIViewController {
     
     // MARK: - API
     
-    func presentAlert(_ title: String, message: String) {
-        let alert  = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let action = UIAlertAction(title: Alert.ActionTitle.OK, style: .default, handler: nil)
+    func presentAlert(_ title: String.AlertTitle, message: String.AlertMessage) {
+        let alert  = UIAlertController(title: title.rawValue, message: message.rawValue, preferredStyle: .alert)
+        let action = UIAlertAction(title: String.ActionTitle.ok, style: .default, handler: nil)
         alert.addAction(action)
         
         DispatchQueue.main.async(execute: {
@@ -23,5 +23,5 @@ extension UIViewController {
         })
         
     }
-    
+
 }
