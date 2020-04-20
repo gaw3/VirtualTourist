@@ -14,6 +14,11 @@ final class LocationAnnotation: MKPointAnnotation {
 
     let id: String
     
+    var region: MKCoordinateRegion {
+        let span = MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5)
+        return MKCoordinateRegion(center: coordinate, span: span)
+    }
+    
     // MARK: - Initializers
 
     init(lat: CLLocationDegrees, long: CLLocationDegrees, title: String, subtitle: String, id: String) {

@@ -28,8 +28,62 @@ final class PhotosViewController: UIViewController {
         
     }
     
+    var annotation: LocationAnnotation!
+    var location:   VTLocation!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        map.addAnnotation(annotation)
+        map.setRegion(annotation.region, animated: true)
+    }
+    
+}
+
+
+
+// MARK: -
+// MARK: - Collection View Data Source
+
+extension PhotosViewController: UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: IB.ReuseID.TravelogueCollectionViewCell, for: indexPath) as! TravelogueCollectionViewCell
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return location.photos!.count
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+}
+
+
+
+// MARK: -
+// MARK: - Map View Delegate
+
+extension PhotosViewController: MKMapViewDelegate {
+
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        let marker = mapView.dequeueReusableAnnotationView(withIdentifier: String.ReuseID.markerAnnoView) as? MKMarkerAnnotationView ??
+                     MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: String.ReuseID.markerAnnoView)
+
+        marker.canShowCallout    = false
+        marker.animatesWhenAdded = true
+        marker.glyphText         = "🚀"
+        marker.markerTintColor   = .blue
+
+        return marker
     }
     
 }

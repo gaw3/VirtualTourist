@@ -45,17 +45,13 @@ final class MapViewController: UIViewController {
     
     // MARK: - View Events
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        displayAnnotations()
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: SEL.trashButtonTapped)
 
         map.addGestureRecognizer(longPress)
+        displayAnnotations()
     }
         
 }
@@ -89,11 +85,25 @@ extension MapViewController: NSFetchedResultsControllerDelegate {
 
 extension MapViewController: MKMapViewDelegate {
 
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        
+        if control == view.rightCalloutAccessoryView {
+            let photosVC = self.storyboard?.instantiateViewController(withIdentifier: String.StoryboardID.photosVC) as! PhotosViewController
+            let annotation = view.annotation as? LocationAnnotation
+            
+            photosVC.annotation = annotation
+            photosVC.location   = coreData.getLocation(withID: annotation!.id)
+            
+            navigationController?.pushViewController(photosVC, animated: true)
+        }
+        
+    }
+    
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         let anno = (view as? MKMarkerAnnotationView)!.annotation as! LocationAnnotation
         
         if inPinDeletionMode {
-            coreData.deleteLocation(withLocationID: anno.id)
+            coreData.deleteLocation(withID: anno.id)
             
             mapView.removeAnnotation(anno)
             
@@ -101,12 +111,7 @@ extension MapViewController: MKMapViewDelegate {
                 didTapDoneButton()
             }
             
-        } else {
-//            let travelogueVC = self.storyboard?.instantiateViewController(withIdentifier: IB.StoryboardID.TravelogueVC) as! TravelogueViewController
-//
-//            travelogueVC.coordinate = anno!.coordinate
-//            navigationController?.pushViewController(travelogueVC, animated: true)
-        }
+        } 
         
     }
      
@@ -121,7 +126,7 @@ extension MapViewController: MKMapViewDelegate {
         marker.markerTintColor           = .blue
         marker.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
         marker.clusteringIdentifier      = String.annoClusteringID
-        
+
         return marker
     }
     

@@ -69,14 +69,15 @@ extension CoreDataStack {
                 _ = VTLocation(usingPlacemark: placemark, insertInto: newBackgroundContext)
                 try newBackgroundContext.save()
             } catch let error {
-                print("failed core data save, error = \(error)")
+                print("error adding location, error = \(error)")
+                assertionFailure()
             }
             
         }
         
     }
     
-    func deleteLocation(withLocationID id: String) {
+    func deleteLocation(withID id: String) {
         let fetchRequest: FetchLocationsRequest = VTLocation.fetchRequest()
         
         fetchRequest.sortDescriptors = []
@@ -91,8 +92,32 @@ extension CoreDataStack {
             }
             
         } catch let error as NSError {
-            print("unable to delete location with id = \(id), error = \(error)")
+            print("error deleting location with id = \(id), error = \(error)")
             assertionFailure()
+        }
+        
+    }
+    
+    func getLocation(withID id: String) -> VTLocation? {
+        let fetchRequest: FetchLocationsRequest = VTLocation.fetchRequest()
+        
+        fetchRequest.sortDescriptors = []
+        fetchRequest.predicate       = NSPredicate(format: "id == %@", id)
+        
+        do {
+            let locations = try viewContext.fetch(fetchRequest)
+            
+            if !locations.isEmpty {
+                return locations[0]
+            } else {
+                print("did not find location with ID = \(id)")
+                return nil
+            }
+            
+        } catch let error as NSError {
+            print("error getting location with id = \(id), error = \(error)")
+            assertionFailure()
+            return nil
         }
         
     }

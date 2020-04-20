@@ -31,5 +31,9 @@ extension String {
         static let markerAnnoView = "MarkerAnnotationView"
     }
     
+    enum StoryboardID {
+        static let photosVC = "PhotosVC"
+    }
+    
     static let annoClusteringID = "ClusterID"
 }

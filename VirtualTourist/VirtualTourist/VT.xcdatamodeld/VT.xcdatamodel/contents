@@ -14,7 +14,7 @@
         <attribute name="image" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
         <attribute name="title" optional="YES" attributeType="String" defaultValueString=""/>
         <attribute name="url" optional="YES" attributeType="String" defaultValueString=""/>
-        <relationship name="location" maxCount="1" deletionRule="Cascade" destinationEntity="VTLocation" inverseName="photos" inverseEntity="VTLocation"/>
+        <relationship name="location" maxCount="1" deletionRule="Nullify" destinationEntity="VTLocation" inverseName="photos" inverseEntity="VTLocation"/>
     </entity>
     <elements>
         <element name="VTLocation" positionX="-63" positionY="-18" width="128" height="163"/>
