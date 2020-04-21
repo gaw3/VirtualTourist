@@ -14,14 +14,14 @@ struct FlickrPhotoResponseData {
     
     fileprivate var _photo: JSONDictionary
     
-    var title: String {
-        return _photo[FlickrAPIClient.API.TitleKey] as! String
-    }
-    
-    var url_m: String {
-        return _photo[FlickrAPIClient.API.URLKey] as! String
-    }
-    
+//    var title: String {
+//        return _photo[FlickrAPIClient.API.TitleKey] as! String
+//    }
+//    
+//    var url_m: String {
+//        return _photo[FlickrAPIClient.API.URLKey] as! String
+//    }
+//    
     // MARK: - API
     
     init(dictionary: JSONDictionary) {

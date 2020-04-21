@@ -11,6 +11,7 @@
         <relationship name="photos" toMany="YES" deletionRule="Cascade" destinationEntity="VTPhoto" inverseName="location" inverseEntity="VTPhoto"/>
     </entity>
     <entity name="VTPhoto" representedClassName="VTPhoto" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="String" defaultValueString=""/>
         <attribute name="image" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
         <attribute name="title" optional="YES" attributeType="String" defaultValueString=""/>
         <attribute name="url" optional="YES" attributeType="String" defaultValueString=""/>
@@ -18,6 +19,6 @@
     </entity>
     <elements>
         <element name="VTLocation" positionX="-63" positionY="-18" width="128" height="163"/>
-        <element name="VTPhoto" positionX="-54" positionY="45" width="128" height="103"/>
+        <element name="VTPhoto" positionX="-54" positionY="45" width="128" height="28"/>
     </elements>
 </model>

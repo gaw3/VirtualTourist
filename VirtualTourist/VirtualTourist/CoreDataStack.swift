@@ -77,6 +77,28 @@ extension CoreDataStack {
         
     }
     
+    func addPhotos(toLocation location: VTLocation, images: [Photo]) {
+        let newBackgroundContext = self.newBackgroundContext
+        
+        newBackgroundContext.perform {
+            
+            for image in images {
+                let vtPhoto = VTPhoto(usingPhoto: image, insertInto: location.managedObjectContext!)
+                vtPhoto.location = location
+                location.photos?.adding(vtPhoto)
+            }
+            
+            do {
+                try newBackgroundContext.save()
+            } catch let error {
+                print("error adding location, error = \(error)")
+                assertionFailure()
+            }
+            
+        }
+
+    }
+    
     func deleteLocation(withID id: String) {
         let fetchRequest: FetchLocationsRequest = VTLocation.fetchRequest()
         

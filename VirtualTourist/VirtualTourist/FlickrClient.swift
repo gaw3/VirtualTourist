@@ -9,13 +9,7 @@
 import CoreLocation
 import Foundation
 
-private let _shared = FlickrAPIClient()
-
-final class FlickrAPIClient {
-    
-    class var shared: FlickrAPIClient {
-        return _shared
-    }
+struct FlickrClient {
     
     // MARK: - Constants
     
@@ -35,6 +29,10 @@ final class FlickrAPIClient {
         static let RESTServicesURL = "https://api.flickr.com/services/rest/"
     }
     
+    func url(lat: CLLocationDegrees, long: CLLocationDegrees, nextPage: Int64) -> String {
+        return "https://api.flickr.com/services/rest/?api_key=850364777cd6c0359001c9aa67b5b1b4&content_type=1&extras=url_m&format=json&lat=\(lat)&lon=\(long)&method=flickr.photos.search&nojsoncallback=1&page=\(nextPage)&per_page=21&safe_search=1"
+    }
+    
 }
 
 
@@ -42,7 +40,18 @@ final class FlickrAPIClient {
 // MARK: -
 // MARK: - API
 
-extension FlickrAPIClient {
+extension FlickrClient {
+    
+    func getListOfPhotos(at location: VTLocation, completionHandler: @escaping NetworkTaskCompletionHandler) {
+        let urlString  = url(lat: location.lat, long: location.long, nextPage: location.nextPage)
+        let components = URLComponents(string: urlString)
+        var urlRequest = URLRequest(url: components!.url!)
+        
+        urlRequest.httpMethod = "GET"
+        
+        let networkTask = NetworkTask2(withURLRequest: urlRequest, completionHandler: completionHandler)
+        networkTask.resume()
+    }
 
 //    func searchPhotos(at travelLocation: VirtualTouristTravelLocation, completionHandler: @escaping DataTaskWithRequestCompletionHandler) {
 //        var components = URLComponents(string: HTTP.RESTServicesURL)

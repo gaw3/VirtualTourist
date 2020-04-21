@@ -21,6 +21,8 @@ public final class VTLocation: NSManagedObject {
         return LocationAnnotation(lat: lat, long: long, title: title!, subtitle: subtitle!, id: id!)
     }
     
+    var nextPage: Int64 { return page + 1 }
+    
     // MARK: - Initializers
     
     convenience init(usingPlacemark placemark: CLPlacemark, insertInto context: NSManagedObjectContext) {

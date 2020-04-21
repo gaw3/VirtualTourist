@@ -88,13 +88,11 @@ extension MapViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         
         if control == view.rightCalloutAccessoryView {
-            let photosVC = self.storyboard?.instantiateViewController(withIdentifier: String.StoryboardID.photosVC) as! PhotosViewController
             let annotation = view.annotation as? LocationAnnotation
+            let location   = coreData.getLocation(withID: annotation!.id)
+            let flickr     = FlickrClient()
             
-            photosVC.annotation = annotation
-            photosVC.location   = coreData.getLocation(withID: annotation!.id)
-            
-            navigationController?.pushViewController(photosVC, animated: true)
+            flickr.getListOfPhotos(at: location!, completionHandler: processListOfPhotos(forLocation: location!, withAnnotation: annotation!))
         }
         
     }
@@ -104,14 +102,13 @@ extension MapViewController: MKMapViewDelegate {
         
         if inPinDeletionMode {
             coreData.deleteLocation(withID: anno.id)
-            
             mapView.removeAnnotation(anno)
             
             if mapView.annotations.isEmpty {
                 didTapDoneButton()
             }
             
-        } 
+        }
         
     }
      
@@ -156,6 +153,52 @@ private extension MapViewController {
             }
             
             coreData.addLocation(usingPlacemark: placemarks![0] as CLPlacemark)
+        }
+        
+    }
+    
+    func processListOfPhotos(forLocation location: VTLocation,
+                        withAnnotation annotation: LocationAnnotation) -> NetworkTaskCompletionHandler {
+        
+        return { [weak self] (result, error) -> Void in
+            
+            guard let strongSelf = self else { return }
+            
+            guard error == nil else {
+                // alert message to user
+                print("error downloading list of photos, error = \(error!)")
+                assertionFailure()
+                return
+            }
+            
+            guard result != nil else {
+                // alert message to user
+                print("did not receive expected list of photos")
+                assertionFailure()
+                return
+            }
+            
+            let decoder = JSONDecoder()
+            
+            do {
+                let response = try decoder.decode(GetListOfPhotosResponse.self, from: result!)
+                coreData.addPhotos(toLocation: location, images: response.photos.photo)
+                
+                DispatchQueue.main.async(execute: {
+                    let photosVC = strongSelf.storyboard?.instantiateViewController(withIdentifier: String.StoryboardID.photosVC) as! PhotosViewController
+                    
+                    photosVC.annotation = annotation
+                    photosVC.location   = location
+                    
+                    strongSelf.navigationController?.pushViewController(photosVC, animated: true)
+                })
+                
+            } catch let error as NSError {
+                // complete error condition
+                print("unable to decode JSON, error = \(error)")
+                assertionFailure()
+            }
+            
         }
         
     }
