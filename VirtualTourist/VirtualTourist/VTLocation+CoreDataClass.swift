@@ -21,6 +21,8 @@ public final class VTLocation: NSManagedObject {
         return LocationAnnotation(lat: lat, long: long, title: title!, subtitle: subtitle!, id: id!)
     }
     
+    var numberOfPhotos: Int { return photos!.count }
+    
     var nextPage: Int64 { return page + 1 }
     
     // MARK: - Initializers

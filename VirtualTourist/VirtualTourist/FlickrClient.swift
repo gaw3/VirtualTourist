@@ -30,7 +30,7 @@ struct FlickrClient {
     }
     
     func url(lat: CLLocationDegrees, long: CLLocationDegrees, nextPage: Int64) -> String {
-        return "https://api.flickr.com/services/rest/?api_key=850364777cd6c0359001c9aa67b5b1b4&content_type=1&extras=url_m&format=json&lat=\(lat)&lon=\(long)&method=flickr.photos.search&nojsoncallback=1&page=\(nextPage)&per_page=21&safe_search=1"
+        return "https://api.flickr.com/services/rest/?api_key=850364777cd6c0359001c9aa67b5b1b4&content_type=1&extras=url_m&format=json&lat=\(lat)&lon=\(long)&method=flickr.photos.search&nojsoncallback=1&page=\(nextPage)&per_page=6&safe_search=1"
     }
     
 }
@@ -41,6 +41,16 @@ struct FlickrClient {
 // MARK: - API
 
 extension FlickrClient {
+    
+    func getImageDownloadTask(forPhoto vtPhoto: VTPhoto, completionHandler: @escaping NetworkTaskCompletionHandler) -> NetworkTask2 {
+        let components = URLComponents(string: vtPhoto.url!)
+        var urlRequest = URLRequest(url: components!.url!)
+        
+        urlRequest.httpMethod = "GET"
+        
+        let networkTask = NetworkTask2(withURLRequest: urlRequest, completionHandler: completionHandler)
+        return networkTask
+    }
     
     func getListOfPhotos(at location: VTLocation, completionHandler: @escaping NetworkTaskCompletionHandler) {
         let urlString  = url(lat: location.lat, long: location.long, nextPage: location.nextPage)

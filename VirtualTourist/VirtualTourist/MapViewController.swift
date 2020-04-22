@@ -90,9 +90,17 @@ extension MapViewController: MKMapViewDelegate {
         if control == view.rightCalloutAccessoryView {
             let annotation = view.annotation as? LocationAnnotation
             let location   = coreData.getLocation(withID: annotation!.id)
-            let flickr     = FlickrClient()
+        
+            mapView.deselectAnnotation(annotation, animated: false)
             
-            flickr.getListOfPhotos(at: location!, completionHandler: processListOfPhotos(forLocation: location!, withAnnotation: annotation!))
+            if location!.numberOfPhotos > 0 {
+                presentPhotos(forLocation: location!)
+            } else {
+                let flickr = FlickrClient()
+            
+                flickr.getListOfPhotos(at: location!, completionHandler: processListOfPhotos(forLocation: location!))
+            }
+            
         }
         
     }
@@ -157,8 +165,7 @@ private extension MapViewController {
         
     }
     
-    func processListOfPhotos(forLocation location: VTLocation,
-                        withAnnotation annotation: LocationAnnotation) -> NetworkTaskCompletionHandler {
+    func processListOfPhotos(forLocation location: VTLocation) -> NetworkTaskCompletionHandler {
         
         return { [weak self] (result, error) -> Void in
             
@@ -182,15 +189,12 @@ private extension MapViewController {
             
             do {
                 let response = try decoder.decode(GetListOfPhotosResponse.self, from: result!)
+                
+                
                 coreData.addPhotos(toLocation: location, images: response.photos.photo)
                 
                 DispatchQueue.main.async(execute: {
-                    let photosVC = strongSelf.storyboard?.instantiateViewController(withIdentifier: String.StoryboardID.photosVC) as! PhotosViewController
-                    
-                    photosVC.annotation = annotation
-                    photosVC.location   = location
-                    
-                    strongSelf.navigationController?.pushViewController(photosVC, animated: true)
+                    strongSelf.presentPhotos(forLocation: location)
                 })
                 
             } catch let error as NSError {
@@ -228,7 +232,6 @@ private extension MapViewController {
         presentAlert(.tapPins, message: .tapDoneButton)
     }
 
-     
     func displayAnnotations() {
         let fetchRequest: FetchLocationsRequest = VTLocation.fetchRequest()
         
@@ -250,6 +253,14 @@ private extension MapViewController {
             print("unable to fetch locations from core data, error = \(error)")
         }
         
+    }
+    
+    func presentPhotos(forLocation location: VTLocation) {
+        let photosVC = storyboard?.instantiateViewController(withIdentifier: String.StoryboardID.photosVC) as! PhotosViewController
+        
+        photosVC.location = location
+        
+        navigationController?.pushViewController(photosVC, animated: true)
     }
     
 }

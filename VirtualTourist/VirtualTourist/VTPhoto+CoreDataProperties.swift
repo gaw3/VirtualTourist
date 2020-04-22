@@ -16,9 +16,9 @@ extension VTPhoto {
         return NSFetchRequest<VTPhoto>(entityName: CoreDataStack.photoEntityName)
     }
 
-    @NSManaged public var image:    Data?
-    @NSManaged public var url:      String?
-    @NSManaged public var title:    String?
-    @NSManaged public var id:       String?
-    @NSManaged public var location: VTLocation?
+    @NSManaged public var imageData: Data?
+    @NSManaged public var url:       String?
+    @NSManaged public var title:     String?
+    @NSManaged public var id:        String?
+    @NSManaged public var location:  VTLocation?
 }

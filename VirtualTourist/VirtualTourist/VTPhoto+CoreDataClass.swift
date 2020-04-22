@@ -18,9 +18,10 @@ public final class VTPhoto: NSManagedObject {
         if let entity = NSEntityDescription.entity(forEntityName: CoreDataStack.photoEntityName, in: context) {
             self.init(entity: entity, insertInto: context)
             
-            id    = photo.id
-            url   = photo.url
-            title = photo.title
+            id        = photo.id
+            url       = photo.url
+            title     = photo.title
+            imageData = nil
             
         } else {
             print("unable to construct a VTPhoto entity")

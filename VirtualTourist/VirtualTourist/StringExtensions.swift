@@ -29,6 +29,7 @@ extension String {
 
     enum ReuseID {
         static let markerAnnoView = "MarkerAnnotationView"
+        static let photoCell      = "PhotoCell"
     }
     
     enum StoryboardID {
