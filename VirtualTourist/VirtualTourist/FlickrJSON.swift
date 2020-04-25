@@ -76,3 +76,11 @@ struct GetListOfPhotosResponse: Decodable {
     var stat: String
 }
 
+extension GetListOfPhotosResponse {
+    var isOK:     Bool  { return stat == "ok" }
+    var page:     Int64 { return Int64(photos.page) }
+    var pages:    Int64 { return Int64(photos.pages) }
+    var perpage:  Int64 { return Int64(photos.perpage) }
+    var total:    Int64 { return Int64(photos.total)! }
+}
+

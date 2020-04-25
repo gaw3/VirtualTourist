@@ -42,6 +42,7 @@ final class MapViewController: UIViewController {
     var fetchedLocations: FetchedLocationsController!
     
     private var inPinDeletionMode = false
+    private var workflow: GetListOfPhotosWorkflow?
     
     // MARK: - View Events
     
@@ -52,8 +53,23 @@ final class MapViewController: UIViewController {
 
         map.addGestureRecognizer(longPress)
         displayAnnotations()
+        
+        workflow = GetListOfPhotosWorkflow(delegate: self)
     }
         
+}
+
+
+
+// MARK: -
+// MARK: - Core Data Update Delegate
+
+extension MapViewController: CoreDataUpdateDelegate {
+    
+    func updated(_ location: VTLocation) {
+        presentPhotos(forLocation: location)
+    }
+    
 }
 
 
@@ -81,6 +97,19 @@ extension MapViewController: NSFetchedResultsControllerDelegate {
 
 
 // MARK: -
+// MARK: - Get List Of Photos Delegate
+
+extension MapViewController: GetListOfPhotosWorkflowDelegate {
+    
+    func process(_ response: GetListOfPhotosResponse, forLocation location: VTLocation) {
+        coreData.update(location, withResponse: response, delegate: self)
+    }
+    
+}
+
+
+
+// MARK: -
 // MARK: - Map View Delegate
 
 extension MapViewController: MKMapViewDelegate {
@@ -96,9 +125,7 @@ extension MapViewController: MKMapViewDelegate {
             if location!.numberOfPhotos > 0 {
                 presentPhotos(forLocation: location!)
             } else {
-                let flickr = FlickrClient()
-            
-                flickr.getListOfPhotos(at: location!, completionHandler: processListOfPhotos(forLocation: location!))
+                workflow?.getListOfPhotos(forLocation: location!)
             }
             
         }
@@ -165,48 +192,6 @@ private extension MapViewController {
         
     }
     
-    func processListOfPhotos(forLocation location: VTLocation) -> NetworkTaskCompletionHandler {
-        
-        return { [weak self] (result, error) -> Void in
-            
-            guard let strongSelf = self else { return }
-            
-            guard error == nil else {
-                // alert message to user
-                print("error downloading list of photos, error = \(error!)")
-                assertionFailure()
-                return
-            }
-            
-            guard result != nil else {
-                // alert message to user
-                print("did not receive expected list of photos")
-                assertionFailure()
-                return
-            }
-            
-            let decoder = JSONDecoder()
-            
-            do {
-                let response = try decoder.decode(GetListOfPhotosResponse.self, from: result!)
-                
-                
-                coreData.addPhotos(toLocation: location, images: response.photos.photo)
-                
-                DispatchQueue.main.async(execute: {
-                    strongSelf.presentPhotos(forLocation: location)
-                })
-                
-            } catch let error as NSError {
-                // complete error condition
-                print("unable to decode JSON, error = \(error)")
-                assertionFailure()
-            }
-            
-        }
-        
-    }
-    
 }
 
 
@@ -256,11 +241,13 @@ private extension MapViewController {
     }
     
     func presentPhotos(forLocation location: VTLocation) {
-        let photosVC = storyboard?.instantiateViewController(withIdentifier: String.StoryboardID.photosVC) as! PhotosViewController
         
-        photosVC.location = location
-        
-        navigationController?.pushViewController(photosVC, animated: true)
+        DispatchQueue.main.async(execute: {
+            let photosVC = self.storyboard?.instantiateViewController(withIdentifier: String.StoryboardID.photosVC) as! PhotosViewController
+            photosVC.location = location
+            self.navigationController?.pushViewController(photosVC, animated: true)
+        })
+
     }
     
 }

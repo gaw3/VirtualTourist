@@ -12,6 +12,16 @@ import CoreLocation
 typealias FetchedLocationsController = NSFetchedResultsController<VTLocation>
 typealias FetchLocationsRequest      = NSFetchRequest<VTLocation>
 
+// MARK: -
+// MARK: -
+
+protocol CoreDataUpdateDelegate {
+    func updated(_ location: VTLocation)
+}
+
+// MARK: -
+// MARK: -
+
 final class CoreDataStack {
     
     // MARK: - Variables
@@ -77,28 +87,40 @@ extension CoreDataStack {
         
     }
     
-    func addPhotos(toLocation location: VTLocation, images: [Photo]) {
+    func update(_ location: VTLocation, withResponse response: GetListOfPhotosResponse, delegate: CoreDataUpdateDelegate) {
+        let vtPhotos = location.photos!.allObjects as! [VTPhoto]
+        
+        for vtPhoto in vtPhotos {
+            viewContext.delete(vtPhoto)
+        }
+        
         let newBackgroundContext = self.newBackgroundContext
         
         newBackgroundContext.perform {
+            location.page    = response.page
+            location.pages   = response.pages
+            location.perpage = response.perpage
+            location.total   = response.total
             
-            for image in images {
-                let vtPhoto = VTPhoto(usingPhoto: image, insertInto: location.managedObjectContext!)
+            for photo in response.photos.photo {
+                let vtPhoto = VTPhoto(usingPhoto: photo, insertInto: location.managedObjectContext!)
                 vtPhoto.location = location
                 location.photos?.adding(vtPhoto)
             }
             
             do {
                 try newBackgroundContext.save()
+                delegate.updated(location)
             } catch let error {
                 print("error adding location, error = \(error)")
                 assertionFailure()
             }
             
         }
-
+        
     }
     
+
     func deleteLocation(withID id: String) {
         let fetchRequest: FetchLocationsRequest = VTLocation.fetchRequest()
         
@@ -110,7 +132,6 @@ extension CoreDataStack {
             
             if !locations.isEmpty {
                 viewContext.delete(locations[0])
-                try viewContext.save()
             }
             
         } catch let error as NSError {
@@ -118,6 +139,7 @@ extension CoreDataStack {
             assertionFailure()
         }
         
+        save()
     }
     
     func getLocation(withID id: String) -> VTLocation? {

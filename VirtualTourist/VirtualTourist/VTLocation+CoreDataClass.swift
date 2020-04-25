@@ -21,10 +21,9 @@ public final class VTLocation: NSManagedObject {
         return LocationAnnotation(lat: lat, long: long, title: title!, subtitle: subtitle!, id: id!)
     }
     
-    var numberOfPhotos: Int { return photos!.count }
-    
-    var nextPage: Int64 { return page + 1 }
-    
+    var numberOfPhotos: Int   { return photos!.count }
+    var nextPage:       Int64 { return page <= pages ? page + 1 : 1 }
+
     // MARK: - Initializers
     
     convenience init(usingPlacemark placemark: CLPlacemark, insertInto context: NSManagedObjectContext) {
@@ -32,8 +31,7 @@ public final class VTLocation: NSManagedObject {
         if let entity = NSEntityDescription.entity(forEntityName: CoreDataStack.locationEntityName, in: context) {
             self.init(entity: entity, insertInto: context)
             
-            id = String(format:"%f", Date().timeIntervalSinceReferenceDate)
-            
+            id   = String(format:"%f", Date().timeIntervalSinceReferenceDate)
             lat  = placemark.location!.coordinate.latitude
             long = placemark.location!.coordinate.longitude
             
@@ -67,5 +65,5 @@ public final class VTLocation: NSManagedObject {
         }
         
     }
-    
+        
 }

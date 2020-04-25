@@ -21,7 +21,9 @@ extension VTLocation {
     @NSManaged public var lat: Double
     @NSManaged public var long: Double
     @NSManaged public var page: Int64
+    @NSManaged public var pages: Int64
     @NSManaged public var perpage: Int64
+    @NSManaged public var total: Int64
     @NSManaged public var id: String?
     @NSManaged public var photos: NSSet?
 

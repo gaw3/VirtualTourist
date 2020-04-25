@@ -21,7 +21,11 @@ final class PhotosViewController: UIViewController {
     @IBAction func didTap(_ barButtonItem: UIBarButtonItem) {
         
         switch barButtonItem {
-        case refreshButton: print("refresh button tapped")
+            
+        case refreshButton:
+            refreshButton.isEnabled = false
+            workflow?.getListOfPhotos(forLocation: location)
+
         case trashButton:   print("trash button tapped")
         default: assertionFailure("rcvd tap event for unknown button")
         }
@@ -32,7 +36,8 @@ final class PhotosViewController: UIViewController {
     
     private var vtPhotos: [VTPhoto]!
     private var noPhotosLabel: UILabel!
-    
+    private var workflow: GetListOfPhotosWorkflow?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -43,6 +48,8 @@ final class PhotosViewController: UIViewController {
         
         let sortByID = NSSortDescriptor(key: "id", ascending: true)
         vtPhotos = location.photos?.sortedArray(using: [sortByID]) as? [VTPhoto]
+        
+        workflow = GetListOfPhotosWorkflow(delegate: self)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -74,6 +81,39 @@ extension PhotosViewController: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
+    }
+    
+}
+
+
+
+// MARK: -
+// MARK: - Core Data Update Delegate
+
+extension PhotosViewController: CoreDataUpdateDelegate {
+    
+    func updated(_ location: VTLocation) {
+        
+        DispatchQueue.main.async(execute: {
+            let sortByID  = NSSortDescriptor(key: "id", ascending: true)
+            self.vtPhotos = location.photos?.sortedArray(using: [sortByID]) as? [VTPhoto]
+            self.photosCollection.reloadData()
+            self.refreshButton.isEnabled = true
+        })
+        
+    }
+    
+}
+
+
+
+// MARK: -
+// MARK: - Get List Of Photos Delegate
+
+extension PhotosViewController: GetListOfPhotosWorkflowDelegate {
+    
+    func process(_ response: GetListOfPhotosResponse, forLocation location: VTLocation) {
+        coreData.update(location, withResponse: response, delegate: self)
     }
     
 }

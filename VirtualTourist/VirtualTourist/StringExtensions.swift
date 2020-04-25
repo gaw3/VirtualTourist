@@ -26,6 +26,10 @@ extension String {
         case tapDoneButton     = "Tap the Done button when finished"
         case whileInDeleteMode = "While in deletion mode"
     }
+    
+    enum HTTPMethod {
+        static let get = "GET"
+    }
 
     enum ReuseID {
         static let markerAnnoView = "MarkerAnnotationView"

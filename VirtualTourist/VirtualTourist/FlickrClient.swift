@@ -13,24 +13,8 @@ struct FlickrClient {
     
     // MARK: - Constants
     
-    struct API {
-        static let PageKey       = "page"
-        static let PerPageKey    = "perpage"
-        static let PhotoKey      = "photo"
-        static let PhotosKey     = "photos"
-        static let StatusKey     = "stat"
-        static let StatusValueOK = "ok"
-        static let TitleKey      = "title"
-        static let URLKey        = "url_m"
-    }
-    
-    fileprivate struct HTTP {
-        static let GETMethod       = "GET"
-        static let RESTServicesURL = "https://api.flickr.com/services/rest/"
-    }
-    
-    func url(lat: CLLocationDegrees, long: CLLocationDegrees, nextPage: Int64) -> String {
-        return "https://api.flickr.com/services/rest/?api_key=850364777cd6c0359001c9aa67b5b1b4&content_type=1&extras=url_m&format=json&lat=\(lat)&lon=\(long)&method=flickr.photos.search&nojsoncallback=1&page=\(nextPage)&per_page=6&safe_search=1"
+    func url(lat: CLLocationDegrees, long: CLLocationDegrees, page: Int64) -> String {
+        return "https://api.flickr.com/services/rest/?api_key=850364777cd6c0359001c9aa67b5b1b4&content_type=1&extras=url_m&format=json&lat=\(lat)&lon=\(long)&method=flickr.photos.search&nojsoncallback=1&page=\(page)&per_page=21&safe_search=1"
     }
     
 }
@@ -46,41 +30,21 @@ extension FlickrClient {
         let components = URLComponents(string: vtPhoto.url!)
         var urlRequest = URLRequest(url: components!.url!)
         
-        urlRequest.httpMethod = "GET"
+        urlRequest.httpMethod = String.HTTPMethod.get
         
         let networkTask = NetworkTask2(withURLRequest: urlRequest, completionHandler: completionHandler)
         return networkTask
     }
     
     func getListOfPhotos(at location: VTLocation, completionHandler: @escaping NetworkTaskCompletionHandler) {
-        let urlString  = url(lat: location.lat, long: location.long, nextPage: location.nextPage)
+        let urlString  = url(lat: location.lat, long: location.long, page: location.nextPage)
         let components = URLComponents(string: urlString)
         var urlRequest = URLRequest(url: components!.url!)
         
-        urlRequest.httpMethod = "GET"
+        urlRequest.httpMethod = String.HTTPMethod.get
         
         let networkTask = NetworkTask2(withURLRequest: urlRequest, completionHandler: completionHandler)
         networkTask.resume()
     }
 
-//    func searchPhotos(at travelLocation: VirtualTouristTravelLocation, completionHandler: @escaping DataTaskWithRequestCompletionHandler) {
-//        var components = URLComponents(string: HTTP.RESTServicesURL)
-//        components!.query = travelLocation.searchQuery
-//        
-//        let URLRequest = NSMutableURLRequest(url: components!.url!)
-//        URLRequest.httpMethod = HTTP.GETMethod
-//        
-//        let dataTaskWithRequest = DataTaskWithRequest(urlRequest: URLRequest, completionHandler: completionHandler)
-//        dataTaskWithRequest.resume()
-//    }
-//    
-//    func downloadPhoto(_ vtPhoto: VirtualTouristPhoto, completionHandler: @escaping DataTaskWithRequestCompletionHandler) -> URLSessionTask {
-//        let components = URLComponents(string: vtPhoto.imageURLString)
-//        let URLRequest = NSMutableURLRequest(url: components!.url!)
-//        URLRequest.httpMethod = HTTP.GETMethod
-//        
-//        let dataTaskWithRequest = DataTaskWithRequest(urlRequest: URLRequest, completionHandler: completionHandler)
-//        return dataTaskWithRequest.getImageDownloadTask()
-//    }
-    
 }
