@@ -94,6 +94,8 @@ extension CoreDataStack {
             viewContext.delete(vtPhoto)
         }
         
+        save()
+        
         let newBackgroundContext = self.newBackgroundContext
         
         newBackgroundContext.perform {
@@ -118,6 +120,11 @@ extension CoreDataStack {
             
         }
         
+    }
+    
+    func delete(vtPhoto: VTPhoto) {
+        viewContext.delete(vtPhoto)
+        save()
     }
     
 

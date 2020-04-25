@@ -26,7 +26,9 @@ final class PhotosViewController: UIViewController {
             refreshButton.isEnabled = false
             workflow?.getListOfPhotos(forLocation: location)
 
-        case trashButton:   print("trash button tapped")
+        case trashButton:
+            deleteSelectedPhotos()
+            
         default: assertionFailure("rcvd tap event for unknown button")
         }
         
@@ -83,6 +85,35 @@ extension PhotosViewController: UICollectionViewDataSource {
         return 1
     }
     
+}
+
+
+
+// MARK: -
+// MARK: - Collection View Delegate
+
+extension PhotosViewController: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as! PhotoCell
+        
+        cell.imageView.alpha = 1.0
+        
+        if collectionView.indexPathsForSelectedItems!.count == 0 {
+            trashButton.isEnabled   = false
+            refreshButton.isEnabled = true
+        }
+        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as! PhotoCell
+        
+        cell.imageView.alpha    = 0.3
+        trashButton.isEnabled   = true
+        refreshButton.isEnabled = false
+    }
+
 }
 
 
@@ -153,15 +184,37 @@ private extension PhotosViewController {
         static let numberOfCellsAcrossInLandscape = CGFloat(5.0)
         static let minimumInteritemSpacing        = CGFloat(3.0)
     }
+    
+    func deleteSelectedPhotos() {
+        
+        for indexPath in photosCollection.indexPathsForSelectedItems! {
+            coreData.delete(vtPhoto: vtPhotos[indexPath.row])
+        }
+        
+        let sortByID  = NSSortDescriptor(key: "id", ascending: true)
+        vtPhotos = location.photos?.sortedArray(using: [sortByID]) as? [VTPhoto]
+        
+        photosCollection.performBatchUpdates({
+            self.photosCollection.deleteItems(at: self.photosCollection.indexPathsForSelectedItems!)
+        }) { (flag) in
+            print("flag = \(flag)")
+            self.trashButton.isEnabled   = false
+            self.refreshButton.isEnabled = true
+            self.photosCollection.backgroundView?.isHidden = !self.vtPhotos.isEmpty
+        }
+        
+    }
 
     func initCollectionView() {
         let label = UILabel()
-        label.text = "No more photos"
-        label.textColor = .black
+        
+        label.text          = "No more photos"
+        label.textColor     = .black
         label.textAlignment = .center
         
-        photosCollection.backgroundView = label
+        photosCollection.backgroundView           = label
         photosCollection.backgroundView?.isHidden = true
+        photosCollection.allowsMultipleSelection  = true
         
         let numOfCellsAcross: CGFloat = Layout.numberOfCellsAcrossInPortrait
         let itemWidth:        CGFloat = (view.frame.size.width - (Layout.minimumInteritemSpacing * (numOfCellsAcross - 1))) / numOfCellsAcross

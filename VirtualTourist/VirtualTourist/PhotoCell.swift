@@ -29,7 +29,7 @@ final class PhotoCell: UICollectionViewCell {
         if let imageData = vtPhoto.imageData,
            let image = UIImage(data: imageData) {
             imageView.image = image
-            imageView.alpha = 1.0
+            imageView.alpha = isSelected ? 0.3 : 1.0
         } else {
             imageView.image = nil
             activityIndicator.startAnimating()
@@ -77,6 +77,7 @@ private extension PhotoCell {
                 }
                 
                 strongSelf.imageView.image = image
+                strongSelf.imageView.alpha = 1.0
                 vtPhoto.imageData          = image.jpegData(compressionQuality: 1.0)
                 
                 coreData.save()
