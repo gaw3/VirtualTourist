@@ -98,6 +98,7 @@ extension PhotosViewController: CoreDataUpdateDelegate {
             let sortByID  = NSSortDescriptor(key: "id", ascending: true)
             self.vtPhotos = location.photos?.sortedArray(using: [sortByID]) as? [VTPhoto]
             self.photosCollection.reloadData()
+            self.photosCollection.backgroundView?.isHidden = !self.vtPhotos.isEmpty
             self.refreshButton.isEnabled = true
         })
         
@@ -151,24 +152,16 @@ private extension PhotosViewController {
         static let numberOfCellsAcrossInPortrait  = CGFloat(3.0)
         static let numberOfCellsAcrossInLandscape = CGFloat(5.0)
         static let minimumInteritemSpacing        = CGFloat(3.0)
-        
-        static let noPhotosLabel = "This location has no images."
     }
 
     func initCollectionView() {
-        noPhotosLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 21))
-        noPhotosLabel.text          = Layout.noPhotosLabel
-        noPhotosLabel.textColor     = .black
-        noPhotosLabel.textAlignment = .center
-        noPhotosLabel.isHidden      = true
+        let label = UILabel()
+        label.text = "No more photos"
+        label.textColor = .black
+        label.textAlignment = .center
         
-        photosCollection.backgroundColor = .white
-        
-        photosCollection.backgroundView = UIView(frame: .zero)
-        photosCollection.backgroundView?.backgroundColor     = .white
-        photosCollection.backgroundView?.autoresizesSubviews = true
-        photosCollection.backgroundView?.isHidden            = true
-        photosCollection.backgroundView?.addSubview(noPhotosLabel)
+        photosCollection.backgroundView = label
+        photosCollection.backgroundView?.isHidden = true
         
         let numOfCellsAcross: CGFloat = Layout.numberOfCellsAcrossInPortrait
         let itemWidth:        CGFloat = (view.frame.size.width - (Layout.minimumInteritemSpacing * (numOfCellsAcross - 1))) / numOfCellsAcross
