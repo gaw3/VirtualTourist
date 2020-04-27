@@ -25,6 +25,7 @@ public final class VTPhoto: NSManagedObject {
             
         } else {
             print("unable to construct a VTPhoto entity")
+            // TODO: how to handle this error in production
             abort()
         }
 

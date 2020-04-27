@@ -10,9 +10,13 @@ import UIKit
 
 final class PhotoCell: UICollectionViewCell {
     
+    // MARK: - IB Outlets
+
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var imageView:         UIImageView!
     
+    // MARK: - Variables
+
     var taskToCancelIfCellIsReused: NetworkTask2? {
         
         didSet {
@@ -24,6 +28,8 @@ final class PhotoCell: UICollectionViewCell {
         
     }
     
+    // MARK: - API
+
     func configure(withPhoto vtPhoto: VTPhoto) {
         
         if let imageData = vtPhoto.imageData,
@@ -60,19 +66,19 @@ private extension PhotoCell {
                 
                 guard error == nil else {
                     print("unable to download photo, error = \(error!)")
-                    // put broken image placeholder in there
+                    // TODO: put broken image placeholder in there
                     return
                 }
                 
                 guard result != nil else {
                     print("expected image data was not received")
-                    // put broken image placeholder in there
+                    // TODO: put broken image placeholder in there
                     return
                 }
                 
                 guard let image = UIImage(data: result!) else {
                     print("received corrupted image data")
-                    // put broken image placeholder in there
+                    // TODO: put broken image placeholder in there
                     return
                 }
                 

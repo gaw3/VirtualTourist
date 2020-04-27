@@ -1,5 +1,5 @@
 //
-//  FlickrJSON.swift
+//  GetListOfPhotosResponse.swift
 //  VirtualTourist
 //
 //  Created by Gregory White on 4/20/20.

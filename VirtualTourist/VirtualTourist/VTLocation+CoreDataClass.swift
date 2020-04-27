@@ -61,6 +61,7 @@ public final class VTLocation: NSManagedObject {
             subtitle = "\(lat), \(long)"
         } else {
             print("unable to construct a VTLocation entity")
+            // TODO: how to handle this error in production
             abort()
         }
         

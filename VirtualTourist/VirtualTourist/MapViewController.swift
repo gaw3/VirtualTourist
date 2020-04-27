@@ -22,17 +22,11 @@ final class MapViewController: UIViewController {
     @IBAction func didRecognize(_ longPress: UILongPressGestureRecognizer) {
         
         if longPress.state == .began {
-            
-            if inPinDeletionMode {
-                presentAlert(.cannotDropPin, message: .whileInDeleteMode)
-            } else {
-                let coord    = map.convert(longPress.location(in: map), toCoordinateFrom: map)
-                let location = CLLocation(latitude: coord.latitude, longitude: coord.longitude)
-                let geocoder = CLGeocoder()
+            let coord    = map.convert(longPress.location(in: map), toCoordinateFrom: map)
+            let location = CLLocation(latitude: coord.latitude, longitude: coord.longitude)
+            let geocoder = CLGeocoder()
                 
-                geocoder.reverseGeocodeLocation(location, completionHandler: finishReverseGeocoding)
-            }
-            
+            geocoder.reverseGeocodeLocation(location, completionHandler: finishReverseGeocoding)
         }
         
     }
@@ -108,7 +102,7 @@ extension MapViewController: GetListOfPhotosWorkflowDelegate {
         } else {
             presentAlert(.noPhotos, message: .atThisLocation)
         }
-        
+         
     }
     
 }
@@ -184,12 +178,13 @@ private extension MapViewController {
             guard let strongSelf = self else { return }
                         
             guard error == nil else {
-                strongSelf.presentAlert(.badGeocode, message: .serverError)
+                print("reverse geocoding failed, error = \(error!)")
+                strongSelf.presentAlert(.badReverseGeocode, message: .reverseGeocodingError)
                 return
             }
             
             guard placemarks != nil, !placemarks!.isEmpty else {
-                strongSelf.presentAlert(.badGeocode, message: .noPlacemarks)
+                strongSelf.presentAlert(.badReverseGeocode, message: .noPlacemarks)
                 return
             }
             
@@ -213,14 +208,16 @@ private extension MapViewController {
     }
     
     @objc func didTapDoneButton() {
-         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: SEL.trashButtonTapped)
-         inPinDeletionMode = false
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: SEL.trashButtonTapped)
+        longPress.isEnabled = true
+        inPinDeletionMode   = false
     }
     
     @objc func didTapTrashButton() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: SEL.doneButtonTapped)
-        inPinDeletionMode = true
-        presentAlert(.tapPins, message: .tapDoneButton)
+        longPress.isEnabled = false
+        inPinDeletionMode   = true
+        presentAlert(.tapMarkers, message: .tapDoneButton)
     }
 
     func displayAnnotations() {
@@ -241,7 +238,8 @@ private extension MapViewController {
             }
             
         } catch let error as NSError {
-            print("unable to fetch locations from core data, error = \(error)")
+            assertionFailure("unable to fetch locations from core data, error = \(error)")
+            presentAlert(.unableToFetchLocations, message: .dbError)
         }
         
     }

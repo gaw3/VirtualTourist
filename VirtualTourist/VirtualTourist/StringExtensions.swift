@@ -16,17 +16,19 @@ extension String {
     
     enum AlertMessage: String {
         case noPlacemarks      = "Did not receive any placemarks"
-        case serverError       = "Server Error"
+        case reverseGeocodingError       = "Reverse geocoding error"
         case tapDoneButton     = "Tap the Done button when finished"
         case whileInDeleteMode = "While in deletion mode"
         case atThisLocation    = "At this location"
+        case dbError           = "Database error"
     }
     
     enum AlertTitle: String {
-        case badGeocode    = "Unable to geocode location"
-        case cannotDropPin = "Cannot drop pin"
-        case tapPins       = "Tap Pins to Delete"
-        case noPhotos      = "No Photos To Display"
+        case badReverseGeocode    = "Unable to determine location from coordinates"
+        case cannotDropMarker = "Cannot drop marker"
+        case tapMarkers       = "Tap markers to delete"
+        case noPhotos      = "No photos to display"
+        case unableToFetchLocations = "Unable to get saved locations"
     }
     
     enum HTTPMethod {

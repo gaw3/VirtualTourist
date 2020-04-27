@@ -23,8 +23,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-//    func applicationWillTerminate(_ application: UIApplication) {
-//        CoreDataManager.shared.saveContext()
-//    }
+    func applicationWillTerminate(_ application: UIApplication) {
+        coreData.save()
+    }
     
 }

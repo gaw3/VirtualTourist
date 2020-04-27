@@ -53,14 +53,14 @@ private extension GetListOfPhotosWorkflow {
             guard let strongSelf = self else { return }
             
             guard error == nil else {
-                // delegate.process error state
                 assertionFailure("error downloading list of photos, error = \(error!)")
+                // TODO: delegate.process error
                 return
             }
             
             guard result != nil else {
-                // delegate.process error state
                 assertionFailure("did not receive expected list of photos")
+                // TODO: delegate.process error
                 return
             }
             
@@ -70,15 +70,15 @@ private extension GetListOfPhotosWorkflow {
                 let response = try decoder.decode(GetListOfPhotosResponse.self, from: result!)
                 
                 guard response.isOK else {
-                    // delegate.process error state
                     assertionFailure("status of response is not OK")
+                    // TODO: delegate.process error
                     return
                 }
                 
                 strongSelf.delegate.process(response, forLocation: location)
             } catch let error as NSError {
-                // delegate.process error state
                 assertionFailure("unable to decode JSON, error = \(error)")
+                // TODO: delegate.process error
             }
             
         }

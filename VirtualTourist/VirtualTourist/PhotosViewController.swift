@@ -11,6 +11,8 @@ import UIKit
 
 final class PhotosViewController: UIViewController {
 
+    // MARK: - IB Outlets
+
     @IBOutlet weak var photosCollection: UICollectionView!
     @IBOutlet weak var flowLayout:       UICollectionViewFlowLayout!
     @IBOutlet weak var map:              MKMapView!
@@ -18,6 +20,8 @@ final class PhotosViewController: UIViewController {
     @IBOutlet weak var refreshButton: UIBarButtonItem!
     @IBOutlet weak var trashButton:   UIBarButtonItem!
     
+    // MARK: - IB Actions
+
     @IBAction func didTap(_ barButtonItem: UIBarButtonItem) {
         
         switch barButtonItem {
@@ -29,17 +33,29 @@ final class PhotosViewController: UIViewController {
         case trashButton:
             deleteSelectedPhotos()
             
-        default: assertionFailure("rcvd tap event for unknown button")
+        default:
+            assertionFailure("rcvd tap event for unknown button")
+            
         }
         
     }
     
+    // MARK: - Variables
+
     var location: VTLocation!
     
     private var vtPhotos: [VTPhoto]!
     private var noPhotosLabel: UILabel!
     private var workflow: GetListOfPhotosWorkflow?
 
+    // MARK: - View Events
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        map.addAnnotation(location.annotation)
+        map.setRegion(location.annotation.region, animated: true)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -52,12 +68,6 @@ final class PhotosViewController: UIViewController {
         vtPhotos = location.photos?.sortedArray(using: [sortByID]) as? [VTPhoto]
         
         workflow = GetListOfPhotosWorkflow(delegate: self)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        map.addAnnotation(location.annotation)
-        map.setRegion(location.annotation.region, animated: true)
     }
     
 }
