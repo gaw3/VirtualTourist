@@ -102,7 +102,13 @@ extension MapViewController: NSFetchedResultsControllerDelegate {
 extension MapViewController: GetListOfPhotosWorkflowDelegate {
     
     func process(_ response: GetListOfPhotosResponse, forLocation location: VTLocation) {
-        coreData.update(location, withResponse: response, delegate: self)
+        
+        if response.photos.photo.count > 0 {
+            coreData.update(location, withResponse: response, delegate: self)
+        } else {
+            presentAlert(.noPhotos, message: .atThisLocation)
+        }
+        
     }
     
 }

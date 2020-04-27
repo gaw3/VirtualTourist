@@ -14,17 +14,19 @@ extension String {
         static let ok  = "OK"
     }
     
-    enum AlertTitle: String {
-        case badGeocode    = "Unable to geocode location"
-        case cannotDropPin = "Cannot drop pin"
-        case tapPins       = "Tap Pins to Delete"
-    }
-    
     enum AlertMessage: String {
         case noPlacemarks      = "Did not receive any placemarks"
         case serverError       = "Server Error"
         case tapDoneButton     = "Tap the Done button when finished"
         case whileInDeleteMode = "While in deletion mode"
+        case atThisLocation    = "At this location"
+    }
+    
+    enum AlertTitle: String {
+        case badGeocode    = "Unable to geocode location"
+        case cannotDropPin = "Cannot drop pin"
+        case tapPins       = "Tap Pins to Delete"
+        case noPhotos      = "No Photos To Display"
     }
     
     enum HTTPMethod {
