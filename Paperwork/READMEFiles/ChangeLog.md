@@ -1,13 +1,16 @@
 # ![][AppIcon]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Change Log
 
+### Version 3.0
+* Update to iOS 13.4 / Swift 5
+* Rewrote entire app
+
 ### Version 2.1
-* Update to Xcode 8.3 / iOS 10.3
+* Update to iOS 10.3
 * Update README
 * Fix new compiler warnings
 
 ### Version 2.0
-* Update to Xcode 8.2.1 / iOS 10.2
-* Update to Swift 3.0
+* Update to iOS 10.2 / Swift 3.0
 * Update .gitignore
 * Update README</br></br>
 * Fix collection flow layout for large iPhone sizes
@@ -27,7 +30,7 @@
 * Submission
 
 ---
-**Copyright © 2016-2017 Gregory White. All rights reserved.**
+**Copyright © 2016-2020 Gregory White. All rights reserved.**
 
 
 
