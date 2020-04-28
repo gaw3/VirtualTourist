@@ -14,8 +14,8 @@ VirtualTourist is Portfolio Project #4 of the Udacity iOS Developer Nanodegree P
 
 | [Change Log][ChangeLog] | Current Build          | Project Submission - ***Meets Expectations*** | 
 | :----------             | :-----------------     | :-------------                                | 
-| GitHub Tag              | v3.0                   | v1.0                                          | 
-| App Version:            | 3.0                    | 1.0                                           | 
+| GitHub Tag              | v3.1                   | v1.0                                          | 
+| App Version:            | 3.1                    | 1.0                                           | 
 | Environment:            | iOS 13.4 / Swift 5     | iOS 9.3 / Swift 2                             | 
 | Devices:                | iPhone Only            | iPhone Only                                   | 
 | Orientations:           | Portrait Only          | Portrait Only                                 | 
