@@ -207,7 +207,6 @@ private extension PhotosViewController {
         photosCollection.performBatchUpdates({
             self.photosCollection.deleteItems(at: self.photosCollection.indexPathsForSelectedItems!)
         }) { (flag) in
-            print("flag = \(flag)")
             self.trashButton.isEnabled   = false
             self.refreshButton.isEnabled = true
             self.photosCollection.backgroundView?.isHidden = !self.vtPhotos.isEmpty
@@ -219,7 +218,7 @@ private extension PhotosViewController {
         let label = UILabel()
         
         label.text          = "No more photos"
-        label.textColor     = .black
+        label.textColor     = .label
         label.textAlignment = .center
         
         photosCollection.backgroundView           = label
