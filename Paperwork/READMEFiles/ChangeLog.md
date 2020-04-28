@@ -1,5 +1,10 @@
 # ![][AppIcon]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Change Log
 
+### Version 3.1
+* Dark Mode
+* Add 1024-size app icon to assets
+* Fix core data / build system warnings
+
 ### Version 3.0
 * Update to iOS 13.4 / Swift 5
 * Rewrote entire app
